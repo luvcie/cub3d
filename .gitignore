@@ -2,3 +2,7 @@ documentation/
 .ccls-cache/
 .nix_paths
 .nix_inc_paths
+*.o
+cub3D
+minilibx-linux/
+libft/libft.a

@@ -6,8 +6,13 @@
 /*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 04:07:53 by lucpardo          #+#    #+#             */
-/*   Updated: 2026/01/03 04:07:55 by lucpardo         ###   ########.fr       */
+/*   Updated: 2026/01/03 06:37:14 by lucpardo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+#include "cub3d.h"
 
-
+int	main(void)
+{
+	create_window();
+	return (0);
+}

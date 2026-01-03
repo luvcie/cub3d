@@ -6,7 +6,7 @@
 /*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 04:20:11 by lucpardo          #+#    #+#             */
-/*   Updated: 2026/01/03 04:27:54 by lucpardo         ###   ########.fr       */
+/*   Updated: 2026/01/03 06:34:46 by lucpardo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef CUB3D_H
@@ -21,5 +21,7 @@
 # include <fcntl.h>
 # include <sys/time.h>
 # include <math.h>
+
+int	create_window();
 
 #endif

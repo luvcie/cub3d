@@ -5,7 +5,8 @@ CFLAGS = -Wall -Wextra -Werror -g
 SRC_DIR = src
 INC_DIR = include
 
-SRCS = $(SRC_DIR)/main.c
+SRCS = $(SRC_DIR)/main.c \
+       $(SRC_DIR)/create_window.c
 
 OBJS = $(SRCS:.c=.o)
 
