@@ -1,2 +1,4 @@
 documentation/
 .ccls-cache/
+.nix_paths
+.nix_inc_paths

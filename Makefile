@@ -5,16 +5,20 @@ CFLAGS = -Wall -Wextra -Werror -g
 SRC_DIR = src
 INC_DIR = include
 
-SRCS =
+SRCS = $(SRC_DIR)/main.c
 
 OBJS = $(SRCS:.c=.o)
 
 MLX_PATH = ./minilibx-linux
 MLX = $(MLX_PATH)/libmlx.a
 
-# Find 64-bit X11 library paths on NixOS
-X11_LIB := $(shell find /nix/store -name "libX11.so.6.4.0" 2>/dev/null | xargs -I{} sh -c 'file {} | grep -q 64-bit && dirname {}' 2>/dev/null | head -1)
-XEXT_LIB := $(shell find /nix/store -name "libXext.so.6*" 2>/dev/null | xargs -I{} sh -c 'file {} | grep -q 64-bit && dirname {}' 2>/dev/null | head -1)
+# cache nix paths to avoid slow find on every make
+NIX_CACHE := .nix_paths
+$(shell if [ ! -f $(NIX_CACHE) ] && [ -d /nix/store ]; then \
+	echo "X11_LIB=$$(find /nix/store -name 'libX11.so.6.4.0' 2>/dev/null | xargs -I{} sh -c 'file {} | grep -q 64-bit && dirname {}' 2>/dev/null | head -1)" > $(NIX_CACHE); \
+	echo "XEXT_LIB=$$(find /nix/store -name 'libXext.so.6*' 2>/dev/null | xargs -I{} sh -c 'file {} | grep -q 64-bit && dirname {}' 2>/dev/null | head -1)" >> $(NIX_CACHE); \
+fi)
+-include $(NIX_CACHE)
 
 MLX_FLAGS = -L$(MLX_PATH) -lmlx -L$(X11_LIB) -L$(XEXT_LIB) -lXext -lX11 -lm
 

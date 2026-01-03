@@ -3,14 +3,21 @@
 if [ -d "/nix/store" ] && [ -f minilibx-linux/configure ]; then
     echo "Patching minilibx configure for NixOS..."
 
-    # find all required X11 include paths
-    X11_INC=$(find /nix/store -path "*/include/X11/Xlib.h" 2>/dev/null | head -1 | sed 's|/X11/Xlib.h||')
-    XPROTO_INC=$(find /nix/store -path "*/include/X11/X.h" 2>/dev/null | head -1 | sed 's|/X11/X.h||')
-    XEXT_INC=$(find /nix/store -path "*/include/X11/extensions/XShm.h" 2>/dev/null | head -1 | sed 's|/X11/extensions/XShm.h||')
+    CACHE=".nix_inc_paths"
 
-    # combine include paths
+    # use cached paths if available
+    if [ -f "$CACHE" ]; then
+        source "$CACHE"
+    else
+        X11_INC=$(find /nix/store -path "*/include/X11/Xlib.h" 2>/dev/null | head -1 | sed 's|/X11/Xlib.h||')
+        XPROTO_INC=$(find /nix/store -path "*/include/X11/X.h" 2>/dev/null | head -1 | sed 's|/X11/X.h||')
+        XEXT_INC=$(find /nix/store -path "*/include/X11/extensions/XShm.h" 2>/dev/null | head -1 | sed 's|/X11/extensions/XShm.h||')
+        echo "X11_INC=$X11_INC" > "$CACHE"
+        echo "XPROTO_INC=$XPROTO_INC" >> "$CACHE"
+        echo "XEXT_INC=$XEXT_INC" >> "$CACHE"
+    fi
+
     ALL_INC="$X11_INC -I$XPROTO_INC -I$XEXT_INC"
-
     echo "Using X11 include paths: $ALL_INC"
 
     cat > minilibx-linux/makefile.gen << EOF
