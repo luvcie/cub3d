@@ -1,16 +1,17 @@
 #include "cub3d.h"
 
-int create_window() 
+int	create_window(void)
 {
-	void	*mlx;
-	void	*win;
+	t_game	game;
 
-	mlx = mlx_init();
-	if (!mlx)
+	game.mlx = mlx_init();
+	if (!game.mlx)
 		return (1);
-	win = mlx_new_window(mlx, 800, 600, "cub3D");
-	if (!win)
+	game.win = mlx_new_window(game.mlx, 800, 600, "cub3D");
+	if (!game.win)
 		return (1);
-	mlx_loop(mlx);
+	draw_pentagram_direct(game.mlx, game.win);
+	mlx_key_hook(game.win, key_press, &game);
+	mlx_loop(game.mlx);
 	return (0);
 }

@@ -6,7 +6,9 @@ SRC_DIR = src
 INC_DIR = include
 
 SRCS = $(SRC_DIR)/main.c \
-       $(SRC_DIR)/create_window.c
+       $(SRC_DIR)/create_window.c \
+       $(SRC_DIR)/drawing.c \
+       $(SRC_DIR)/keybinds.c
 
 OBJS = $(SRCS:.c=.o)
 

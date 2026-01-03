@@ -22,6 +22,19 @@
 # include <sys/time.h>
 # include <math.h>
 
-int	create_window();
+# define KEY_ESC 65307
+
+typedef struct s_game
+{
+	void	*mlx;
+	void	*win;
+}	t_game;
+
+int		create_window(void);
+int		key_press(int keycode, t_game *game);
+int		close_window(t_game *game);
+void	draw_triangle_direct(void *mlx, void *win);
+void	draw_triangle_buffer(void *mlx, void *win);
+void	draw_pentagram_direct(void *mlx, void *win);
 
 #endif
