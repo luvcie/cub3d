@@ -4,6 +4,9 @@ int	create_window(void)
 {
 	t_game	game;
 
+	game.player_x = 0;
+	game.player_y = 0;
+	game.player_angle = 0;
 	game.mlx = mlx_init();
 	if (!game.mlx)
 		return (1);
@@ -11,7 +14,8 @@ int	create_window(void)
 	if (!game.win)
 		return (1);
 	draw_pentagram_direct(game.mlx, game.win);
-	mlx_key_hook(game.win, key_press, &game);
+	mlx_key_hook(game.win, (int (*)())key_press, &game);
+	mlx_hook(game.win, 17, 0, (int (*)())close_window, &game);
 	mlx_loop(game.mlx);
 	return (0);
 }

@@ -31,6 +31,8 @@ EOF
 
     if [ -f minilibx-linux/Makefile.mk ]; then
         sed -i "s|INC.*=.*%%%%|include makefile.gen|g" minilibx-linux/Makefile.mk
+        # use old c standard where () means any args, not no args
+        sed -i "s|-O3|-O3 -std=gnu89|g" minilibx-linux/Makefile.mk
     fi
 
     cat > minilibx-linux/configure << 'EOF'
