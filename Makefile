@@ -1,6 +1,6 @@
 NAME = cub3D
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror -Wno-cast-function-type -g
 
 SRC_DIR = src
 INC_DIR = include
@@ -68,4 +68,20 @@ re: fclean all
 
 bonus: all
 
-.PHONY: all clean fclean re bonus
+TEST_DIR = tests
+TEST_SRCS = $(TEST_DIR)/test_movement.c \
+            $(SRC_DIR)/keybinds.c \
+            $(SRC_DIR)/drawing.c
+TEST_OBJS = $(TEST_SRCS:.c=.o)
+TEST_NAME = test_movement
+
+test: $(LIBFT) $(MLX) $(TEST_OBJS)
+	$(CC) $(CFLAGS) $(TEST_OBJS) -L$(LIBFT_PATH) -lft $(MLX_FLAGS) -o $(TEST_NAME)
+
+$(TEST_DIR)/%.o: $(TEST_DIR)/%.c
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
+
+testclean:
+	rm -f $(TEST_OBJS) $(TEST_NAME)
+
+.PHONY: all clean fclean re bonus test testclean
