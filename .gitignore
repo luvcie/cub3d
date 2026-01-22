@@ -6,3 +6,5 @@ documentation/
 cub3D
 minilibx-linux/
 libft/libft.a
+test_minimap
+test_movement

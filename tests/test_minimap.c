@@ -1,16 +1,5 @@
 #include "cub3d.h"
 
-// wraps key_press and prints position/angle after each keypress
-static int	test_key_press(int keycode, t_game *game)
-{
-	int	result;
-
-	result = key_press(keycode, game);
-	printf("pos: %.2f, %.2f | angle: %.2f\n",
-		game->player_x, game->player_y, game->player_angle);
-	return (result);
-}
-
 int	main(int argc, char **argv)
 {
 	t_game	game;
@@ -31,11 +20,12 @@ int	main(int argc, char **argv)
 	game.img = mlx_new_image(game.mlx, WIN_WIDTH, WIN_HEIGHT);
 	game.img_data = mlx_get_data_addr(game.img, &game.bpp,
 			&game.line_len, &game.endian);
-	printf("image buffer ready, entering loop...\n");
-	fflush(stdout);
-	printf("controls: WASD to move, arrows to rotate, ESC to quit\n");
+	game.mouse_x = WIN_WIDTH / 2;
+	printf("controls: WASD to move, arrows/mouse to rotate, ESC to quit\n");
 	mlx_loop_hook(game.mlx, (int (*)())render, &game);
-	mlx_hook(game.win, 2, 1L << 0, (int (*)())test_key_press, &game);
+	mlx_hook(game.win, 2, 1L << 0, (int (*)())key_press, &game);
+	mlx_hook(game.win, 3, 1L << 1, (int (*)())key_release, &game);
+	mlx_hook(game.win, 6, 1L << 6, (int (*)())mouse_move, &game);
 	mlx_hook(game.win, 17, 0, (int (*)())close_window, &game);
 	mlx_loop(game.mlx);
 	return (0);

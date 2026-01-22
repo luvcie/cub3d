@@ -1,44 +1,43 @@
 #include "cub3d.h"
 
-// iterates through entire map array to find player's start position (N/S/E/W)
-// stores coords in game->player_x and game->player_y
-// also sets player_angle based on direction. called once during map parsing.
+// returns player angle based on spawn direction
+static double	get_player_angle(char c)
+{
+	if (c == 'N')
+		return (3 * M_PI / 2);
+	if (c == 'S')
+		return (M_PI / 2);
+	if (c == 'E')
+		return (0);
+	return (M_PI);
+}
+
+// finds player start position and sets angle
 void	find_player(t_game *game)
 {
 	int		y;
 	int		x;
 	char	c;
 
-	y = 0;
-	while (y < game->map_height)
+	y = -1;
+	while (++y < game->map_height)
 	{
-		x = 0;
-		while (game->map[y][x])
+		x = -1;
+		while (game->map[y][++x])
 		{
 			c = game->map[y][x];
 			if (c == 'N' || c == 'S' || c == 'E' || c == 'W')
 			{
 				game->player_x = x + 0.5;
 				game->player_y = y + 0.5;
-				if (c == 'N')
-					game->player_angle = 3 * M_PI / 2;
-				else if (c == 'S')
-					game->player_angle = M_PI / 2;
-				else if (c == 'E')
-					game->player_angle = 0;
-				else if (c == 'W')
-					game->player_angle = M_PI;
+				game->player_angle = get_player_angle(c);
 				return ;
 			}
-			x++;
 		}
-		y++;
 	}
 }
 
 // parses RGB color string like "220,100,0" into single int
-// takes: string with comma-separated RGB values
-// returns: color as 0xRRGGBB
 int	parse_color(char *str)
 {
 	char	**parts;
@@ -64,8 +63,6 @@ int	parse_color(char *str)
 }
 
 // extracts path from config line like "NO ./path/to/texture.xpm"
-// takes: config line string
-// returns: allocated string with just the path
 char	*parse_texture_path(char *line)
 {
 	char	*path;

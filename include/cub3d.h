@@ -33,6 +33,31 @@
 # define WIN_WIDTH 800
 # define WIN_HEIGHT 600
 # define TILE_SIZE 32
+# define MOVE_SPEED 0.02
+# define ROT_SPEED 0.04
+
+typedef struct s_keys
+{
+	int	w;
+	int	a;
+	int	s;
+	int	d;
+	int	left;
+	int	right;
+}	t_keys;
+
+typedef struct s_point
+{
+	int	x;
+	int	y;
+}	t_point;
+
+typedef struct s_line
+{
+	t_point	p0;
+	t_point	p1;
+	int		color;
+}	t_line;
 
 typedef struct s_game
 {
@@ -46,6 +71,8 @@ typedef struct s_game
 	double	player_x;
 	double	player_y;
 	double	player_angle;
+	t_keys	keys;
+	int		mouse_x;
 	char	**map;
 	int		map_width;
 	int		map_height;
@@ -59,12 +86,18 @@ typedef struct s_game
 
 int		create_window(void);
 int		key_press(int keycode, t_game *game);
+int		key_release(int keycode, t_game *game);
+int		mouse_move(int x, int y, t_game *game);
 int		close_window(t_game *game);
+void	process_movement(t_game *game);
 void	draw_minimap(t_game *game);
 int		render(t_game *game);
 void	put_pixel(t_game *game, int x, int y, int color);
-void	draw_circle_aa(t_game *game, int x0, int y0, int r, int color);
-void	draw_line_aa(t_game *game, int x0, int y0, int x1, int y1, int color);
+void	draw_rect(t_game *game, t_point pos, int size, int color);
+void	draw_circle_aa(t_game *game, t_point center, int r, int color);
+void	draw_line_aa(t_game *game, t_line line);
+int		blend_color(int fg, int bg, int intensity);
+int		get_pixel_color(t_game *game, int x, int y);
 
 // parsing
 char	*get_next_line(int fd);
@@ -76,6 +109,11 @@ void	validate_elements(t_game *game);
 void	print_map_error(char *message);
 void	free_game_map(t_game *game);
 void	free_game(t_game *game);
+
+// parse_config
+int		is_config_line(char *line, t_game *game);
+int		is_empty_line(char *line);
+void	process_map_line(t_game *game, char *line, int *map_index);
 
 // utils
 void	find_player(t_game *game);

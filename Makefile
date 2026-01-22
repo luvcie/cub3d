@@ -6,14 +6,20 @@ SRC_DIR = src
 INC_DIR = include
 
 SRCS = $(SRC_DIR)/main.c \
-       $(SRC_DIR)/create_window.c \
-       $(SRC_DIR)/drawing.c \
-       $(SRC_DIR)/antialiased_circle.c \
-       $(SRC_DIR)/keybinds.c \
-       $(SRC_DIR)/get_next_line.c \
-       $(SRC_DIR)/parse_map.c \
-       $(SRC_DIR)/validate_map.c \
-       $(SRC_DIR)/utils.c
+       $(SRC_DIR)/input/create_window.c \
+       $(SRC_DIR)/input/keybinds.c \
+       $(SRC_DIR)/render/drawing.c \
+       $(SRC_DIR)/render/minimap.c \
+       $(SRC_DIR)/render/aa_utils.c \
+       $(SRC_DIR)/render/aa_line.c \
+       $(SRC_DIR)/render/aa_circle.c \
+       $(SRC_DIR)/parsing/get_next_line.c \
+       $(SRC_DIR)/parsing/parse_map.c \
+       $(SRC_DIR)/parsing/parse_config.c \
+       $(SRC_DIR)/parsing/validate_map.c \
+       $(SRC_DIR)/parsing/validate_walls.c \
+       $(SRC_DIR)/parsing/free_game.c \
+       $(SRC_DIR)/parsing/utils.c
 
 OBJS = $(SRCS:.c=.o)
 
@@ -54,7 +60,7 @@ $(MLX): $(MLX_PATH)
 $(NAME): $(LIBFT) $(MLX) $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_PATH) -lft $(MLX_FLAGS) -o $(NAME)
 
-$(SRC_DIR)/%.o: $(SRC_DIR)/%.c
+%.o: %.c
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 clean:
@@ -75,37 +81,43 @@ bonus: all
 
 TEST_DIR = tests
 TEST_SRCS = $(TEST_DIR)/test_movement.c \
-            $(SRC_DIR)/keybinds.c \
-            $(SRC_DIR)/drawing.c
+            $(SRC_DIR)/input/keybinds.c \
+            $(SRC_DIR)/render/drawing.c
 TEST_OBJS = $(TEST_SRCS:.c=.o)
 TEST_NAME = test_movement
 
 test: $(LIBFT) $(MLX) $(TEST_OBJS)
 	$(CC) $(CFLAGS) $(TEST_OBJS) -L$(LIBFT_PATH) -lft $(MLX_FLAGS) -o $(TEST_NAME)
 
-$(TEST_DIR)/%.o: $(TEST_DIR)/%.c
-	$(CC) $(CFLAGS) $(INC) -c $< -o $@
-
 testclean:
 	rm -f $(TEST_OBJS) $(TEST_NAME) test_parsing test_minimap tests/*.o
 
 TEST_PARSE_SRCS = $(TEST_DIR)/test_parsing.c \
-                  $(SRC_DIR)/get_next_line.c \
-                  $(SRC_DIR)/parse_map.c \
-                  $(SRC_DIR)/validate_map.c \
-                  $(SRC_DIR)/utils.c
+                  $(SRC_DIR)/parsing/get_next_line.c \
+                  $(SRC_DIR)/parsing/parse_map.c \
+                  $(SRC_DIR)/parsing/parse_config.c \
+                  $(SRC_DIR)/parsing/validate_map.c \
+                  $(SRC_DIR)/parsing/validate_walls.c \
+                  $(SRC_DIR)/parsing/free_game.c \
+                  $(SRC_DIR)/parsing/utils.c
 
 test_parsing: $(LIBFT) $(TEST_PARSE_SRCS:.c=.o)
 	$(CC) $(CFLAGS) $(TEST_PARSE_SRCS:.c=.o) -L$(LIBFT_PATH) -lft -o test_parsing
 
 TEST_MINI_SRCS = $(TEST_DIR)/test_minimap.c \
-                 $(SRC_DIR)/get_next_line.c \
-                 $(SRC_DIR)/parse_map.c \
-                 $(SRC_DIR)/validate_map.c \
-                 $(SRC_DIR)/utils.c \
-                 $(SRC_DIR)/drawing.c \
-                 $(SRC_DIR)/antialiased_circle.c \
-                 $(SRC_DIR)/keybinds.c
+                 $(SRC_DIR)/parsing/get_next_line.c \
+                 $(SRC_DIR)/parsing/parse_map.c \
+                 $(SRC_DIR)/parsing/parse_config.c \
+                 $(SRC_DIR)/parsing/validate_map.c \
+                 $(SRC_DIR)/parsing/validate_walls.c \
+                 $(SRC_DIR)/parsing/free_game.c \
+                 $(SRC_DIR)/parsing/utils.c \
+                 $(SRC_DIR)/render/drawing.c \
+                 $(SRC_DIR)/render/minimap.c \
+                 $(SRC_DIR)/render/aa_utils.c \
+                 $(SRC_DIR)/render/aa_line.c \
+                 $(SRC_DIR)/render/aa_circle.c \
+                 $(SRC_DIR)/input/keybinds.c
 
 test_minimap: $(LIBFT) $(MLX) $(TEST_MINI_SRCS:.c=.o)
 	$(CC) $(CFLAGS) $(TEST_MINI_SRCS:.c=.o) -L$(LIBFT_PATH) -lft $(MLX_FLAGS) -o test_minimap
