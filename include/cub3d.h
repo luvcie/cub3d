@@ -63,6 +63,8 @@ int		close_window(t_game *game);
 void	draw_minimap(t_game *game);
 int		render(t_game *game);
 void	put_pixel(t_game *game, int x, int y, int color);
+void	draw_circle_aa(t_game *game, int x0, int y0, int r, int color);
+void	draw_line_aa(t_game *game, int x0, int y0, int x1, int y1, int color);
 
 // parsing
 char	*get_next_line(int fd);

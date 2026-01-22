@@ -65,8 +65,8 @@ int	key_press(int keycode, t_game *game)
 	else if (keycode == KEY_D)
 		move_right(game);
 	else if (keycode == KEY_LEFT)
-		game->player_angle -= 0.05;
+		game->player_angle -= 0.15;
 	else if (keycode == KEY_RIGHT)
-		game->player_angle += 0.05;
+		game->player_angle += 0.15;
 	return (0);
 }

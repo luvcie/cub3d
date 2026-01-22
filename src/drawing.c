@@ -87,7 +87,13 @@ void	draw_minimap(t_game *game)
 	}
 	x = (int)(game->player_x * TILE_SIZE);
 	y = (int)(game->player_y * TILE_SIZE);
-	draw_rect(game, x - 4, y - 4, 8, 0xFF0000);
+	draw_circle_aa(game, x, y, 7, 0xFF0000);
+	draw_line_aa(game, x, y,
+		x + (int)(cos(game->player_angle - 0.4) * 18),
+		y + (int)(sin(game->player_angle - 0.4) * 18), 0xFF0000);
+	draw_line_aa(game, x, y,
+		x + (int)(cos(game->player_angle + 0.4) * 18),
+		y + (int)(sin(game->player_angle + 0.4) * 18), 0xFF0000);
 }
 
 // main render function called every frame by mlx_loop_hook

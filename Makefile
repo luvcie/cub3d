@@ -8,6 +8,7 @@ INC_DIR = include
 SRCS = $(SRC_DIR)/main.c \
        $(SRC_DIR)/create_window.c \
        $(SRC_DIR)/drawing.c \
+       $(SRC_DIR)/antialiased_circle.c \
        $(SRC_DIR)/keybinds.c \
        $(SRC_DIR)/get_next_line.c \
        $(SRC_DIR)/parse_map.c \
@@ -103,6 +104,7 @@ TEST_MINI_SRCS = $(TEST_DIR)/test_minimap.c \
                  $(SRC_DIR)/validate_map.c \
                  $(SRC_DIR)/utils.c \
                  $(SRC_DIR)/drawing.c \
+                 $(SRC_DIR)/antialiased_circle.c \
                  $(SRC_DIR)/keybinds.c
 
 test_minimap: $(LIBFT) $(MLX) $(TEST_MINI_SRCS:.c=.o)
