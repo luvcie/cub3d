@@ -1,113 +1,65 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   drawing.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/22 10:32:18 by lucpardo          #+#    #+#             */
+/*   Updated: 2026/01/22 14:20:26 by lucpardo         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 #include "cub3d.h"
 
-// draws a triangle using mlx_pixel_put (slow method)
-void	draw_triangle_direct(void *mlx, void *win)
+// draws a filled rectangle at position x,y with given size and color
+// takes: mlx, win, x, y, size, color
+// mutates: window pixels
+static void	draw_tile(void *mlx, void *win, int x, int y, int size, int color)
 {
-	int	x;
-	int	y;
-	int	color;
+	int	i;
+	int	j;
 
-	color = 0x00FFD1DC;
-	y = 100;
-	while (y < 300)
+	i = 0;
+	while (i < size)
 	{
-		x = 400 - (y - 100);
-		while (x < 400 + (y - 100))
+		j = 0;
+		while (j < size)
 		{
-			mlx_pixel_put(mlx, win, x, y, color);
-			x++;
+			mlx_pixel_put(mlx, win, x + j, y + i, color);
+			j++;
 		}
-		y++;
-	}
-}
-
-// helper to draw a line
-static void	draw_line(void *mlx, void *win, int *p1, int *p2, int color)
-{
-	float	dx;
-	float	dy;
-	float	steps;
-	float	x;
-	float	y;
-	int		i;
-
-	dx = p2[0] - p1[0];
-	dy = p2[1] - p1[1];
-	if (fabs(dx) > fabs(dy))
-		steps = fabs(dx);
-	else
-		steps = fabs(dy);
-	i = 0;
-	x = p1[0];
-	y = p1[1];
-	while (i <= steps)
-	{
-		mlx_pixel_put(mlx, win, (int)x, (int)y, color);
-		x += dx / steps;
-		y += dy / steps;
 		i++;
 	}
 }
 
-// draws a pentagram using mlx_pixel_put
-void	draw_pentagram_direct(void *mlx, void *win)
+// draws the map as a 2d grid with player position
+// takes: game struct pointer
+// mutates: window pixels
+void	draw_minimap(t_game *game)
 {
-	int		points[5][2];
-	int		i;
-	int		color;
-	double	angle;
-
-	color = 0x00FFD1DC;
-	i = 0;
-	while (i < 5)
-	{
-		angle = (i * 72 - 90) * M_PI / 180.0;
-		points[i][0] = 400 + (int)(150 * cos(angle));
-		points[i][1] = 300 + (int)(150 * sin(angle));
-		i++;
-	}
-	draw_line(mlx, win, points[0], points[2], color);
-	draw_line(mlx, win, points[2], points[4], color);
-	draw_line(mlx, win, points[4], points[1], color);
-	draw_line(mlx, win, points[1], points[3], color);
-	draw_line(mlx, win, points[3], points[0], color);
-}
-
-// helper to put a pixel in the image buffer
-static void	put_pixel_img(char *data, int x, int y, int color,
-				int line_len, int bpp)
-{
-	int	offset;
-
-	offset = y * line_len + x * (bpp / 8);
-	*(unsigned int *)(data + offset) = color;
-}
-
-// draws a triangle using image buffer (fast method)
-void	draw_triangle_buffer(void *mlx, void *win)
-{
-	void	*img;
-	char	*data;
-	int		bpp;
-	int		line_len;
-	int		endian;
 	int		x;
 	int		y;
+	int		tile_size;
 	int		color;
 
-	img = mlx_new_image(mlx, 800, 600);
-	data = mlx_get_data_addr(img, &bpp, &line_len, &endian);
-	color = 0x00FFD1DC;
-	y = 100;
-	while (y < 300)
+	tile_size = 32;
+	y = 0;
+	while (y < game->map_height)
 	{
-		x = 400 - (y - 100);
-		while (x < 400 + (y - 100))
+		x = 0;
+		while (game->map[y][x])
 		{
-			put_pixel_img(data, x, y, color, line_len, bpp);
+			if (game->map[y][x] == '1')
+				color = 0xFFFFFF;
+			else
+				color = 0x333333;
+			draw_tile(game->mlx, game->win, x * tile_size, y * tile_size,
+				tile_size - 1, color);
 			x++;
 		}
 		y++;
 	}
-	mlx_put_image_to_window(mlx, win, img, 0, 0);
+	x = (int)(game->player_x * tile_size);
+	y = (int)(game->player_y * tile_size);
+	draw_tile(game->mlx, game->win, x - 4, y - 4, 8, 0xFF0000);
 }

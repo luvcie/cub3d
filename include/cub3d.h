@@ -51,9 +51,7 @@ typedef struct s_game
 int		create_window(void);
 int		key_press(int keycode, t_game *game);
 int		close_window(t_game *game);
-void	draw_triangle_direct(void *mlx, void *win);
-void	draw_triangle_buffer(void *mlx, void *win);
-void	draw_pentagram_direct(void *mlx, void *win);
+void	draw_minimap(t_game *game);
 
 // parsing
 char	*get_next_line(int fd);

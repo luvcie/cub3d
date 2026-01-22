@@ -86,7 +86,7 @@ $(TEST_DIR)/%.o: $(TEST_DIR)/%.c
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 testclean:
-	rm -f $(TEST_OBJS) $(TEST_NAME) test_parsing tests/*.o
+	rm -f $(TEST_OBJS) $(TEST_NAME) test_parsing test_minimap tests/*.o
 
 TEST_PARSE_SRCS = $(TEST_DIR)/test_parsing.c \
                   $(SRC_DIR)/get_next_line.c \
@@ -97,4 +97,15 @@ TEST_PARSE_SRCS = $(TEST_DIR)/test_parsing.c \
 test_parsing: $(LIBFT) $(TEST_PARSE_SRCS:.c=.o)
 	$(CC) $(CFLAGS) $(TEST_PARSE_SRCS:.c=.o) -L$(LIBFT_PATH) -lft -o test_parsing
 
-.PHONY: all clean fclean re bonus test testclean test_parsing
+TEST_MINI_SRCS = $(TEST_DIR)/test_minimap.c \
+                 $(SRC_DIR)/get_next_line.c \
+                 $(SRC_DIR)/parse_map.c \
+                 $(SRC_DIR)/validate_map.c \
+                 $(SRC_DIR)/utils.c \
+                 $(SRC_DIR)/drawing.c \
+                 $(SRC_DIR)/keybinds.c
+
+test_minimap: $(LIBFT) $(MLX) $(TEST_MINI_SRCS:.c=.o)
+	$(CC) $(CFLAGS) $(TEST_MINI_SRCS:.c=.o) -L$(LIBFT_PATH) -lft $(MLX_FLAGS) -o test_minimap
+
+.PHONY: all clean fclean re bonus test testclean test_parsing test_minimap
