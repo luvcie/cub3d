@@ -1,6 +1,8 @@
 #include "cub3d.h"
 
 // swaps two integer values
+// takes: pointer to integer a, pointer to integer b
+// mutates: swaps the values of a and b
 static void	swap_int(int *a, int *b)
 {
 	int	tmp;
@@ -11,6 +13,8 @@ static void	swap_int(int *a, int *b)
 }
 
 // draws a pixel with antialiased intensity
+// takes: game struct, point p, color, intensity (0-255)
+// mutates: blends and sets pixel at (p.x, p.y)
 static void	plot_aa(t_game *game, t_point p, int color, int intensity)
 {
 	int	bg;
@@ -27,6 +31,8 @@ static void	plot_aa(t_game *game, t_point p, int color, int intensity)
 }
 
 // draws two pixels for current position (steep or normal)
+// takes: game struct, color, coords array, steep flag
+// mutates: draws two pixels for the line segment
 static void	draw_aa_pixels(t_game *game, int color, int *coords, int steep)
 {
 	t_point	p;
@@ -44,6 +50,9 @@ static void	draw_aa_pixels(t_game *game, int color, int *coords, int steep)
 }
 
 // prepares line for drawing (ensures left-to-right, handles steep)
+// takes: pointer to line struct
+// mutates: modifies line coordinates if necessary
+// returns: steep flag (1 if steep, 0 otherwise)
 static int	prepare_line(t_line *ln)
 {
 	int	steep;
@@ -63,6 +72,8 @@ static int	prepare_line(t_line *ln)
 }
 
 // draws an antialiased line using xiaolin wu's algorithm
+// takes: game struct, line struct
+// mutates: draws line on the image buffer
 void	draw_line_aa(t_game *game, t_line line)
 {
 	int	steep;

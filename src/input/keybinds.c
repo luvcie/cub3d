@@ -70,35 +70,3 @@ int	mouse_move(int x, int y, t_game *game)
 	game->player_angle += delta * 0.003;
 	return (0);
 }
-
-// processes movement based on currently held keys
-// called every frame from render loop
-// takes: game struct pointer
-// mutates: player position and angle
-void	process_movement(t_game *game)
-{
-	if (game->keys.w)
-	{
-		game->player_x += cos(game->player_angle) * MOVE_SPEED;
-		game->player_y += sin(game->player_angle) * MOVE_SPEED;
-	}
-	if (game->keys.s)
-	{
-		game->player_x -= cos(game->player_angle) * MOVE_SPEED;
-		game->player_y -= sin(game->player_angle) * MOVE_SPEED;
-	}
-	if (game->keys.a)
-	{
-		game->player_x += cos(game->player_angle - M_PI / 2) * MOVE_SPEED;
-		game->player_y += sin(game->player_angle - M_PI / 2) * MOVE_SPEED;
-	}
-	if (game->keys.d)
-	{
-		game->player_x += cos(game->player_angle + M_PI / 2) * MOVE_SPEED;
-		game->player_y += sin(game->player_angle + M_PI / 2) * MOVE_SPEED;
-	}
-	if (game->keys.left)
-		game->player_angle -= ROT_SPEED;
-	if (game->keys.right)
-		game->player_angle += ROT_SPEED;
-}

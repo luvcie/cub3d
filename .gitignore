@@ -8,3 +8,5 @@ minilibx-linux/
 libft/libft.a
 test_minimap
 test_movement
+cub3D
+test_collision

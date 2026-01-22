@@ -34,6 +34,7 @@
 # define WIN_HEIGHT 600
 # define TILE_SIZE 32
 # define MOVE_SPEED 0.02
+# define PLAYER_RADIUS 0.2
 # define ROT_SPEED 0.04
 
 typedef struct s_keys

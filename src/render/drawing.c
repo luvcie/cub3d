@@ -12,6 +12,11 @@
 #include "cub3d.h"
 
 // puts a pixel in the image buffer (fast, no window update)
+
+// takes: game struct, x, y, color
+
+// mutates: modifies pixel at (x, y) in image buffer
+
 void	put_pixel(t_game *game, int x, int y, int color)
 {
 	char	*dst;
@@ -23,6 +28,11 @@ void	put_pixel(t_game *game, int x, int y, int color)
 }
 
 // draws a filled rectangle using point and size
+
+// takes: game struct, position point, size, color
+
+// mutates: draws rectangle on the image buffer
+
 void	draw_rect(t_game *game, t_point pos, int size, int color)
 {
 	int	i;
@@ -42,6 +52,11 @@ void	draw_rect(t_game *game, t_point pos, int size, int color)
 }
 
 // clears the entire image buffer to black
+
+// takes: game struct
+
+// mutates: resets all pixels in image buffer to 0
+
 static void	clear_image(t_game *game)
 {
 	int	i;
@@ -55,6 +70,11 @@ static void	clear_image(t_game *game)
 }
 
 // main render function called every frame by mlx_loop_hook
+
+// takes: game struct
+
+// returns: 0
+
 int	render(t_game *game)
 {
 	process_movement(game);

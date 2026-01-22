@@ -8,6 +8,7 @@ INC_DIR = include
 SRCS = $(SRC_DIR)/main.c \
        $(SRC_DIR)/input/create_window.c \
        $(SRC_DIR)/input/keybinds.c \
+       $(SRC_DIR)/input/movement.c \
        $(SRC_DIR)/render/drawing.c \
        $(SRC_DIR)/render/minimap.c \
        $(SRC_DIR)/render/aa_utils.c \
@@ -90,7 +91,7 @@ test: $(LIBFT) $(MLX) $(TEST_OBJS)
 	$(CC) $(CFLAGS) $(TEST_OBJS) -L$(LIBFT_PATH) -lft $(MLX_FLAGS) -o $(TEST_NAME)
 
 testclean:
-	rm -f $(TEST_OBJS) $(TEST_NAME) test_parsing test_minimap tests/*.o
+	rm -f $(TEST_OBJS) $(TEST_NAME) test_parsing test_minimap test_collision tests/*.o
 
 TEST_PARSE_SRCS = $(TEST_DIR)/test_parsing.c \
                   $(SRC_DIR)/parsing/get_next_line.c \
@@ -122,4 +123,10 @@ TEST_MINI_SRCS = $(TEST_DIR)/test_minimap.c \
 test_minimap: $(LIBFT) $(MLX) $(TEST_MINI_SRCS:.c=.o)
 	$(CC) $(CFLAGS) $(TEST_MINI_SRCS:.c=.o) -L$(LIBFT_PATH) -lft $(MLX_FLAGS) -o test_minimap
 
-.PHONY: all clean fclean re bonus test testclean test_parsing test_minimap
+TEST_COLLISION_SRCS = $(TEST_DIR)/test_collision.c \
+                      $(SRC_DIR)/input/keybinds.c
+
+test_collision: $(LIBFT) $(MLX) $(TEST_COLLISION_SRCS:.c=.o)
+	$(CC) $(CFLAGS) $(TEST_COLLISION_SRCS:.c=.o) -L$(LIBFT_PATH) -lft $(MLX_FLAGS) -o test_collision
+
+.PHONY: all clean fclean re bonus test testclean test_parsing test_minimap test_collision

@@ -1,6 +1,11 @@
 #include "cub3d.h"
 
 // draws the map tiles as a 2d grid
+
+// takes: game struct
+
+// mutates: draws map tiles on the image buffer
+
 static void	draw_map_tiles(t_game *game)
 {
 	int		x;
@@ -27,6 +32,11 @@ static void	draw_map_tiles(t_game *game)
 }
 
 // draws the player circle and direction cone
+
+// takes: game struct
+
+// mutates: draws player and direction cone on the image buffer
+
 static void	draw_player(t_game *game)
 {
 	t_point	center;
@@ -48,6 +58,11 @@ static void	draw_player(t_game *game)
 }
 
 // draws the complete minimap
+
+// takes: game struct
+
+// mutates: draws entire minimap scene
+
 void	draw_minimap(t_game *game)
 {
 	draw_map_tiles(game);
