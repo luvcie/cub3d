@@ -30,10 +30,19 @@
 # define KEY_LEFT 65361
 # define KEY_RIGHT 65363
 
+# define WIN_WIDTH 800
+# define WIN_HEIGHT 600
+# define TILE_SIZE 32
+
 typedef struct s_game
 {
 	void	*mlx;
 	void	*win;
+	void	*img;
+	char	*img_data;
+	int		bpp;
+	int		line_len;
+	int		endian;
 	double	player_x;
 	double	player_y;
 	double	player_angle;
@@ -52,6 +61,8 @@ int		create_window(void);
 int		key_press(int keycode, t_game *game);
 int		close_window(t_game *game);
 void	draw_minimap(t_game *game);
+int		render(t_game *game);
+void	put_pixel(t_game *game, int x, int y, int color);
 
 // parsing
 char	*get_next_line(int fd);
