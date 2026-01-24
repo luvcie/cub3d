@@ -1,11 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minimap.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/22 09:52:17 by lucpardo          #+#    #+#             */
+/*   Updated: 2026/01/25 02:53:30 by lucpardo         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 #include "cub3d.h"
 
 // draws the map tiles as a 2d grid
-
 // takes: game struct
-
 // mutates: draws map tiles on the image buffer
-
 static void	draw_map_tiles(t_game *game)
 {
 	int		x;
@@ -32,11 +40,8 @@ static void	draw_map_tiles(t_game *game)
 }
 
 // draws the player circle and direction cone
-
 // takes: game struct
-
 // mutates: draws player and direction cone on the image buffer
-
 static void	draw_player(t_game *game)
 {
 	t_point	center;
@@ -58,13 +63,12 @@ static void	draw_player(t_game *game)
 }
 
 // draws the complete minimap
-
 // takes: game struct
-
 // mutates: draws entire minimap scene
-
 void	draw_minimap(t_game *game)
 {
 	draw_map_tiles(game);
+	if (game->show_rays)
+		draw_rays_minimap(game);
 	draw_player(game);
 }

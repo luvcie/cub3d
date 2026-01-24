@@ -11,6 +11,7 @@ SRCS = $(SRC_DIR)/main.c \
        $(SRC_DIR)/input/movement.c \
        $(SRC_DIR)/render/drawing.c \
        $(SRC_DIR)/render/minimap.c \
+       $(SRC_DIR)/render/ray_debug.c \
        $(SRC_DIR)/render/aa_utils.c \
        $(SRC_DIR)/render/aa_line.c \
        $(SRC_DIR)/render/aa_circle.c \
@@ -115,10 +116,12 @@ TEST_MINI_SRCS = $(TEST_DIR)/test_minimap.c \
                  $(SRC_DIR)/parsing/utils.c \
                  $(SRC_DIR)/render/drawing.c \
                  $(SRC_DIR)/render/minimap.c \
+                 $(SRC_DIR)/render/ray_debug.c \
                  $(SRC_DIR)/render/aa_utils.c \
                  $(SRC_DIR)/render/aa_line.c \
                  $(SRC_DIR)/render/aa_circle.c \
-                 $(SRC_DIR)/input/keybinds.c
+                 $(SRC_DIR)/input/keybinds.c \
+                 $(SRC_DIR)/input/movement.c
 
 test_minimap: $(LIBFT) $(MLX) $(TEST_MINI_SRCS:.c=.o)
 	$(CC) $(CFLAGS) $(TEST_MINI_SRCS:.c=.o) -L$(LIBFT_PATH) -lft $(MLX_FLAGS) -o test_minimap

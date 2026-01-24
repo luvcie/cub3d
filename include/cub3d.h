@@ -27,6 +27,7 @@
 # define KEY_A 97
 # define KEY_S 115
 # define KEY_D 100
+# define KEY_R 114
 # define KEY_LEFT 65361
 # define KEY_RIGHT 65363
 
@@ -36,6 +37,8 @@
 # define MOVE_SPEED 0.02
 # define PLAYER_RADIUS 0.2
 # define ROT_SPEED 0.04
+# define FOV 0.66
+# define MAX_DEPTH 64
 
 typedef struct s_keys
 {
@@ -60,6 +63,18 @@ typedef struct s_line
 	int		color;
 }	t_line;
 
+typedef struct s_ray
+{
+	double	dir_x;
+	double	dir_y;
+	int		map_x;
+	int		map_y;
+	int		sign_x;
+	int		sign_y;
+	int		side;
+	double	perp_dist;
+}	t_ray;
+
 typedef struct s_game
 {
 	void	*mlx;
@@ -83,6 +98,7 @@ typedef struct s_game
 	char	*texture_ea;
 	int		floor_color;
 	int		ceiling_color;
+	int		show_rays;
 }	t_game;
 
 int		create_window(void);
@@ -99,6 +115,9 @@ void	draw_circle_aa(t_game *game, t_point center, int r, int color);
 void	draw_line_aa(t_game *game, t_line line);
 int		blend_color(int fg, int bg, int intensity);
 int		get_pixel_color(t_game *game, int x, int y);
+
+// raycasting
+void	draw_rays_minimap(t_game *game);
 
 // parsing
 char	*get_next_line(int fd);

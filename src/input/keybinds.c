@@ -1,8 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   keybinds.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/03 05:48:21 by lucpardo          #+#    #+#             */
+/*   Updated: 2026/01/25 02:49:04 by lucpardo         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 #include "cub3d.h"
 
-// destroys window and exits the program
-// takes: game struct pointer
-// returns: 0 (never reached due to exit)
+// takes: game
+// mutates: destroys window, frees mlx, exits program
 int	close_window(t_game *game)
 {
 	mlx_destroy_window(game->mlx, game->win);
@@ -12,10 +22,8 @@ int	close_window(t_game *game)
 	return (0);
 }
 
-// sets key state to pressed
-// takes: keycode, game struct pointer
-// mutates: game->keys
-// returns: 0
+// takes: keycode, game
+// mutates: sets key flags in game->keys, R toggles show_rays
 int	key_press(int keycode, t_game *game)
 {
 	if (keycode == KEY_ESC)
@@ -32,13 +40,13 @@ int	key_press(int keycode, t_game *game)
 		game->keys.left = 1;
 	else if (keycode == KEY_RIGHT)
 		game->keys.right = 1;
+	else if (keycode == KEY_R)
+		game->show_rays = !game->show_rays;
 	return (0);
 }
 
-// sets key state to released
-// takes: keycode, game struct pointer
-// mutates: game->keys
-// returns: 0
+// takes: keycode, game
+// mutates: clears key flags in game->keys
 int	key_release(int keycode, t_game *game)
 {
 	if (keycode == KEY_W)
@@ -56,10 +64,8 @@ int	key_release(int keycode, t_game *game)
 	return (0);
 }
 
-// handles mouse movement for rotation
-// takes: x position, y position (unused), game struct pointer
+// takes: x pos, y pos (unused), game
 // mutates: player_angle based on horizontal mouse delta
-// returns: 0
 int	mouse_move(int x, int y, t_game *game)
 {
 	int	delta;
