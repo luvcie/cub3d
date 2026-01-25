@@ -22,6 +22,8 @@
 // mutates: game->tex array with image data and dimensions
 void	load_textures(t_game *game)
 {
+	int	i;
+
 	game->tex[0].img = mlx_xpm_file_to_image(game->mlx, game->texture_no,
 			&game->tex[0].width, &game->tex[0].height);
 	game->tex[1].img = mlx_xpm_file_to_image(game->mlx, game->texture_so,
@@ -34,16 +36,23 @@ void	load_textures(t_game *game)
 		|| !game->tex[2].img || !game->tex[3].img)
 	{
 		printf("Error\nFailed to load textures\n");
+		free_textures(game);
+		free_game(game);
 		exit(1);
 	}
-	game->tex[0].data = mlx_get_data_addr(game->tex[0].img,
-			&game->tex[0].bpp, &game->tex[0].line_len, &game->tex[0].endian);
-	game->tex[1].data = mlx_get_data_addr(game->tex[1].img,
-			&game->tex[1].bpp, &game->tex[1].line_len, &game->tex[1].endian);
-	game->tex[2].data = mlx_get_data_addr(game->tex[2].img,
-			&game->tex[2].bpp, &game->tex[2].line_len, &game->tex[2].endian);
-	game->tex[3].data = mlx_get_data_addr(game->tex[3].img,
-			&game->tex[3].bpp, &game->tex[3].line_len, &game->tex[3].endian);
+	i = -1;
+	while (++i < 4)
+	{
+		game->tex[i].data = mlx_get_data_addr(game->tex[i].img,
+				&game->tex[i].bpp, &game->tex[i].line_len, &game->tex[i].endian);
+		if (!game->tex[i].data)
+		{
+			printf("Error\nFailed to get texture data\n");
+			free_textures(game);
+			free_game(game);
+			exit(1);
+		}
+	}
 }
 
 // takes: game, cell coords
@@ -178,12 +187,14 @@ static void	calc_wall(t_game *game, t_ray *ray)
 	if (ray->side == 0)
 	{
 		ray->wall_x = game->player_y + ray->perp_dist * ray->dir_y;
-		ray->wall_dir = (ray->sign_x > 0) * WALL_WEST + (ray->sign_x < 0) * WALL_EAST;
+		ray->wall_dir = (ray->sign_x > 0) * WALL_WEST
+			+ (ray->sign_x < 0) * WALL_EAST;
 	}
 	else
 	{
 		ray->wall_x = game->player_x + ray->perp_dist * ray->dir_x;
-		ray->wall_dir = (ray->sign_y > 0) * WALL_NORTH + (ray->sign_y < 0) * WALL_SOUTH;
+		ray->wall_dir = (ray->sign_y > 0) * WALL_NORTH
+			+ (ray->sign_y < 0) * WALL_SOUTH;
 	}
 	ray->wall_x -= (int)ray->wall_x;
 	if (ray->perp_dist < 0.0001)
@@ -223,7 +234,7 @@ static void	draw_column(t_game *game, t_ray *ray, int x)
 	int		tex_y;
 	t_tex	*tex;
 
-	tex = &game->tex[ray->wall_dir];
+	tex = &game->tex[ray->wall_dir & 3];
 	tex_x = (int)(ray->wall_x * tex->width);
 	y = 0;
 	while (y < ray->draw_start)

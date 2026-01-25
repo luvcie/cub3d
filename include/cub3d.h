@@ -154,6 +154,7 @@ void	validate_walls(t_game *game);
 void	validate_elements(t_game *game);
 void	print_map_error(char *message);
 void	free_game_map(t_game *game);
+void	free_textures(t_game *game);
 void	free_game(t_game *game);
 
 // parse_config
