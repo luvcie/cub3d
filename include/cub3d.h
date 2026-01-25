@@ -6,7 +6,7 @@
 /*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 04:20:11 by lucpardo          #+#    #+#             */
-/*   Updated: 2026/01/03 06:34:46 by lucpardo         ###   ########.fr       */
+/*   Updated: 2026/01/25 02:14:25 by lucpardo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef CUB3D_H
@@ -34,11 +34,16 @@
 # define WIN_WIDTH 800
 # define WIN_HEIGHT 600
 # define TILE_SIZE 32
-# define MOVE_SPEED 0.02
+# define MOVE_SPEED 0.06
 # define PLAYER_RADIUS 0.2
-# define ROT_SPEED 0.04
+# define ROT_SPEED 0.08
 # define FOV 0.66
 # define MAX_DEPTH 64
+
+# define WALL_NORTH 0
+# define WALL_SOUTH 1
+# define WALL_EAST 2
+# define WALL_WEST 3
 
 typedef struct s_keys
 {
@@ -63,6 +68,17 @@ typedef struct s_line
 	int		color;
 }	t_line;
 
+typedef struct s_tex
+{
+	void	*img;
+	char	*data;
+	int		width;
+	int		height;
+	int		bpp;
+	int		line_len;
+	int		endian;
+}	t_tex;
+
 typedef struct s_ray
 {
 	double	dir_x;
@@ -72,7 +88,12 @@ typedef struct s_ray
 	int		sign_x;
 	int		sign_y;
 	int		side;
+	int		wall_dir;
 	double	perp_dist;
+	double	wall_x;
+	int		line_height;
+	int		draw_start;
+	int		draw_end;
 }	t_ray;
 
 typedef struct s_game
@@ -87,6 +108,8 @@ typedef struct s_game
 	double	player_x;
 	double	player_y;
 	double	player_angle;
+	long	last_time;
+	double	delta_time;
 	t_keys	keys;
 	int		mouse_x;
 	char	**map;
@@ -99,6 +122,7 @@ typedef struct s_game
 	int		floor_color;
 	int		ceiling_color;
 	int		show_rays;
+	t_tex	tex[4];
 }	t_game;
 
 int		create_window(void);
@@ -117,7 +141,9 @@ int		blend_color(int fg, int bg, int intensity);
 int		get_pixel_color(t_game *game, int x, int y);
 
 // raycasting
+void	render_3d(t_game *game);
 void	draw_rays_minimap(t_game *game);
+void	load_textures(t_game *game);
 
 // parsing
 char	*get_next_line(int fd);

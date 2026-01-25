@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   movement.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/22 08:17:44 by lucpardo          #+#    #+#             */
+/*   Updated: 2026/01/25 02:54:10 by lucpardo         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 #include "cub3d.h"
 
 // checks if a specific map point is a wall or out of bounds
@@ -14,6 +25,8 @@ static int	is_wall(t_game *game, double x, double y)
 	map_y = (int)y;
 	if (map_x < 0 || map_x >= game->map_width
 		|| map_y < 0 || map_y >= game->map_height)
+		return (1);
+	if (map_x >= (int)ft_strlen(game->map[map_y]))
 		return (1);
 	if (game->map[map_y][map_x] == '1')
 		return (1);
@@ -58,20 +71,25 @@ static void	try_move(t_game *game, double dx, double dy)
 // mutates: player position and angle
 void	process_movement(t_game *game)
 {
+	double	move;
+	double	rot;
+
+	move = MOVE_SPEED * game->delta_time;
+	rot = ROT_SPEED * game->delta_time;
 	if (game->keys.w)
-		try_move(game, cos(game->player_angle) * MOVE_SPEED,
-			sin(game->player_angle) * MOVE_SPEED);
+		try_move(game, cos(game->player_angle) * move,
+			sin(game->player_angle) * move);
 	if (game->keys.s)
-		try_move(game, -cos(game->player_angle) * MOVE_SPEED,
-			-sin(game->player_angle) * MOVE_SPEED);
+		try_move(game, -cos(game->player_angle) * move,
+			-sin(game->player_angle) * move);
 	if (game->keys.a)
-		try_move(game, cos(game->player_angle - M_PI / 2) * MOVE_SPEED,
-			sin(game->player_angle - M_PI / 2) * MOVE_SPEED);
+		try_move(game, cos(game->player_angle - M_PI / 2) * move,
+			sin(game->player_angle - M_PI / 2) * move);
 	if (game->keys.d)
-		try_move(game, cos(game->player_angle + M_PI / 2) * MOVE_SPEED,
-			sin(game->player_angle + M_PI / 2) * MOVE_SPEED);
+		try_move(game, cos(game->player_angle + M_PI / 2) * move,
+			sin(game->player_angle + M_PI / 2) * move);
 	if (game->keys.left)
-		game->player_angle -= ROT_SPEED;
+		game->player_angle -= rot;
 	if (game->keys.right)
-		game->player_angle += ROT_SPEED;
+		game->player_angle += rot;
 }

@@ -20,6 +20,7 @@ int	main(int argc, char **argv)
 	game.img = mlx_new_image(game.mlx, WIN_WIDTH, WIN_HEIGHT);
 	game.img_data = mlx_get_data_addr(game.img, &game.bpp,
 			&game.line_len, &game.endian);
+	load_textures(&game);
 	game.mouse_x = WIN_WIDTH / 2;
 	printf("controls: WASD to move, arrows/mouse to rotate, ESC to quit\n");
 	mlx_loop_hook(game.mlx, (int (*)())render, &game);

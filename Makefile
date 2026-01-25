@@ -12,6 +12,7 @@ SRCS = $(SRC_DIR)/main.c \
        $(SRC_DIR)/render/drawing.c \
        $(SRC_DIR)/render/minimap.c \
        $(SRC_DIR)/render/ray_debug.c \
+       $(SRC_DIR)/render/raycasting.c \
        $(SRC_DIR)/render/aa_utils.c \
        $(SRC_DIR)/render/aa_line.c \
        $(SRC_DIR)/render/aa_circle.c \
@@ -117,6 +118,7 @@ TEST_MINI_SRCS = $(TEST_DIR)/test_minimap.c \
                  $(SRC_DIR)/render/drawing.c \
                  $(SRC_DIR)/render/minimap.c \
                  $(SRC_DIR)/render/ray_debug.c \
+                 $(SRC_DIR)/render/raycasting.c \
                  $(SRC_DIR)/render/aa_utils.c \
                  $(SRC_DIR)/render/aa_line.c \
                  $(SRC_DIR)/render/aa_circle.c \

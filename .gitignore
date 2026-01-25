@@ -10,3 +10,7 @@ test_minimap
 test_movement
 cub3D
 test_collision
+
+textures/FPStextures/
+textures/StoneOnGrass/
+test_minimap_asan
