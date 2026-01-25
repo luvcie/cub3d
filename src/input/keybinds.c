@@ -6,7 +6,7 @@
 /*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 05:48:21 by lucpardo          #+#    #+#             */
-/*   Updated: 2026/01/25 02:49:04 by lucpardo         ###   ########.fr       */
+/*   Updated: 2026/01/25 23:43:15 by lucpardo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "cub3d.h"
@@ -42,6 +42,8 @@ int	key_press(int keycode, t_game *game)
 		game->keys.right = 1;
 	else if (keycode == KEY_R)
 		game->show_rays = !game->show_rays;
+	else if (keycode == KEY_M)
+		game->show_minimap = !game->show_minimap;
 	return (0);
 }
 

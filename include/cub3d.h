@@ -6,7 +6,7 @@
 /*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 04:20:11 by lucpardo          #+#    #+#             */
-/*   Updated: 2026/01/25 02:14:25 by lucpardo         ###   ########.fr       */
+/*   Updated: 2026/01/25 23:42:50 by lucpardo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef CUB3D_H
@@ -28,6 +28,7 @@
 # define KEY_S 115
 # define KEY_D 100
 # define KEY_R 114
+# define KEY_M 109
 # define KEY_LEFT 65361
 # define KEY_RIGHT 65363
 
@@ -122,6 +123,7 @@ typedef struct s_game
 	int		floor_color;
 	int		ceiling_color;
 	int		show_rays;
+	int		show_minimap;
 	t_tex	tex[4];
 }	t_game;
 

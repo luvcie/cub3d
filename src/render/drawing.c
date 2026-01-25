@@ -6,15 +6,13 @@
 /*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 10:32:18 by lucpardo          #+#    #+#             */
-/*   Updated: 2026/01/25 02:55:43 by lucpardo         ###   ########.fr       */
+/*   Updated: 2026/01/25 23:44:04 by lucpardo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "cub3d.h"
 
 // puts a pixel in the image buffer (fast, no window update)
-
 // takes: game struct, x, y, color
-
 // mutates: modifies pixel at (x, y) in image buffer
 
 void	put_pixel(t_game *game, int x, int y, int color)
@@ -28,9 +26,7 @@ void	put_pixel(t_game *game, int x, int y, int color)
 }
 
 // draws a filled rectangle using point and size
-
 // takes: game struct, position point, size, color
-
 // mutates: draws rectangle on the image buffer
 
 void	draw_rect(t_game *game, t_point pos, int size, int color)
@@ -52,11 +48,8 @@ void	draw_rect(t_game *game, t_point pos, int size, int color)
 }
 
 // clears the entire image buffer to black
-
 // takes: game struct
-
 // mutates: resets all pixels in image buffer to 0
-
 static void	clear_image(t_game *game)
 {
 	int	i;
@@ -69,7 +62,6 @@ static void	clear_image(t_game *game)
 	}
 }
 
-// returns current time in microseconds
 static long	get_time_us(void)
 {
 	struct timeval	tv;
@@ -94,7 +86,8 @@ int	render(t_game *game)
 	process_movement(game);
 	clear_image(game);
 	render_3d(game);
-	draw_minimap(game);
+	if (game->show_minimap)
+		draw_minimap(game);
 	mlx_put_image_to_window(game->mlx, game->win, game->img, 0, 0);
 	return (0);
 }
