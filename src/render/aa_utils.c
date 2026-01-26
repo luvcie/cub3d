@@ -6,7 +6,7 @@
 /*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 13:04:52 by lucpardo          #+#    #+#             */
-/*   Updated: 2026/01/25 02:53:52 by lucpardo         ###   ########.fr       */
+/*   Updated: 2026/01/26 13:45:12 by lucpardo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "cub3d.h"
@@ -18,7 +18,7 @@ int	get_pixel_color(t_game *game, int x, int y)
 {
 	char	*src;
 
-	if (x < 0 || x >= WIN_WIDTH || y < 0 || y >= WIN_HEIGHT)
+	if (x < 0 || x >= game->win_width || y < 0 || y >= game->win_height)
 		return (0);
 	src = game->img_data + (y * game->line_len + x * (game->bpp / 8));
 	return (*(unsigned int *)src);

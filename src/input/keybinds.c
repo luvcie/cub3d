@@ -6,7 +6,7 @@
 /*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 05:48:21 by lucpardo          #+#    #+#             */
-/*   Updated: 2026/01/25 23:43:15 by lucpardo         ###   ########.fr       */
+/*   Updated: 2026/01/26 12:42:27 by lucpardo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "cub3d.h"
@@ -20,6 +20,31 @@ int	close_window(t_game *game)
 	free(game->mlx);
 	exit(0);
 	return (0);
+}
+
+// handles resolution preset keys 1-6
+// takes: keycode, game
+// mutates: changes window/image resolution if key matches
+static void	handle_resolution_keys(int keycode, t_game *game)
+{
+	int	w;
+	int	h;
+
+	if (keycode == KEY_1)
+		change_resolution(game, 800, 600);
+	else if (keycode == KEY_2)
+		change_resolution(game, 1024, 768);
+	else if (keycode == KEY_3)
+		change_resolution(game, 1280, 720);
+	else if (keycode == KEY_4)
+		change_resolution(game, 1366, 768);
+	else if (keycode == KEY_5)
+		change_resolution(game, 1920, 1080);
+	else if (keycode == KEY_6)
+	{
+		mlx_get_screen_size(game->mlx, &w, &h);
+		change_resolution(game, w, h);
+	}
 }
 
 // takes: keycode, game
@@ -44,6 +69,10 @@ int	key_press(int keycode, t_game *game)
 		game->show_rays = !game->show_rays;
 	else if (keycode == KEY_M)
 		game->show_minimap = !game->show_minimap;
+	else if (keycode == KEY_H)
+		game->show_help = !game->show_help;
+	else if (keycode >= KEY_1 && keycode <= KEY_6)
+		handle_resolution_keys(keycode, game);
 	return (0);
 }
 

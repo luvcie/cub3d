@@ -6,7 +6,7 @@
 /*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 04:20:11 by lucpardo          #+#    #+#             */
-/*   Updated: 2026/01/25 23:42:50 by lucpardo         ###   ########.fr       */
+/*   Updated: 2026/01/26 12:41:28 by lucpardo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef CUB3D_H
@@ -29,8 +29,15 @@
 # define KEY_D 100
 # define KEY_R 114
 # define KEY_M 109
+# define KEY_H 104
 # define KEY_LEFT 65361
 # define KEY_RIGHT 65363
+# define KEY_1 49
+# define KEY_2 50
+# define KEY_3 51
+# define KEY_4 52
+# define KEY_5 53
+# define KEY_6 54
 
 # define WIN_WIDTH 800
 # define WIN_HEIGHT 600
@@ -103,6 +110,8 @@ typedef struct s_game
 	void	*win;
 	void	*img;
 	char	*img_data;
+	int		win_width;
+	int		win_height;
 	int		bpp;
 	int		line_len;
 	int		endian;
@@ -124,6 +133,7 @@ typedef struct s_game
 	int		ceiling_color;
 	int		show_rays;
 	int		show_minimap;
+	int		show_help;
 	t_tex	tex[4];
 }	t_game;
 
@@ -132,6 +142,7 @@ int		key_press(int keycode, t_game *game);
 int		key_release(int keycode, t_game *game);
 int		mouse_move(int x, int y, t_game *game);
 int		close_window(t_game *game);
+void	change_resolution(t_game *game, int width, int height);
 void	process_movement(t_game *game);
 void	draw_minimap(t_game *game);
 int		render(t_game *game);

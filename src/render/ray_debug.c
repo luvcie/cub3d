@@ -6,7 +6,7 @@
 /*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 15:41:33 by lucpardo          #+#    #+#             */
-/*   Updated: 2026/01/25 03:03:10 by lucpardo         ###   ########.fr       */
+/*   Updated: 2026/01/26 13:45:33 by lucpardo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "cub3d.h"
@@ -169,9 +169,9 @@ void	draw_rays_minimap(t_game *game)
 	int		i;
 
 	start_angle = game->player_angle - FOV / 2;
-	angle_step = FOV / WIN_WIDTH;
+	angle_step = FOV / game->win_width;
 	i = 0;
-	while (i < WIN_WIDTH)
+	while (i < game->win_width)
 	{
 		angle = start_angle + i * angle_step;
 		init_ray_angle(game, &ray, angle);

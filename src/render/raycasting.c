@@ -6,7 +6,7 @@
 /*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 22:08:45 by lucpardo          #+#    #+#             */
-/*   Updated: 2026/01/25 03:03:00 by lucpardo         ###   ########.fr       */
+/*   Updated: 2026/01/26 13:43:47 by lucpardo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "cub3d.h"
@@ -78,7 +78,7 @@ static void	init_ray(t_game *game, t_ray *ray, int x)
 
 	dir_x = cos(game->player_angle);
 	dir_y = sin(game->player_angle);
-	cam_x = 2 * x / (double)WIN_WIDTH - 1;
+	cam_x = 2 * x / (double)game->win_width - 1;
 	ray->dir_x = dir_x + (-dir_y * FOV) * cam_x;
 	ray->dir_y = dir_y + (dir_x * FOV) * cam_x;
 	ray->map_x = (int)game->player_x;
@@ -199,15 +199,15 @@ static void	calc_wall(t_game *game, t_ray *ray)
 	ray->wall_x -= (int)ray->wall_x;
 	if (ray->perp_dist < 0.0001)
 		ray->perp_dist = 0.0001;
-	ray->line_height = (int)(WIN_HEIGHT / ray->perp_dist);
+	ray->line_height = (int)(game->win_height / ray->perp_dist);
 	if (ray->line_height < 1)
 		ray->line_height = 1;
-	ray->draw_start = WIN_HEIGHT / 2 - ray->line_height / 2;
-	ray->draw_end = WIN_HEIGHT / 2 + ray->line_height / 2;
+	ray->draw_start = game->win_height / 2 - ray->line_height / 2;
+	ray->draw_end = game->win_height / 2 + ray->line_height / 2;
 	if (ray->draw_start < 0)
 		ray->draw_start = 0;
-	if (ray->draw_end >= WIN_HEIGHT)
-		ray->draw_end = WIN_HEIGHT - 1;
+	if (ray->draw_end >= game->win_height)
+		ray->draw_end = game->win_height - 1;
 }
 
 // samples a pixel from texture data, with bounds checking
@@ -241,11 +241,11 @@ static void	draw_column(t_game *game, t_ray *ray, int x)
 		put_pixel(game, x, y++, game->ceiling_color);
 	while (y <= ray->draw_end)
 	{
-		tex_y = ((y - WIN_HEIGHT / 2 + ray->line_height / 2)
+		tex_y = ((y - game->win_height / 2 + ray->line_height / 2)
 				* tex->height) / ray->line_height;
 		put_pixel(game, x, y++, get_tex_pixel(tex, tex_x, tex_y));
 	}
-	while (y < WIN_HEIGHT)
+	while (y < game->win_height)
 		put_pixel(game, x, y++, game->floor_color);
 }
 
@@ -259,7 +259,7 @@ void	render_3d(t_game *game)
 	int		x;
 
 	x = 0;
-	while (x < WIN_WIDTH)
+	while (x < game->win_width)
 	{
 		init_ray(game, &ray, x);
 		cast_ray(game, &ray);
