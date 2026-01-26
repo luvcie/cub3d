@@ -6,7 +6,7 @@
 /*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 22:08:45 by lucpardo          #+#    #+#             */
-/*   Updated: 2026/01/26 13:43:47 by lucpardo         ###   ########.fr       */
+/*   Updated: 2026/01/28 02:47:32 by lucpardo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "cub3d.h"
@@ -204,6 +204,8 @@ static void	calc_wall(t_game *game, t_ray *ray)
 		ray->line_height = 1;
 	ray->draw_start = game->win_height / 2 - ray->line_height / 2;
 	ray->draw_end = game->win_height / 2 + ray->line_height / 2;
+	ray->draw_start_f = (game->win_height - (double)game->win_height / ray->perp_dist) / 2.0;
+	ray->draw_end_f = (game->win_height + (double)game->win_height / ray->perp_dist) / 2.0;
 	if (ray->draw_start < 0)
 		ray->draw_start = 0;
 	if (ray->draw_end >= game->win_height)
@@ -223,8 +225,8 @@ static int	get_tex_pixel(t_tex *tex, int x, int y)
 	return (*(int *)pixel);
 }
 
-// draws one vertical strip: ceiling, textured wall, floor
-// tex_x from wall_x, tex_y interpolated based on screen row
+// draws one vertical strip: ceiling, textured wall and floor
+// blends top and bottom pixels to have smooth edges
 // takes: game, ray (with wall data), screen column x
 // mutates: writes pixels to image buffer
 static void	draw_column(t_game *game, t_ray *ray, int x)
@@ -239,11 +241,35 @@ static void	draw_column(t_game *game, t_ray *ray, int x)
 	y = 0;
 	while (y < ray->draw_start)
 		put_pixel(game, x, y++, game->ceiling_color);
-	while (y <= ray->draw_end)
+	if (y <= ray->draw_end)
+	{
+		tex_y = ((y - game->win_height / 2 + ray->line_height / 2)
+				* tex->height) / ray->line_height;
+		int color = get_tex_pixel(tex, tex_x, tex_y);
+		if (ray->draw_start_f >= 0)
+		{
+			double coverage = 1.0 - (ray->draw_start_f - floor(ray->draw_start_f));
+			color = blend_color(color, game->ceiling_color, (int)(coverage * 255));
+		}
+		put_pixel(game, x, y++, color);
+	}
+	while (y < ray->draw_end)
 	{
 		tex_y = ((y - game->win_height / 2 + ray->line_height / 2)
 				* tex->height) / ray->line_height;
 		put_pixel(game, x, y++, get_tex_pixel(tex, tex_x, tex_y));
+	}
+	if (y == ray->draw_end)
+	{
+		tex_y = ((y - game->win_height / 2 + ray->line_height / 2)
+				* tex->height) / ray->line_height;
+		int color = get_tex_pixel(tex, tex_x, tex_y);
+		if (ray->draw_end_f < game->win_height)
+		{
+			double coverage = ray->draw_end_f - floor(ray->draw_end_f);
+			color = blend_color(color, game->floor_color, (int)(coverage * 255));
+		}
+		put_pixel(game, x, y++, color);
 	}
 	while (y < game->win_height)
 		put_pixel(game, x, y++, game->floor_color);

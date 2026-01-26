@@ -6,7 +6,7 @@
 /*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 10:32:18 by lucpardo          #+#    #+#             */
-/*   Updated: 2026/01/25 23:44:04 by lucpardo         ###   ########.fr       */
+/*   Updated: 2026/01/28 02:46:13 by lucpardo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "cub3d.h"
@@ -14,7 +14,6 @@
 // puts a pixel in the image buffer (fast, no window update)
 // takes: game struct, x, y, color
 // mutates: modifies pixel at (x, y) in image buffer
-
 void	put_pixel(t_game *game, int x, int y, int color)
 {
 	char	*dst;
@@ -28,7 +27,6 @@ void	put_pixel(t_game *game, int x, int y, int color)
 // draws a filled rectangle using point and size
 // takes: game struct, position point, size, color
 // mutates: draws rectangle on the image buffer
-
 void	draw_rect(t_game *game, t_point pos, int size, int color)
 {
 	int	i;
@@ -88,22 +86,21 @@ static void	draw_help_menu(t_game *game)
 	mlx_string_put(game->mlx, game->win, x, y + 80, 0xCCCCCC, "M: minimap");
 	mlx_string_put(game->mlx, game->win, x, y + 100, 0xCCCCCC, "R: ray debug");
 	mlx_string_put(game->mlx, game->win, x, y + 120, 0xCCCCCC, "H: this menu");
-	mlx_string_put(game->mlx, game->win, x, y + 140, 0xCCCCCC, "ESC: quit");
-	mlx_string_put(game->mlx, game->win, x, y + 170, 0xFFFFFF, "-- RESOLUTION --");
-	mlx_string_put(game->mlx, game->win, x, y + 190, 0xCCCCCC, "1: 800x600");
-	mlx_string_put(game->mlx, game->win, x, y + 210, 0xCCCCCC, "2: 1024x768");
-	mlx_string_put(game->mlx, game->win, x, y + 230, 0xCCCCCC, "3: 1280x720");
-	mlx_string_put(game->mlx, game->win, x, y + 250, 0xCCCCCC, "4: 1366x768");
-	mlx_string_put(game->mlx, game->win, x, y + 270, 0xCCCCCC, "5: 1920x1080");
-	mlx_string_put(game->mlx, game->win, x, y + 290, 0xCCCCCC, "6: fullscreen");
+	mlx_string_put(game->mlx, game->win, x, y + 160, 0xCCCCCC, "ESC: quit");
+	mlx_string_put(game->mlx, game->win, x, y + 190, 0xFFFFFF, "-- RESOLUTION --");
+	mlx_string_put(game->mlx, game->win, x, y + 210, 0xCCCCCC, "1: 800x600");
+	mlx_string_put(game->mlx, game->win, x, y + 230, 0xCCCCCC, "2: 1024x768");
+	mlx_string_put(game->mlx, game->win, x, y + 250, 0xCCCCCC, "3: 1280x720");
+	mlx_string_put(game->mlx, game->win, x, y + 270, 0xCCCCCC, "4: 1366x768");
+	mlx_string_put(game->mlx, game->win, x, y + 290, 0xCCCCCC, "5: 1920x1080");
+	mlx_string_put(game->mlx, game->win, x, y + 310, 0xCCCCCC, "6: fullscreen");
 	sprintf(res, "current: %dx%d", game->win_width, game->win_height);
-	mlx_string_put(game->mlx, game->win, x, y + 320, 0x00FF00, res);
+	mlx_string_put(game->mlx, game->win, x, y + 340, 0x00FF00, res);
 }
 
 // main render function called every frame by mlx_loop_hook
 // delta_time normalizes to 60 fps: 1.0 at 60fps, 0.5 at 120fps, 2.0 at 30fps
 // takes: game struct
-// returns: 0
 int	render(t_game *game)
 {
 	long	now;
