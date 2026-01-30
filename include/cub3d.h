@@ -6,7 +6,7 @@
 /*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 04:20:11 by lucpardo          #+#    #+#             */
-/*   Updated: 2026/01/26 12:41:28 by lucpardo         ###   ########.fr       */
+/*   Updated: 2026/01/28 02:48:18 by lucpardo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef CUB3D_H
@@ -102,6 +102,8 @@ typedef struct s_ray
 	int		line_height;
 	int		draw_start;
 	int		draw_end;
+	double	draw_start_f;
+	double	draw_end_f;
 }	t_ray;
 
 typedef struct s_game
