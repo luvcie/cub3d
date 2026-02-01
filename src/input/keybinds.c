@@ -54,17 +54,17 @@ int	key_press(int keycode, t_game *game)
 	if (keycode == KEY_ESC)
 		close_window(game);
 	else if (keycode == KEY_W)
-		game->keys.w = 1;
+		game->keys.w = true;
 	else if (keycode == KEY_S)
-		game->keys.s = 1;
+		game->keys.s = true;
 	else if (keycode == KEY_A)
-		game->keys.a = 1;
+		game->keys.a = true;
 	else if (keycode == KEY_D)
-		game->keys.d = 1;
+		game->keys.d = true;
 	else if (keycode == KEY_LEFT)
-		game->keys.left = 1;
+		game->keys.left = true;
 	else if (keycode == KEY_RIGHT)
-		game->keys.right = 1;
+		game->keys.right = true;
 	else if (keycode == KEY_R)
 		game->show_rays = !game->show_rays;
 	else if (keycode == KEY_M)
@@ -81,17 +81,17 @@ int	key_press(int keycode, t_game *game)
 int	key_release(int keycode, t_game *game)
 {
 	if (keycode == KEY_W)
-		game->keys.w = 0;
+		game->keys.w = false;
 	else if (keycode == KEY_S)
-		game->keys.s = 0;
+		game->keys.s = false;
 	else if (keycode == KEY_A)
-		game->keys.a = 0;
+		game->keys.a = false;
 	else if (keycode == KEY_D)
-		game->keys.d = 0;
+		game->keys.d = false;
 	else if (keycode == KEY_LEFT)
-		game->keys.left = 0;
+		game->keys.left = false;
 	else if (keycode == KEY_RIGHT)
-		game->keys.right = 0;
+		game->keys.right = false;
 	return (0);
 }
 

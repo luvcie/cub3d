@@ -13,40 +13,40 @@
 
 // checks if a specific map point is a wall or out of bounds
 // takes: game struct, x, y
-// returns: 1 if wall/invalid, 0 if safe/empty
-static int	is_wall(t_game *game, double x, double y)
+// returns: true if wall/invalid, false if safe/empty
+static bool	is_wall(t_game *game, double x, double y)
 {
 	int	map_x;
 	int	map_y;
 
 	if (!game->map)
-		return (0);
+		return (false);
 	map_x = (int)x;
 	map_y = (int)y;
 	if (map_x < 0 || map_x >= game->map_width
 		|| map_y < 0 || map_y >= game->map_height)
-		return (1);
+		return (true);
 	if (map_x >= (int)ft_strlen(game->map[map_y]))
-		return (1);
+		return (true);
 	if (game->map[map_y][map_x] == '1')
-		return (1);
-	return (0);
+		return (true);
+	return (false);
 }
 
 // checks if player position is valid (collision with radius)
 // takes: game struct, x, y
-// returns: 1 if valid, 0 if invalid
-static int	is_valid_pos(t_game *game, double x, double y)
+// returns: true if valid, false if invalid
+static bool	is_valid_pos(t_game *game, double x, double y)
 {
 	if (is_wall(game, x - PLAYER_RADIUS, y - PLAYER_RADIUS))
-		return (0);
+		return (false);
 	if (is_wall(game, x + PLAYER_RADIUS, y - PLAYER_RADIUS))
-		return (0);
+		return (false);
 	if (is_wall(game, x - PLAYER_RADIUS, y + PLAYER_RADIUS))
-		return (0);
+		return (false);
 	if (is_wall(game, x + PLAYER_RADIUS, y + PLAYER_RADIUS))
-		return (0);
-	return (1);
+		return (false);
+	return (true);
 }
 
 // attempts to move player by dx, dy with collision checks

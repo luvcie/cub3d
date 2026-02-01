@@ -25,7 +25,7 @@ static char	get_char_at(t_game *game, int x, int y)
 }
 
 // checks if character is a floor tile (walkable area)
-static int	is_floor(char c)
+static bool	is_floor(char c)
 {
 	return (c == '0' || c == 'N' || c == 'S' || c == 'E' || c == 'W');
 }

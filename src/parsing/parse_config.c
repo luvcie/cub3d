@@ -12,8 +12,8 @@
 #include "cub3d.h"
 
 // checks if line is a config line (NO/SO/WE/EA/F/C) and parses it
-// returns: 1 if config line was parsed, 0 if not
-int	is_config_line(char *line, t_game *game)
+// returns: true if config line was parsed, false if not
+bool	is_config_line(char *line, t_game *game)
 {
 	if (ft_strncmp(line, "NO ", 3) == 0)
 		game->texture_no = parse_texture_path(line);
@@ -28,20 +28,20 @@ int	is_config_line(char *line, t_game *game)
 	else if (ft_strncmp(line, "C ", 2) == 0)
 		game->ceiling_color = parse_color(line + 2);
 	else
-		return (0);
-	return (1);
+		return (false);
+	return (true);
 }
 
 // checks if line is empty (only whitespace or newline)
-int	is_empty_line(char *line)
+bool	is_empty_line(char *line)
 {
 	while (*line)
 	{
 		if (*line != ' ' && *line != '\t' && *line != '\n')
-			return (0);
+			return (false);
 		line++;
 	}
-	return (1);
+	return (true);
 }
 
 // processes a map line, trims newline and stores in map array

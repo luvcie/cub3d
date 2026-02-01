@@ -36,22 +36,22 @@ ft_memset(&game, 0, sizeof(t_game));
 	// test 1: move north (up) towards wall
 	printf("Test 1: Move North towards wall (Radius: %.2f)\n", PLAYER_RADIUS);
 	game.player_angle = -M_PI / 2; // facing up (negative y)
-	game.keys.w = 1;
-	
+	game.keys.w = true;
+
 	// move multiple steps
 	for (int i = 0; i < 50; i++)
 	{
 		process_movement(&game);
 	}
-	
+
 	print_status(&game);
-	
+
 	// with radius 0.2:
 	// wall is at y < 1.0.
 	// player top edge is y - 0.2.
 	// collision if y - 0.2 < 1.0  => y < 1.2.
 	// so player should stop at y >= 1.2.
-	
+
 	if (game.player_y < 1.2)
 		printf("FAIL: Player too close to wall (y=%.2f, limit=1.2)\n", game.player_y);
 	else
@@ -62,7 +62,7 @@ ft_memset(&game, 0, sizeof(t_game));
 	game.player_x = 1.5;
 	game.player_y = 1.5;
 	game.player_angle = 0; // facing east
-	game.keys.w = 1;
+	game.keys.w = true;
 	
 	for (int i = 0; i < 50; i++)
 	{

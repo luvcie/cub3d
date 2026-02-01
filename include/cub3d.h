@@ -22,6 +22,7 @@
 # include <fcntl.h>
 # include <sys/time.h>
 # include <math.h>
+# include <stdbool.h>
 
 # define KEY_ESC 65307
 # define KEY_W 119
@@ -56,12 +57,12 @@
 
 typedef struct s_keys
 {
-	int	w;
-	int	a;
-	int	s;
-	int	d;
-	int	left;
-	int	right;
+	bool	w;
+	bool	a;
+	bool	s;
+	bool	d;
+	bool	left;
+	bool	right;
 }	t_keys;
 
 typedef struct s_point
@@ -134,9 +135,9 @@ typedef struct s_game
 	char	*texture_ea;
 	int		floor_color;
 	int		ceiling_color;
-	int		show_rays;
-	int		show_minimap;
-	int		show_help;
+	bool	show_rays;
+	bool	show_minimap;
+	bool	show_help;
 	t_tex	tex[4];
 }	t_game;
 
@@ -174,8 +175,8 @@ void	free_textures(t_game *game);
 void	free_game(t_game *game);
 
 // parse_config
-int		is_config_line(char *line, t_game *game);
-int		is_empty_line(char *line);
+bool	is_config_line(char *line, t_game *game);
+bool	is_empty_line(char *line);
 void	process_map_line(t_game *game, char *line, int *map_index);
 
 // utils

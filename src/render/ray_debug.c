@@ -18,13 +18,13 @@
 #define CORNER_EPS 64
 
 // takes: game, cell coords
-// returns: 1 if wall or oob, 0 if empty
-static int	is_wall_cell(t_game *game, int x, int y)
+// returns: true if wall or oob, false if empty
+static bool	is_wall_cell(t_game *game, int x, int y)
 {
 	if (x < 0 || x >= game->map_width || y < 0 || y >= game->map_height)
-		return (1);
+		return (true);
 	if (x >= (int)ft_strlen(game->map[y]))
-		return (1);
+		return (true);
 	return (game->map[y][x] == '1');
 }
 
@@ -45,26 +45,26 @@ static void	init_ray_angle(t_game *game, t_ray *ray, double angle)
 // supercover corner handler: when err is near zero the ray passes through
 // a grid corner, so we check both adjacent cells before stepping diagonal
 // takes: game, ray, err ptr, direction magnitudes
-// returns: 1 if hits a wall, 0 if stepped diagonal safely
+// returns: true if hits a wall, false if stepped diagonal safely
 // mutates: ray position/side, err value
-static int	handle_corner(t_game *game, t_ray *ray, long *err, long d[2])
+static bool	handle_corner(t_game *game, t_ray *ray, long *err, long d[2])
 {
 	if (is_wall_cell(game, ray->map_x + ray->sign_x, ray->map_y))
 	{
 		ray->map_x += ray->sign_x;
 		ray->side = 0;
-		return (1);
+		return (true);
 	}
 	if (is_wall_cell(game, ray->map_x, ray->map_y + ray->sign_y))
 	{
 		ray->map_y += ray->sign_y;
 		ray->side = 1;
-		return (1);
+		return (true);
 	}
 	ray->map_x += ray->sign_x;
 	ray->map_y += ray->sign_y;
 	*err += d[1] - d[0];
-	return (0);
+	return (false);
 }
 
 // computes initial bresenham error: dist_to_x * |dy| - dist_to_y * |dx|
