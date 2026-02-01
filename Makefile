@@ -10,9 +10,14 @@ SRCS = $(SRC_DIR)/main.c \
        $(SRC_DIR)/input/keybinds.c \
        $(SRC_DIR)/input/movement.c \
        $(SRC_DIR)/render/drawing.c \
+       $(SRC_DIR)/render/help_menu.c \
        $(SRC_DIR)/render/minimap.c \
-       $(SRC_DIR)/render/ray_debug.c \
+       $(SRC_DIR)/render/ray_minimap.c \
+       $(SRC_DIR)/render/ray_minimap_cast.c \
        $(SRC_DIR)/render/raycasting.c \
+       $(SRC_DIR)/render/render_3d.c \
+       $(SRC_DIR)/render/textures.c \
+       $(SRC_DIR)/render/wall_calc.c \
        $(SRC_DIR)/render/aa_utils.c \
        $(SRC_DIR)/render/aa_line.c \
        $(SRC_DIR)/render/aa_circle.c \
@@ -117,7 +122,8 @@ TEST_MINI_SRCS = $(TEST_DIR)/test_minimap.c \
                  $(SRC_DIR)/parsing/utils.c \
                  $(SRC_DIR)/render/drawing.c \
                  $(SRC_DIR)/render/minimap.c \
-                 $(SRC_DIR)/render/ray_debug.c \
+                 $(SRC_DIR)/render/ray_minimap.c \
+                 $(SRC_DIR)/render/ray_minimap_cast.c \
                  $(SRC_DIR)/render/raycasting.c \
                  $(SRC_DIR)/render/aa_utils.c \
                  $(SRC_DIR)/render/aa_line.c \

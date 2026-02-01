@@ -149,6 +149,7 @@ int		close_window(t_game *game);
 void	change_resolution(t_game *game, int width, int height);
 void	process_movement(t_game *game);
 void	draw_minimap(t_game *game);
+void	draw_help_menu(t_game *game);
 int		render(t_game *game);
 void	put_pixel(t_game *game, int x, int y, int color);
 void	draw_rect(t_game *game, t_point pos, int size, int color);
@@ -161,6 +162,11 @@ int		get_pixel_color(t_game *game, int x, int y);
 void	render_3d(t_game *game);
 void	draw_rays_minimap(t_game *game);
 void	load_textures(t_game *game);
+int		get_tex_pixel(t_tex *tex, int x, int y);
+void	init_ray(t_game *game, t_ray *ray, int x);
+void	cast_ray(t_game *game, t_ray *ray);
+void	calc_wall(t_game *game, t_ray *ray);
+void	cast_ray_minimap(t_game *game, t_ray *ray);
 
 // parsing
 char	*get_next_line(int fd);

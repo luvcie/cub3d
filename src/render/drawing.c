@@ -6,7 +6,7 @@
 /*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 10:32:18 by lucpardo          #+#    #+#             */
-/*   Updated: 2026/01/28 02:46:13 by lucpardo         ###   ########.fr       */
+/*   Updated: 2026/02/02 01:28:05 by lucpardo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "cub3d.h"
@@ -66,36 +66,6 @@ static long	get_time_us(void)
 
 	gettimeofday(&tv, NULL);
 	return (tv.tv_sec * 1000000L + tv.tv_usec);
-}
-
-// draws help overlay with controls and resolution info
-// takes: game struct
-// mutates: draws text directly on window
-static void	draw_help_menu(t_game *game)
-{
-	int		x;
-	int		y;
-	char	res[32];
-
-	x = game->win_width - 150;
-	y = 30;
-	mlx_string_put(game->mlx, game->win, x, y, 0xFFFFFF, "-- CONTROLS --");
-	mlx_string_put(game->mlx, game->win, x, y + 20, 0xCCCCCC, "WASD: move");
-	mlx_string_put(game->mlx, game->win, x, y + 40, 0xCCCCCC, "arrows: look");
-	mlx_string_put(game->mlx, game->win, x, y + 60, 0xCCCCCC, "mouse: look");
-	mlx_string_put(game->mlx, game->win, x, y + 80, 0xCCCCCC, "M: minimap");
-	mlx_string_put(game->mlx, game->win, x, y + 100, 0xCCCCCC, "R: ray debug");
-	mlx_string_put(game->mlx, game->win, x, y + 120, 0xCCCCCC, "H: this menu");
-	mlx_string_put(game->mlx, game->win, x, y + 160, 0xCCCCCC, "ESC: quit");
-	mlx_string_put(game->mlx, game->win, x, y + 190, 0xFFFFFF, "-- RESOLUTION --");
-	mlx_string_put(game->mlx, game->win, x, y + 210, 0xCCCCCC, "1: 800x600");
-	mlx_string_put(game->mlx, game->win, x, y + 230, 0xCCCCCC, "2: 1024x768");
-	mlx_string_put(game->mlx, game->win, x, y + 250, 0xCCCCCC, "3: 1280x720");
-	mlx_string_put(game->mlx, game->win, x, y + 270, 0xCCCCCC, "4: 1366x768");
-	mlx_string_put(game->mlx, game->win, x, y + 290, 0xCCCCCC, "5: 1920x1080");
-	mlx_string_put(game->mlx, game->win, x, y + 310, 0xCCCCCC, "6: fullscreen");
-	sprintf(res, "current: %dx%d", game->win_width, game->win_height);
-	mlx_string_put(game->mlx, game->win, x, y + 340, 0x00FF00, res);
 }
 
 // main render function called every frame by mlx_loop_hook

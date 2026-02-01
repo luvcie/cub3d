@@ -1,25 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   raycasting.c                                       :+:      :+:    :+:   */
+/*   ray_minimap_cast.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/24 22:08:45 by lucpardo          #+#    #+#             */
-/*   Updated: 2026/02/02 01:19:35 by lucpardo         ###   ########.fr       */
+/*   Created: 2026/01/23 15:48:55 by lucpardo          #+#    #+#             */
+/*   Updated: 2026/02/02 01:19:00 by lucpardo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "cub3d.h"
 
 // fixed-point scale for bresenham integer math
 #define BRES_SCALE 0x10000
-// err tolerance for corner detection, catches near-diagonal rays that
-// would otherwise slip through wall corners
+// err tolerance for corner detection
 #define CORNER_EPS 64
 
 // takes: game, cell coords
-// returns: true if wall or oob, false if passable
-static bool	is_wall(t_game *game, int x, int y)
+// returns: true if wall or oob, false if empty
+static bool	is_wall_cell(t_game *game, int x, int y)
 {
 	if (x < 0 || x >= game->map_width || y < 0 || y >= game->map_height)
 		return (true);
@@ -28,20 +27,18 @@ static bool	is_wall(t_game *game, int x, int y)
 	return (game->map[y][x] == '1');
 }
 
-// supercover corner handler: when err is near zero the ray passes through
-// a grid corner, so we check both adjacent cells before stepping diagonal
+// supercover corner handler
 // takes: game, ray, err ptr, direction magnitudes
 // returns: true if hit wall, false if stepped diagonal safely
-// mutates: ray position/side, err value
 static bool	handle_corner(t_game *game, t_ray *ray, long *err, long d[2])
 {
-	if (is_wall(game, ray->map_x + ray->sign_x, ray->map_y))
+	if (is_wall_cell(game, ray->map_x + ray->sign_x, ray->map_y))
 	{
 		ray->map_x += ray->sign_x;
 		ray->side = 0;
 		return (true);
 	}
-	if (is_wall(game, ray->map_x, ray->map_y + ray->sign_y))
+	if (is_wall_cell(game, ray->map_x, ray->map_y + ray->sign_y))
 	{
 		ray->map_y += ray->sign_y;
 		ray->side = 1;
@@ -53,11 +50,10 @@ static bool	handle_corner(t_game *game, t_ray *ray, long *err, long d[2])
 	return (false);
 }
 
-// computes initial bresenham error: dist_to_x * |dy| - dist_to_y * |dx|
-// negative = x boundary closer, positive = y boundary closer
+// computes initial bresenham error
 // takes: game, ray, d (scaled direction magnitudes)
-// returns: initial err value for the stepping loop
-static long	init_err(t_game *game, t_ray *ray, long d[2])
+// returns: initial err value
+static long	init_bresenham_err(t_game *game, t_ray *ray, long d[2])
 {
 	double	dist[2];
 
@@ -72,10 +68,10 @@ static long	init_err(t_game *game, t_ray *ray, long d[2])
 	return ((long)(dist[0] * d[1] - dist[1] * d[0]));
 }
 
-// branchless step: go_x selects x or y direction via arithmetic
+// branchless step for minimap ray
 // takes: ray, err ptr, d (direction magnitudes)
 // mutates: ray position, side, err value
-static void	step_ray(t_ray *ray, long *err, long d[2])
+static void	step_ray_minimap(t_ray *ray, long *err, long d[2])
 {
 	int	go_x;
 
@@ -86,11 +82,10 @@ static void	step_ray(t_ray *ray, long *err, long d[2])
 	*err += go_x * d[1] - (1 - go_x) * d[0];
 }
 
-// supercover bresenham grid traversal, walks cells til we hit a wall
-// corner case when |err| < EPS checks adjacent walls before diagonal step
+// supercover bresenham grid traversal for minimap rays
 // takes: game, ray
-// mutates: ray->map_x/y ends on wall cell, ray->side set to hit axis
-void	cast_ray(t_game *game, t_ray *ray)
+// mutates: ray->map_x/y ends on wall cell
+void	cast_ray_minimap(t_game *game, t_ray *ray)
 {
 	long	d[2];
 	long	err;
@@ -98,9 +93,9 @@ void	cast_ray(t_game *game, t_ray *ray)
 
 	d[0] = (long)(fabs(ray->dir_x) * BRES_SCALE);
 	d[1] = (long)(fabs(ray->dir_y) * BRES_SCALE);
-	err = init_err(game, ray, d);
+	err = init_bresenham_err(game, ray, d);
 	steps = 0;
-	while (!is_wall(game, ray->map_x, ray->map_y) && steps < MAX_DEPTH * 2)
+	while (!is_wall_cell(game, ray->map_x, ray->map_y) && steps < MAX_DEPTH * 2)
 	{
 		if (err > -CORNER_EPS && err < CORNER_EPS)
 		{
@@ -108,7 +103,7 @@ void	cast_ray(t_game *game, t_ray *ray)
 				return ;
 		}
 		else
-			step_ray(ray, &err, d);
+			step_ray_minimap(ray, &err, d);
 		steps++;
 	}
 }
