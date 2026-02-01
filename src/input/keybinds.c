@@ -6,7 +6,7 @@
 /*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 05:48:21 by lucpardo          #+#    #+#             */
-/*   Updated: 2026/01/26 12:42:27 by lucpardo         ###   ########.fr       */
+/*   Updated: 2026/01/31 18:53:53 by lucpardo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "cub3d.h"
@@ -103,6 +103,7 @@ int	mouse_move(int x, int y, t_game *game)
 
 	(void)y;
 	delta = x - game->mouse_x;
+	printf("%d \n", delta);
 	game->mouse_x = x;
 	game->player_angle += delta * 0.003;
 	return (0);

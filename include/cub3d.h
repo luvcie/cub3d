@@ -6,13 +6,14 @@
 /*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 04:20:11 by lucpardo          #+#    #+#             */
-/*   Updated: 2026/01/28 02:48:18 by lucpardo         ###   ########.fr       */
+/*   Updated: 2026/01/31 18:53:06 by lucpardo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef CUB3D_H
 # define CUB3D_H
 
 # include "mlx.h"
+# include "mlx_events.h"
 # include "libft.h"
 # include <unistd.h>
 # include <stdlib.h>
@@ -139,7 +140,7 @@ typedef struct s_game
 	t_tex	tex[4];
 }	t_game;
 
-int		create_window(void);
+void	create_window(t_game *game);
 int		key_press(int keycode, t_game *game);
 int		key_release(int keycode, t_game *game);
 int		mouse_move(int x, int y, t_game *game);
