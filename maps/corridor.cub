@@ -1,7 +1,7 @@
-NO ./textures/XPMs/Texture0.xpm
-SO ./textures/XPMs/Texture1.xpm
-WE ./textures/XPMs/Texture2.xpm
-EA ./textures/XPMs/Texture3.xpm
+NO ./textures/XPMs/north.xpm
+SO ./textures/XPMs/south.xpm
+WE ./textures/XPMs/west.xpm
+EA ./textures/XPMs/east.xpm
 
 F 10,10,10
 C 200,200,200
