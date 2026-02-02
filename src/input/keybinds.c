@@ -103,7 +103,6 @@ int	mouse_move(int x, int y, t_game *game)
 
 	(void)y;
 	delta = x - game->mouse_x;
-	printf("%d \n", delta);
 	game->mouse_x = x;
 	game->player_angle += delta * 0.003;
 	return (0);
