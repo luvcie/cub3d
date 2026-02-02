@@ -30,6 +30,7 @@ SRCS = $(SRC_DIR)/main.c \
        $(SRC_DIR)/parsing/utils.c
 
 OBJS = $(SRCS:.c=.o)
+HDRS = $(INC_DIR)/cub3d.h
 
 MLX_PATH = ./minilibx-linux
 MLX = $(MLX_PATH)/libmlx.a
@@ -68,7 +69,7 @@ $(MLX): $(MLX_PATH)
 $(NAME): $(LIBFT) $(MLX) $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_PATH) -lft $(MLX_FLAGS) -o $(NAME)
 
-%.o: %.c
+%.o: %.c $(HDRS)
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 clean:

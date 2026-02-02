@@ -6,7 +6,7 @@
 /*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 04:20:11 by lucpardo          #+#    #+#             */
-/*   Updated: 2026/01/31 18:53:06 by lucpardo         ###   ########.fr       */
+/*   Updated: 2026/02/02 02:56:59 by lucpardo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef CUB3D_H
@@ -49,6 +49,15 @@
 # define ROT_SPEED 0.08
 # define FOV 0.66
 # define MAX_DEPTH 64
+
+# define MINIMAP_SIZE 180
+# define MINIMAP_TILE 12
+# define MINIMAP_MARGIN 10
+
+# define HELP_MENU_WIDTH 140
+# define HELP_MENU_HEIGHT 350
+# define HELP_MENU_MARGIN_R 0
+# define HELP_MENU_MARGIN_B 80
 
 # define WALL_NORTH 0
 # define WALL_SOUTH 1
@@ -149,6 +158,7 @@ int		close_window(t_game *game);
 void	change_resolution(t_game *game, int width, int height);
 void	process_movement(t_game *game);
 void	draw_minimap(t_game *game);
+t_point	world_to_minimap(t_game *game, double wx, double wy);
 void	draw_help_menu(t_game *game);
 int		render(t_game *game);
 void	put_pixel(t_game *game, int x, int y, int color);

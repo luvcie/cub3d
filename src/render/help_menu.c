@@ -6,7 +6,7 @@
 /*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 10:38:09 by lucpardo          #+#    #+#             */
-/*   Updated: 2026/02/02 01:27:55 by lucpardo         ###   ########.fr       */
+/*   Updated: 2026/02/02 02:57:26 by lucpardo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "cub3d.h"
@@ -42,8 +42,8 @@ void	draw_help_menu(t_game *game)
 	int		y;
 	char	*res;
 
-	x = game->win_width - 150;
-	y = 30;
+	x = game->win_width - HELP_MENU_WIDTH - HELP_MENU_MARGIN_R;
+	y = game->win_height - HELP_MENU_HEIGHT - HELP_MENU_MARGIN_B;
 	mlx_string_put(game->mlx, game->win, x, y, 0xFFFFFF, "-- CONTROLS --");
 	mlx_string_put(game->mlx, game->win, x, y + 20, 0xCCCCCC, "WASD: move");
 	mlx_string_put(game->mlx, game->win, x, y + 40, 0xCCCCCC, "arrows: look");

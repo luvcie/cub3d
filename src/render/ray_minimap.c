@@ -6,7 +6,7 @@
 /*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 15:41:33 by lucpardo          #+#    #+#             */
-/*   Updated: 2026/02/02 01:28:16 by lucpardo         ###   ########.fr       */
+/*   Updated: 2026/02/02 02:57:53 by lucpardo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "cub3d.h"
@@ -40,19 +40,21 @@ static void	calc_dist_branchless(t_game *game, t_ray *ray)
 }
 
 // takes: game, ray (with perp_dist computed)
-// mutates: draws off-white aa line from player to wall hit point
+// mutates: draws off white aa line from player to wall hit point
 static void	draw_single_ray(t_game *game, t_ray *ray)
 {
 	t_line	line;
 	double	hit_x;
 	double	hit_y;
+	double	max_dist;
 
-	line.p0.x = (int)(game->player_x * TILE_SIZE);
-	line.p0.y = (int)(game->player_y * TILE_SIZE);
+	max_dist = (MINIMAP_SIZE / 2.0) / MINIMAP_TILE;
+	if (ray->perp_dist > max_dist)
+		ray->perp_dist = max_dist;
+	line.p0 = world_to_minimap(game, game->player_x, game->player_y);
 	hit_x = game->player_x + ray->dir_x * ray->perp_dist;
 	hit_y = game->player_y + ray->dir_y * ray->perp_dist;
-	line.p1.x = (int)(hit_x * TILE_SIZE);
-	line.p1.y = (int)(hit_y * TILE_SIZE);
+	line.p1 = world_to_minimap(game, hit_x, hit_y);
 	line.color = 0xF0EAD6;
 	draw_line_aa(game, line);
 }
