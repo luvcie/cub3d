@@ -11,20 +11,6 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-// converts world coords to minimap screen coords, player is always centered
-// takes: game struct, world x and y
-// returns: screen point for minimap
-t_point	world_to_minimap(t_game *game, double wx, double wy)
-{
-	t_point	result;
-	int		center;
-
-	center = MINIMAP_MARGIN + MINIMAP_SIZE / 2;
-	result.x = center + (int)((wx - game->player_x) * MINIMAP_TILE);
-	result.y = center + (int)((wy - game->player_y) * MINIMAP_TILE);
-	return (result);
-}
-
 // draws a rect clipped to minimap bounds
 // takes: game struct, position, size, color
 // mutates: draws pixels within minimap area

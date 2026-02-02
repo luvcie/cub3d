@@ -11,6 +11,20 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
+// converts world coords to minimap screen coords, player is always centered
+// takes: game struct, world x and y
+// returns: screen point for minimap
+t_point	world_to_minimap(t_game *game, double wx, double wy)
+{
+	t_point	result;
+	int		center;
+
+	center = MINIMAP_MARGIN + MINIMAP_SIZE / 2;
+	result.x = center + (int)((wx - game->player_x) * MINIMAP_TILE);
+	result.y = center + (int)((wy - game->player_y) * MINIMAP_TILE);
+	return (result);
+}
+
 // takes: game, ray, angle in radians
 // mutates: ray direction and grid position
 static void	init_ray_angle(t_game *game, t_ray *ray, double angle)
