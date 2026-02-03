@@ -6,7 +6,7 @@
 #    By: pramos-c <pramos-c@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/03 15:03:18 by pramos-c          #+#    #+#              #
-#    Updated: 2026/02/03 13:05:42 by lucpardo         ###   ########.fr        #
+#    Updated: 2026/02/03 14:34:40 by lucpardo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,9 +44,8 @@ SRCS = $(SRC_DIR)/main.c \
 OBJS = $(SRCS:.c=.o)
 HDRS = $(INC_DIR)/cub3d.h
 
-# animation state files
+# progress counter
 TOTAL_FILES := $(words $(SRCS))
-SPINNER_FILE := .spinner_state
 COUNTER_FILE := .compile_counter
 
 MLX_PATH = ./minilibx-linux
@@ -71,26 +70,26 @@ INC = -I$(MLX_PATH) $(LIBFT_INC) -I$(INC_DIR)
 all: $(NAME)
 
 $(LIBFT):
+	@printf "\033[1;36m[ Compiling libft ]\033[0m\n"
 	@make -C $(LIBFT_PATH) --no-print-directory
 
 $(MLX_PATH):
 	@if [ ! -f $(MLX_PATH)/Makefile ]; then \
-		printf "\033[1;36m[ 1/ 1]\033[0m Cloning minilibx...                        [\033[1;33m-\033[0m]"; \
+		printf "\033[1;36m[ Cloning minilibx ]\033[0m\n"; \
 		rm -rf $(MLX_PATH); \
-		git clone -q https://github.com/42Paris/minilibx-linux $(MLX_PATH) 2>/dev/null; \
-		./patch_minilibx.sh > /dev/null 2>&1; \
-		printf "\r\033[K\033[1;32m[ 1/ 1] ✓ minilibx cloned\033[0m\n"; \
+		git clone https://github.com/42Paris/minilibx-linux $(MLX_PATH); \
+		./patch_minilibx.sh; \
 	fi
 
 $(MLX): $(MLX_PATH)
-	@printf "\033[1;36m[31/31]\033[0m Building minilibx...                       [\033[1;33m-\033[0m]"
-	@make -C $(MLX_PATH) > /dev/null 2>&1
-	@printf "\r\033[K\033[1;32m[31/31] ✓ minilibx built\033[0m\n"
+	@printf "\033[1;36m[ Building minilibx ]\033[0m\n"
+	@make -C $(MLX_PATH)
 
 $(NAME): $(LIBFT) $(MLX) $(OBJS)
-	@printf "\r\033[K\033[1;32m[%2d/%2d] ✓ Compiled all files\033[0m\n" "$(TOTAL_FILES)" "$(TOTAL_FILES)"
-	@rm -f $(SPINNER_FILE) $(COUNTER_FILE)
-	@$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_PATH) -lft $(MLX_FLAGS) -o $(NAME)
+	@rm -f $(COUNTER_FILE)
+	@printf "\033[1;36m[ Linking $(NAME) ]\033[0m\n"
+	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_PATH) -lft $(MLX_FLAGS) -o $(NAME)
+	@printf "\033[1;32m✓ Build complete\033[0m\n"
 	@echo "+-----------------------------------------------------------------------------+"
 	@echo "| |       |\\                                           -~ /     \\  /          |"
 	@echo "|~~__     | \\                                         | \\/       /\\          /|"
@@ -119,26 +118,22 @@ $(NAME): $(LIBFT) $(MLX) $(OBJS)
 	@COUNT=$$(cat $(COUNTER_FILE) 2>/dev/null || echo 0); \
 	COUNT=$$((COUNT + 1)); \
 	echo $$COUNT > $(COUNTER_FILE); \
-	STATE=$$(cat $(SPINNER_FILE) 2>/dev/null || echo 0); \
-	CHARS='|/-\'; \
-	CHAR=$$(printf '%s' "$$CHARS" | cut -c$$((STATE + 1))); \
-	printf "\r\033[K\033[1;36m[%2d/%2d]\033[0m Compiling %-35s [\033[1;33m%s\033[0m]" "$$COUNT" "$(TOTAL_FILES)" "$(<F)" "$$CHAR"; \
-	$(CC) $(CFLAGS) $(INC) -c $< -o $@; \
-	echo $$(((STATE + 1) % 4)) > $(SPINNER_FILE)
+	printf "\033[1;36m[%2d/%2d]\033[0m Compiling %s\n" "$$COUNT" "$(TOTAL_FILES)" "$<"
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 clean:
-	@rm -f $(OBJS) $(SPINNER_FILE) $(COUNTER_FILE)
+	rm -f $(OBJS) $(COUNTER_FILE)
 	@if [ -d $(MLX_PATH) ] && [ -f $(MLX_PATH)/Makefile.gen ]; then \
-		make -C $(MLX_PATH) clean 2>/dev/null || true; \
+		make -C $(MLX_PATH) clean; \
 	fi
-	@make -C $(LIBFT_PATH) clean --no-print-directory
-	@printf "\033[38;5;117m[ 1/ 1] ✓ All cleaned now!\033[0m\n"
+	make -C $(LIBFT_PATH) clean
+	@printf "\033[38;5;117m✓ All cleaned now!\033[0m\n"
 
 fclean: clean
-	@rm -f $(NAME)
-	@rm -rf $(MLX_PATH)
-	@make -C $(LIBFT_PATH) fclean --no-print-directory
-	@printf "\033[94m[ 1/ 1] ✓ And all fcleaned now as well! :D\033[0m\n"
+	rm -f $(NAME)
+	rm -rf $(MLX_PATH)
+	make -C $(LIBFT_PATH) fclean
+	@printf "\033[94m✓ And all fcleaned now as well! :D\033[0m\n"
 
 re: fclean all
 

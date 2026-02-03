@@ -6,7 +6,7 @@
 #    By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/05 19:31:51 by lucpardo          #+#    #+#              #
-#    Updated: 2025/05/14 01:08:43 by lucpardo         ###   ########.fr        #
+#    Updated: 2026/02/03 14:37:09 by lucpardo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 CC = cc
@@ -68,38 +68,33 @@ OBJS = $(SRCS:.c=.o)
 
 OBJS_BONUS = $(SRCS_BONUS:.c=.o)
 
-# animation state files
+# progress counter
 TOTAL_FILES := $(words $(SRCS))
-SPINNER_FILE := .spinner_state
 COUNTER_FILE := .compile_counter
 
 all: $(NAME)
 
 $(NAME) : $(OBJS)
-	@printf "\r\033[K\033[1;32m[%2d/%2d] ✓ Compiled libft\033[0m\n" "$(TOTAL_FILES)" "$(TOTAL_FILES)"
-	@rm -f $(SPINNER_FILE) $(COUNTER_FILE)
-	@$(AR) $(NAME) $(OBJS)
+	@rm -f $(COUNTER_FILE)
+	$(AR) $(NAME) $(OBJS)
+	@printf "\033[1;32m✓ libft.a built\033[0m\n"
 
 %.o: %.c libft.h
 	@COUNT=$$(cat $(COUNTER_FILE) 2>/dev/null || echo 0); \
 	COUNT=$$((COUNT + 1)); \
 	echo $$COUNT > $(COUNTER_FILE); \
-	STATE=$$(cat $(SPINNER_FILE) 2>/dev/null || echo 0); \
-	CHARS='|/-\'; \
-	CHAR=$$(printf '%s' "$$CHARS" | cut -c$$((STATE + 1))); \
-	printf "\r\033[K\033[1;36m[%2d/%2d]\033[0m Compiling %-35s [\033[1;33m%s\033[0m]" "$$COUNT" "$(TOTAL_FILES)" "$(<F)" "$$CHAR"; \
-	$(CC) $(CFLAGS) -c $< -o $@; \
-	echo $$(((STATE + 1) % 4)) > $(SPINNER_FILE)
+	printf "\033[1;36m[%2d/%2d]\033[0m Compiling %s\n" "$$COUNT" "$(TOTAL_FILES)" "$<"
+	$(CC) $(CFLAGS) -c $< -o $@
 
 bonus: $(NAME) $(OBJS_BONUS)
 		$(AR) $(NAME) $(OBJS_BONUS)
 		@echo "libft.a built with bonus functions!"
 
 clean:
-	@rm -f $(OBJS) $(OBJS_BONUS) $(SPINNER_FILE) $(COUNTER_FILE)
+	rm -f $(OBJS) $(OBJS_BONUS) $(COUNTER_FILE)
 
 fclean: clean
-	@rm -f $(NAME)
+	rm -f $(NAME)
 
 re: fclean all
 
