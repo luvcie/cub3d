@@ -32,6 +32,11 @@ SRCS = $(SRC_DIR)/main.c \
 OBJS = $(SRCS:.c=.o)
 HDRS = $(INC_DIR)/cub3d.h
 
+# animation state files
+TOTAL_FILES := $(words $(SRCS))
+SPINNER_FILE := .spinner_state
+COUNTER_FILE := .compile_counter
+
 MLX_PATH = ./minilibx-linux
 MLX = $(MLX_PATH)/libmlx.a
 
@@ -54,35 +59,74 @@ INC = -I$(MLX_PATH) $(LIBFT_INC) -I$(INC_DIR)
 all: $(NAME)
 
 $(LIBFT):
-	make -C $(LIBFT_PATH)
+	@make -C $(LIBFT_PATH) --no-print-directory
 
 $(MLX_PATH):
 	@if [ ! -f $(MLX_PATH)/Makefile ]; then \
+		printf "\033[1;36m[ 1/ 1]\033[0m Cloning minilibx...                        [\033[1;33m-\033[0m]"; \
 		rm -rf $(MLX_PATH); \
-		git clone https://github.com/42Paris/minilibx-linux $(MLX_PATH); \
-		./patch_minilibx.sh; \
+		git clone -q https://github.com/42Paris/minilibx-linux $(MLX_PATH) 2>/dev/null; \
+		./patch_minilibx.sh > /dev/null 2>&1; \
+		printf "\r\033[K\033[1;32m[ 1/ 1] ✓ minilibx cloned\033[0m\n"; \
 	fi
 
 $(MLX): $(MLX_PATH)
-	make -C $(MLX_PATH)
+	@printf "\033[1;36m[31/31]\033[0m Building minilibx...                       [\033[1;33m-\033[0m]"
+	@make -C $(MLX_PATH) > /dev/null 2>&1
+	@printf "\r\033[K\033[1;32m[31/31] ✓ minilibx built\033[0m\n"
 
 $(NAME): $(LIBFT) $(MLX) $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_PATH) -lft $(MLX_FLAGS) -o $(NAME)
+	@printf "\r\033[K\033[1;32m[%2d/%2d] ✓ Compiled all files\033[0m\n" "$(TOTAL_FILES)" "$(TOTAL_FILES)"
+	@rm -f $(SPINNER_FILE) $(COUNTER_FILE)
+	@$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_PATH) -lft $(MLX_FLAGS) -o $(NAME)
+	@echo "+-----------------------------------------------------------------------------+"
+	@echo "| |       |\\                                           -~ /     \\  /          |"
+	@echo "|~~__     | \\                                         | \\/       /\\          /|"
+	@echo "|    --   |  \\                                        | / \\    /    \\     /   |"
+	@echo "|      |~_|   \\                                       |/    \\/         /      |"
+	@echo "|--__  |   -- |\\______________________________________|    /  \\     /     \\   |"
+	@echo "|   |~~--__  |~_|____|____|____|____|____|____|_______|\\  /     \\/          \\/|"
+	@echo "|   |      |~--_|__|____|____|____|____|____|____|____|/ \\    /   \\       /   |"
+	@echo "|___|______|__|_||____|____|____|____|____|______|____|    \\/       \\  /      |"
+	@echo "|        :   | _|___|____|____|____|____|____|___|____|/  \\      /       \\    |"
+	@echo "|        :_--~~ |_|____|____|____|____|____|____|_____|\\/      \\ /         \\  |"
+	@echo "|  __--  :  |  /                                      | \\     /  \\          /\\|"
+	@echo "|~~  |   :  | /                                       |  \\  /      \\      /   |"
+	@echo "|    |      |/                                        |  /\\          \\  /     |"
+	@echo "|    |      /                                         |/   \\          /\\      |"
+	@echo "|    |     /                                           -_   \\       /    \\    |"
+	@echo "+-----------------------------------------------------------------------------+"
+	@echo "|          |          |  2  3  4  | /~~~~~\\ |             |_| ....  ......... |"
+	@echo "|   1337   |    42 %  |           | | ~J~ | |     93 %    |_| ....  ......... |"
+	@echo "|   AMMO   |  HEALTH  |  5  6  7  |  \\===/  |    ARMOR    |#| ....  ......... |"
+	@echo "+-----------------------------------------------------------------------------+"
+	@echo "                            WELCOME TO OUR CUB3D :)       "
+	@echo "Compilation flags: $(CFLAGS)"
 
 %.o: %.c $(HDRS)
-	$(CC) $(CFLAGS) $(INC) -c $< -o $@
+	@COUNT=$$(cat $(COUNTER_FILE) 2>/dev/null || echo 0); \
+	COUNT=$$((COUNT + 1)); \
+	echo $$COUNT > $(COUNTER_FILE); \
+	STATE=$$(cat $(SPINNER_FILE) 2>/dev/null || echo 0); \
+	CHARS='|/-\'; \
+	CHAR=$$(printf '%s' "$$CHARS" | cut -c$$((STATE + 1))); \
+	printf "\r\033[K\033[1;36m[%2d/%2d]\033[0m Compiling %-35s [\033[1;33m%s\033[0m]" "$$COUNT" "$(TOTAL_FILES)" "$(<F)" "$$CHAR"; \
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@; \
+	echo $$(((STATE + 1) % 4)) > $(SPINNER_FILE)
 
 clean:
-	rm -f $(OBJS)
+	@rm -f $(OBJS) $(SPINNER_FILE) $(COUNTER_FILE)
 	@if [ -d $(MLX_PATH) ] && [ -f $(MLX_PATH)/Makefile.gen ]; then \
 		make -C $(MLX_PATH) clean 2>/dev/null || true; \
 	fi
-	make -C $(LIBFT_PATH) clean
+	@make -C $(LIBFT_PATH) clean --no-print-directory
+	@printf "\033[38;5;117m[ 1/ 1] ✓ All cleaned now!\033[0m\n"
 
 fclean: clean
-	rm -f $(NAME)
-	rm -rf $(MLX_PATH)
-	make -C $(LIBFT_PATH) fclean
+	@rm -f $(NAME)
+	@rm -rf $(MLX_PATH)
+	@make -C $(LIBFT_PATH) fclean --no-print-directory
+	@printf "\033[94m[ 1/ 1] ✓ And all fcleaned now as well! :D\033[0m\n"
 
 re: fclean all
 

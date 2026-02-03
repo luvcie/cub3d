@@ -68,26 +68,38 @@ OBJS = $(SRCS:.c=.o)
 
 OBJS_BONUS = $(SRCS_BONUS:.c=.o)
 
+# animation state files
+TOTAL_FILES := $(words $(SRCS))
+SPINNER_FILE := .spinner_state
+COUNTER_FILE := .compile_counter
+
 all: $(NAME)
 
 $(NAME) : $(OBJS)
-	$(AR) $(NAME) $(OBJS)
-	@echo "libft.a built!"
+	@printf "\r\033[K\033[1;32m[%2d/%2d] ✓ Compiled all files\033[0m\n" "$(TOTAL_FILES)" "$(TOTAL_FILES)"
+	@rm -f $(SPINNER_FILE) $(COUNTER_FILE)
+	@$(AR) $(NAME) $(OBJS)
 
 %.o: %.c libft.h
-	$(CC) $(CFLAGS) -c $< -o $@
+	@COUNT=$$(cat $(COUNTER_FILE) 2>/dev/null || echo 0); \
+	COUNT=$$((COUNT + 1)); \
+	echo $$COUNT > $(COUNTER_FILE); \
+	STATE=$$(cat $(SPINNER_FILE) 2>/dev/null || echo 0); \
+	CHARS='|/-\'; \
+	CHAR=$$(printf '%s' "$$CHARS" | cut -c$$((STATE + 1))); \
+	printf "\r\033[K\033[1;36m[%2d/%2d]\033[0m Compiling %-35s [\033[1;33m%s\033[0m]" "$$COUNT" "$(TOTAL_FILES)" "$(<F)" "$$CHAR"; \
+	$(CC) $(CFLAGS) -c $< -o $@; \
+	echo $$(((STATE + 1) % 4)) > $(SPINNER_FILE)
 
 bonus: $(NAME) $(OBJS_BONUS)
 		$(AR) $(NAME) $(OBJS_BONUS)
 		@echo "libft.a built with bonus functions!"
 
 clean:
-	rm -f $(OBJS) $(OBJS_BONUS)
-	@echo "objects vacuumed!"
+	@rm -f $(OBJS) $(OBJS_BONUS) $(SPINNER_FILE) $(COUNTER_FILE)
 
 fclean: clean
-	rm -f $(NAME)
-	@echo "libft.a is gone!"
+	@rm -f $(NAME)
 
 re: fclean all
 
