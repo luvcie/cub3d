@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validate_walls.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lucpardo <lucpardo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pramos-c <pramos-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/22 08:02:33 by lucpardo          #+#    #+#             */
-/*   Updated: 2026/01/25 02:32:43 by lucpardo         ###   ########.fr       */
+/*   Created: 2026/01/22 08:02:33 by pramos-c          #+#    #+#             */
+/*   Updated: 2026/01/25 02:32:43 by pramos-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "cub3d.h"

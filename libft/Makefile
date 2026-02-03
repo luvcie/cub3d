@@ -76,7 +76,7 @@ COUNTER_FILE := .compile_counter
 all: $(NAME)
 
 $(NAME) : $(OBJS)
-	@printf "\r\033[K\033[1;32m[%2d/%2d] ✓ Compiled all files\033[0m\n" "$(TOTAL_FILES)" "$(TOTAL_FILES)"
+	@printf "\r\033[K\033[1;32m[%2d/%2d] ✓ Compiled libft\033[0m\n" "$(TOTAL_FILES)" "$(TOTAL_FILES)"
 	@rm -f $(SPINNER_FILE) $(COUNTER_FILE)
 	@$(AR) $(NAME) $(OBJS)
 
