@@ -59,7 +59,7 @@ $(shell if [ ! -f $(NIX_CACHE) ] && [ -d /nix/store ]; then \
 fi)
 -include $(NIX_CACHE)
 
-MLX_FLAGS = -L$(MLX_PATH) -lmlx -L$(X11_LIB) -L$(XEXT_LIB) -lXext -lX11 -lm
+MLX_FLAGS = -L$(MLX_PATH) -lmlx -L$(X11_LIB) -L$(XEXT_LIB) -L/usr/lib64 -lXext -lX11 -lm
 
 LIBFT_PATH = ./libft
 LIBFT = $(LIBFT_PATH)/libft.a
@@ -78,12 +78,12 @@ $(MLX_PATH):
 		printf "\033[1;36m[ Cloning minilibx ]\033[0m\n"; \
 		rm -rf $(MLX_PATH); \
 		git clone https://github.com/42Paris/minilibx-linux $(MLX_PATH); \
-		./patch_minilibx.sh; \
+		./.patch_minilibx.sh; \
 	fi
 
 $(MLX): $(MLX_PATH)
 	@printf "\033[1;36m[ Building minilibx ]\033[0m\n"
-	@cd $(MLX_PATH) && ./configure && make -f makefile.gen all
+	@cd $(MLX_PATH) && make all
 
 $(NAME): $(LIBFT) $(MLX) $(OBJS)
 	@rm -f $(COUNTER_FILE)
