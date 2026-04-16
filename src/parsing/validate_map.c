@@ -50,6 +50,10 @@ void	validate_config(t_game *game)
 		print_map_error(game, "missing west texture (WE)");
 	if (!game->texture_ea)
 		print_map_error(game, "missing east texture (EA)");
+	if (!game->floor_set)
+		print_map_error(game, "missing floor color (F)");
+	if (!game->ceiling_set)
+		print_map_error(game, "missing ceiling color (C)");
 }
 
 // counts player positions and validates characters

@@ -48,41 +48,6 @@ void	find_player(t_game *game)
 	}
 }
 
-// parses RGB color string like "220,100,0" into single int
-static void	free_split(char **parts)
-{
-	int	i;
-
-	i = 0;
-	while (parts[i])
-		free(parts[i++]);
-	free(parts);
-}
-
-int	parse_color(t_game *game, char *str)
-{
-	char	**parts;
-	int		rgb[3];
-
-	while (*str == ' ')
-		str++;
-	parts = ft_split(str, ',');
-	if (!parts || !parts[0] || !parts[1] || !parts[2] || parts[3])
-	{
-		if (parts)
-			free_split(parts);
-		print_map_error(game, "invalid color format");
-	}
-	rgb[0] = ft_atoi(parts[0]);
-	rgb[1] = ft_atoi(parts[1]);
-	rgb[2] = ft_atoi(parts[2]);
-	free_split(parts);
-	if (rgb[0] < 0 || rgb[0] > 255 || rgb[1] < 0 || rgb[1] > 255
-		|| rgb[2] < 0 || rgb[2] > 255)
-		print_map_error(game, "color values must be 0-255");
-	return ((rgb[0] << 16) | (rgb[1] << 8) | rgb[2]);
-}
-
 // extracts path from config line like "NO ./path/to/texture.xpm"
 char	*parse_texture_path(t_game *game, char *line)
 {

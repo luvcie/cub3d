@@ -11,8 +11,7 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-// checks if line is a config line (NO/SO/WE/EA/F/C) and parses it
-// returns: true if config line was parsed, false if not
+// stores a texture path and errors on duplicate identifier
 static void	set_texture(t_game *game, char **dst, char *line)
 {
 	if (*dst)
@@ -20,6 +19,17 @@ static void	set_texture(t_game *game, char **dst, char *line)
 	*dst = parse_texture_path(game, line);
 }
 
+// stores a color value and errors on duplicate identifier
+static void	set_color(t_game *game, int *dst, bool *set, char *line)
+{
+	if (*set)
+		print_map_error(game, "duplicate color identifier");
+	*dst = parse_color(game, line + 2);
+	*set = true;
+}
+
+// checks if line is a config line (NO/SO/WE/EA/F/C) and parses it
+// returns: true if config line was parsed, false if not
 bool	is_config_line(char *line, t_game *game)
 {
 	if (ft_strncmp(line, "NO ", 3) == 0)
@@ -31,9 +41,9 @@ bool	is_config_line(char *line, t_game *game)
 	else if (ft_strncmp(line, "EA ", 3) == 0)
 		set_texture(game, &game->texture_ea, line);
 	else if (ft_strncmp(line, "F ", 2) == 0)
-		game->floor_color = parse_color(game, line + 2);
+		set_color(game, &game->floor_color, &game->floor_set, line);
 	else if (ft_strncmp(line, "C ", 2) == 0)
-		game->ceiling_color = parse_color(game, line + 2);
+		set_color(game, &game->ceiling_color, &game->ceiling_set, line);
 	else
 		return (false);
 	return (true);

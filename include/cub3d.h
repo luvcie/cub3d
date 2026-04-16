@@ -144,6 +144,8 @@ typedef struct s_game
 	char	*texture_ea;
 	int		floor_color;
 	int		ceiling_color;
+	bool	floor_set;
+	bool	ceiling_set;
 	bool	show_rays;
 	bool	show_minimap;
 	bool	show_help;
