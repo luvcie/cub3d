@@ -24,6 +24,10 @@
 # include <math.h>
 # include <stdbool.h>
 
+# ifndef M_PI
+#  define M_PI 3.14159265358979323846
+# endif
+
 # define KEY_ESC 65307
 # define KEY_W 119
 # define KEY_A 97

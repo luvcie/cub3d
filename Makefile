@@ -12,7 +12,7 @@
 
 NAME = cub3D
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -std=gnu17
+CFLAGS = -Wall -Wextra -Werror -std=c99
 
 SRC_DIR = src
 INC_DIR = include
