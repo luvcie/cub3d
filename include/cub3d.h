@@ -146,6 +146,7 @@ typedef struct s_game
 	char	*texture_so;
 	char	*texture_we;
 	char	*texture_ea;
+	char	*current_line;
 	int		floor_color;
 	int		ceiling_color;
 	bool	floor_set;

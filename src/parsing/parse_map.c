@@ -82,7 +82,9 @@ static void	read_map_lines(char *filename, t_game *game)
 	line = get_next_line(fd);
 	while (line)
 	{
+		game->current_line = line;
 		handle_line(game, line, ctx);
+		game->current_line = NULL;
 		free(line);
 		line = get_next_line(fd);
 	}
