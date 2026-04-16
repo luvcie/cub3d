@@ -70,11 +70,13 @@ static long	get_time_us(void)
 
 // main render function called every frame by mlx_loop_hook
 // delta_time normalizes to 60 fps: 1.0 at 60fps, 0.5 at 120fps, 2.0 at 30fps
-// takes: game struct
-int	render(t_game *game)
+// takes: void *param (cast to t_game)
+int	render(void *param)
 {
+	t_game	*game;
 	long	now;
 
+	game = (t_game *)param;
 	now = get_time_us();
 	if (game->last_time == 0)
 		game->last_time = now;

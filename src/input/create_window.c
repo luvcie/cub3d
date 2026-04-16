@@ -11,6 +11,31 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
+// handles resolution preset keys 1-6
+// takes: keycode, game
+// mutates: changes window/image resolution if key matches
+void	handle_resolution_keys(int keycode, t_game *game)
+{
+	int	w;
+	int	h;
+
+	if (keycode == KEY_1)
+		change_resolution(game, 800, 600);
+	else if (keycode == KEY_2)
+		change_resolution(game, 1024, 768);
+	else if (keycode == KEY_3)
+		change_resolution(game, 1280, 720);
+	else if (keycode == KEY_4)
+		change_resolution(game, 1366, 768);
+	else if (keycode == KEY_5)
+		change_resolution(game, 1920, 1080);
+	else if (keycode == KEY_6)
+	{
+		mlx_get_screen_size(game->mlx, &w, &h);
+		change_resolution(game, w, h);
+	}
+}
+
 // recreates window at new resolution
 // takes: game, width, height
 // mutates: destroys old window/image, sets new dimensions, calls create_window
@@ -37,14 +62,11 @@ void	create_window(t_game *game)
 			&game->line_len, &game->endian);
 	game->mouse_x = game->win_width / 2;
 	game->last_time = 0;
-	mlx_loop_hook(game->mlx, (int (*)())render, game);
-	mlx_hook(game->win, MLX_KEYPRESS, MLX_KEYPRESSMASK,
-		(int (*)())key_press, game);
-	mlx_hook(game->win, MLX_KEYRELEASE, MLX_KEYRELEASEMASK,
-		(int (*)())key_release, game);
+	mlx_loop_hook(game->mlx, render, game);
+	mlx_hook(game->win, MLX_KEYPRESS, MLX_KEYPRESSMASK, key_press, game);
+	mlx_hook(game->win, MLX_KEYRELEASE, MLX_KEYRELEASEMASK, key_release, game);
 	mlx_hook(game->win, MLX_MOTIONNOTIFY, MLX_POINTERMOTIONMASK,
-		(int (*)())mouse_move, game);
-	mlx_hook(game->win, MLX_DESTROYNOTIFY, MLX_NOEVENTMASK,
-		(int (*)())close_window, game);
+		mouse_move, game);
+	mlx_hook(game->win, MLX_DESTROYNOTIFY, MLX_NOEVENTMASK, close_window, game);
 	mlx_loop(game->mlx);
 }

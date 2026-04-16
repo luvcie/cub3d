@@ -11,10 +11,13 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-// takes: game
+// takes: void *param (cast to t_game)
 // mutates: destroys window, frees mlx, exits program
-int	close_window(t_game *game)
+int	close_window(void *param)
 {
+	t_game	*game;
+
+	game = (t_game *)param;
 	free_game(game);
 	if (game->img)
 		mlx_destroy_image(game->mlx, game->img);
@@ -25,49 +28,34 @@ int	close_window(t_game *game)
 	return (0);
 }
 
-// handles resolution preset keys 1-6
-// takes: keycode, game
-// mutates: changes window/image resolution if key matches
-static void	handle_resolution_keys(int keycode, t_game *game)
+// sets/clears movement key flag based on keycode
+// takes: game, keycode, bool value
+// mutates: flips flag in game->keys
+static void	set_key(t_game *game, int keycode, bool val)
 {
-	int	w;
-	int	h;
-
-	if (keycode == KEY_1)
-		change_resolution(game, 800, 600);
-	else if (keycode == KEY_2)
-		change_resolution(game, 1024, 768);
-	else if (keycode == KEY_3)
-		change_resolution(game, 1280, 720);
-	else if (keycode == KEY_4)
-		change_resolution(game, 1366, 768);
-	else if (keycode == KEY_5)
-		change_resolution(game, 1920, 1080);
-	else if (keycode == KEY_6)
-	{
-		mlx_get_screen_size(game->mlx, &w, &h);
-		change_resolution(game, w, h);
-	}
+	if (keycode == KEY_W)
+		game->keys.w = val;
+	else if (keycode == KEY_S)
+		game->keys.s = val;
+	else if (keycode == KEY_A)
+		game->keys.a = val;
+	else if (keycode == KEY_D)
+		game->keys.d = val;
+	else if (keycode == KEY_LEFT)
+		game->keys.left = val;
+	else if (keycode == KEY_RIGHT)
+		game->keys.right = val;
 }
 
-// takes: keycode, game
-// mutates: sets key flags in game->keys, R toggles show_rays
-int	key_press(int keycode, t_game *game)
+// takes: keycode, void *param (cast to t_game)
+// mutates: sets key flags, toggles views, or changes resolution
+int	key_press(int keycode, void *param)
 {
+	t_game	*game;
+
+	game = (t_game *)param;
 	if (keycode == KEY_ESC)
-		close_window(game);
-	else if (keycode == KEY_W)
-		game->keys.w = true;
-	else if (keycode == KEY_S)
-		game->keys.s = true;
-	else if (keycode == KEY_A)
-		game->keys.a = true;
-	else if (keycode == KEY_D)
-		game->keys.d = true;
-	else if (keycode == KEY_LEFT)
-		game->keys.left = true;
-	else if (keycode == KEY_RIGHT)
-		game->keys.right = true;
+		close_window(param);
 	else if (keycode == KEY_R)
 		game->show_rays = !game->show_rays;
 	else if (keycode == KEY_M)
@@ -76,34 +64,27 @@ int	key_press(int keycode, t_game *game)
 		game->show_help = !game->show_help;
 	else if (keycode >= KEY_1 && keycode <= KEY_6)
 		handle_resolution_keys(keycode, game);
+	else
+		set_key(game, keycode, true);
 	return (0);
 }
 
-// takes: keycode, game
+// takes: keycode, void *param (cast to t_game)
 // mutates: clears key flags in game->keys
-int	key_release(int keycode, t_game *game)
+int	key_release(int keycode, void *param)
 {
-	if (keycode == KEY_W)
-		game->keys.w = false;
-	else if (keycode == KEY_S)
-		game->keys.s = false;
-	else if (keycode == KEY_A)
-		game->keys.a = false;
-	else if (keycode == KEY_D)
-		game->keys.d = false;
-	else if (keycode == KEY_LEFT)
-		game->keys.left = false;
-	else if (keycode == KEY_RIGHT)
-		game->keys.right = false;
+	set_key((t_game *)param, keycode, false);
 	return (0);
 }
 
-// takes: x pos, y pos (unused), game
+// takes: x pos, y pos (unused), void *param (cast to t_game)
 // mutates: player_angle based on horizontal mouse delta
-int	mouse_move(int x, int y, t_game *game)
+int	mouse_move(int x, int y, void *param)
 {
-	int	delta;
+	t_game	*game;
+	int		delta;
 
+	game = (t_game *)param;
 	(void)y;
 	delta = x - game->mouse_x;
 	game->mouse_x = x;

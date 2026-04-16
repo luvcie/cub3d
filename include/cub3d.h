@@ -151,16 +151,17 @@ typedef struct s_game
 }	t_game;
 
 void	create_window(t_game *game);
-int		key_press(int keycode, t_game *game);
-int		key_release(int keycode, t_game *game);
-int		mouse_move(int x, int y, t_game *game);
-int		close_window(t_game *game);
+int		key_press(int keycode, void *param);
+int		key_release(int keycode, void *param);
+int		mouse_move(int x, int y, void *param);
+int		close_window(void *param);
 void	change_resolution(t_game *game, int width, int height);
+void	handle_resolution_keys(int keycode, t_game *game);
 void	process_movement(t_game *game);
 void	draw_minimap(t_game *game);
 t_point	world_to_minimap(t_game *game, double wx, double wy);
 void	draw_help_menu(t_game *game);
-int		render(t_game *game);
+int		render(void *param);
 void	put_pixel(t_game *game, int x, int y, int color);
 void	draw_rect(t_game *game, t_point pos, int size, int color);
 void	draw_circle_aa(t_game *game, t_point center, int r, int color);

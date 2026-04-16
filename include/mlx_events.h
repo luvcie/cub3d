@@ -22,12 +22,12 @@
 # define MLX_DESTROYNOTIFY		17
 
 // x11 event masks (second parameter in mlx_hook)
-# define MLX_NOEVENTMASK		0L
-# define MLX_KEYPRESSMASK		(1L << 0)
-# define MLX_KEYRELEASEMASK		(1L << 1)
-# define MLX_BUTTONPRESSMASK	(1L << 2)
-# define MLX_BUTTONRELEASEMASK	(1L << 3)
-# define MLX_POINTERMOTIONMASK	(1L << 6)
-# define MLX_EXPOSUREMASK		(1L << 15)
+# define MLX_NOEVENTMASK			0L
+# define MLX_KEYPRESSMASK		1L
+# define MLX_KEYRELEASEMASK		2L
+# define MLX_BUTTONPRESSMASK	4L
+# define MLX_BUTTONRELEASEMASK	8L
+# define MLX_POINTERMOTIONMASK	64L
+# define MLX_EXPOSUREMASK		32768L
 
 #endif
