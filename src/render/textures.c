@@ -28,7 +28,6 @@ static void	load_texture_images(t_game *game)
 		|| !game->tex[2].img || !game->tex[3].img)
 	{
 		printf("Error\nFailed to load textures\n");
-		free_textures(game);
 		free_game(game);
 		exit(1);
 	}

@@ -49,6 +49,16 @@ void	find_player(t_game *game)
 }
 
 // parses RGB color string like "220,100,0" into single int
+static void	free_split(char **parts)
+{
+	int	i;
+
+	i = 0;
+	while (parts[i])
+		free(parts[i++]);
+	free(parts);
+}
+
 int	parse_color(char *str)
 {
 	char	**parts;
@@ -61,15 +71,14 @@ int	parse_color(char *str)
 	parts = ft_split(str, ',');
 	if (!parts || !parts[0] || !parts[1] || !parts[2])
 		print_map_error("invalid color format");
+	if (parts[3])
+		print_map_error("too many color values");
 	r = ft_atoi(parts[0]);
 	g = ft_atoi(parts[1]);
 	b = ft_atoi(parts[2]);
 	if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
 		print_map_error("color values must be 0-255");
-	free(parts[0]);
-	free(parts[1]);
-	free(parts[2]);
-	free(parts);
+	free_split(parts);
 	return ((r << 16) | (g << 8) | b);
 }
 

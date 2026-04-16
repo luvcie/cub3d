@@ -83,7 +83,7 @@ $(MLX_PATH):
 
 $(MLX): $(MLX_PATH)
 	@printf "\033[1;36m[ Building minilibx ]\033[0m\n"
-	@make -C $(MLX_PATH)
+	@cd $(MLX_PATH) && ./configure && make -f makefile.gen all
 
 $(NAME): $(LIBFT) $(MLX) $(OBJS)
 	@rm -f $(COUNTER_FILE)

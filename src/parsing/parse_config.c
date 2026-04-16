@@ -13,16 +13,23 @@
 
 // checks if line is a config line (NO/SO/WE/EA/F/C) and parses it
 // returns: true if config line was parsed, false if not
+static void	set_texture(char **dst, char *line)
+{
+	if (*dst)
+		print_map_error("duplicate texture identifier");
+	*dst = parse_texture_path(line);
+}
+
 bool	is_config_line(char *line, t_game *game)
 {
 	if (ft_strncmp(line, "NO ", 3) == 0)
-		game->texture_no = parse_texture_path(line);
+		set_texture(&game->texture_no, line);
 	else if (ft_strncmp(line, "SO ", 3) == 0)
-		game->texture_so = parse_texture_path(line);
+		set_texture(&game->texture_so, line);
 	else if (ft_strncmp(line, "WE ", 3) == 0)
-		game->texture_we = parse_texture_path(line);
+		set_texture(&game->texture_we, line);
 	else if (ft_strncmp(line, "EA ", 3) == 0)
-		game->texture_ea = parse_texture_path(line);
+		set_texture(&game->texture_ea, line);
 	else if (ft_strncmp(line, "F ", 2) == 0)
 		game->floor_color = parse_color(line + 2);
 	else if (ft_strncmp(line, "C ", 2) == 0)

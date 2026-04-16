@@ -56,17 +56,21 @@ static void	handle_line(t_game *game, char *line, int *ctx)
 			;
 		else
 		{
+			if (ctx[2])
+				print_map_error("empty line in map content");
 			ctx[1] = 1;
 			process_map_line(game, line, &ctx[0]);
 		}
 	}
+	else if (ctx[1])
+		ctx[2] = 1;
 }
 
 // reads entire map file line by line using GNL
 static void	read_map_lines(char *filename, t_game *game)
 {
 	int		fd;
-	int		ctx[2];
+	int		ctx[3];
 	char	*line;
 
 	fd = open(filename, O_RDONLY);
@@ -74,6 +78,7 @@ static void	read_map_lines(char *filename, t_game *game)
 		print_map_error("could not open file");
 	ctx[0] = 0;
 	ctx[1] = 0;
+	ctx[2] = 0;
 	line = get_next_line(fd);
 	while (line)
 	{

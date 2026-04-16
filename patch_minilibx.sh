@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+
+# Remove -lbsd from minilibx test template (not available on all Debian/Ubuntu systems)
+if [ -f minilibx-linux/test/makefile.mk ]; then
+    sed -i 's/-lbsd//g' minilibx-linux/test/makefile.mk
+fi
+
 # detects it's in nixos by checking for /nix/store
 if [ -d "/nix/store" ] && [ -f minilibx-linux/configure ]; then
     echo "Patching minilibx configure for NixOS..."

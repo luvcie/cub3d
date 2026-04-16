@@ -15,6 +15,9 @@
 // mutates: destroys window, frees mlx, exits program
 int	close_window(t_game *game)
 {
+	free_game(game);
+	if (game->img)
+		mlx_destroy_image(game->mlx, game->img);
 	mlx_destroy_window(game->mlx, game->win);
 	mlx_destroy_display(game->mlx);
 	free(game->mlx);
