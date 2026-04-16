@@ -186,6 +186,7 @@ char	*get_next_line(int fd);
 void	parse_map(char *filename, t_game *game);
 void	validate_extension(t_game *game, char *filename);
 void	validate_config(t_game *game);
+void	validate_textures(t_game *game);
 void	validate_walls(t_game *game);
 void	validate_elements(t_game *game);
 void	print_map_error(t_game *game, char *message);

@@ -101,6 +101,7 @@ void	parse_map(char *filename, t_game *game)
 	read_map_lines(filename, game);
 	find_player(game);
 	validate_config(game);
+	validate_textures(game);
 	validate_walls(game);
 	validate_elements(game);
 }

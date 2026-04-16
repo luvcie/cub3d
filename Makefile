@@ -38,6 +38,7 @@ SRCS = $(SRC_DIR)/main.c \
        $(SRC_DIR)/parsing/parse_config.c \
        $(SRC_DIR)/parsing/parse_color.c \
        $(SRC_DIR)/parsing/validate_map.c \
+       $(SRC_DIR)/parsing/validate_textures.c \
        $(SRC_DIR)/parsing/validate_walls.c \
        $(SRC_DIR)/parsing/free_game.c \
        $(SRC_DIR)/parsing/utils.c
