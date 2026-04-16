@@ -59,31 +59,32 @@ static void	free_split(char **parts)
 	free(parts);
 }
 
-int	parse_color(char *str)
+int	parse_color(t_game *game, char *str)
 {
 	char	**parts;
-	int		r;
-	int		g;
-	int		b;
+	int		rgb[3];
 
 	while (*str == ' ')
 		str++;
 	parts = ft_split(str, ',');
-	if (!parts || !parts[0] || !parts[1] || !parts[2])
-		print_map_error("invalid color format");
-	if (parts[3])
-		print_map_error("too many color values");
-	r = ft_atoi(parts[0]);
-	g = ft_atoi(parts[1]);
-	b = ft_atoi(parts[2]);
-	if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
-		print_map_error("color values must be 0-255");
+	if (!parts || !parts[0] || !parts[1] || !parts[2] || parts[3])
+	{
+		if (parts)
+			free_split(parts);
+		print_map_error(game, "invalid color format");
+	}
+	rgb[0] = ft_atoi(parts[0]);
+	rgb[1] = ft_atoi(parts[1]);
+	rgb[2] = ft_atoi(parts[2]);
 	free_split(parts);
-	return ((r << 16) | (g << 8) | b);
+	if (rgb[0] < 0 || rgb[0] > 255 || rgb[1] < 0 || rgb[1] > 255
+		|| rgb[2] < 0 || rgb[2] > 255)
+		print_map_error(game, "color values must be 0-255");
+	return ((rgb[0] << 16) | (rgb[1] << 8) | rgb[2]);
 }
 
 // extracts path from config line like "NO ./path/to/texture.xpm"
-char	*parse_texture_path(char *line)
+char	*parse_texture_path(t_game *game, char *line)
 {
 	char	*path;
 
@@ -93,6 +94,6 @@ char	*parse_texture_path(char *line)
 		line++;
 	path = ft_strtrim(line, " \n");
 	if (!path || ft_strlen(path) == 0)
-		print_map_error("missing texture path");
+		print_map_error(game, "missing texture path");
 	return (path);
 }

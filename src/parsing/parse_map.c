@@ -38,7 +38,7 @@ static void	init_map_memory(t_game *game)
 
 	game->map = malloc(sizeof(char *) * (game->map_height + 1));
 	if (!game->map)
-		exit(1);
+		print_map_error(game, "memory allocation failed");
 	i = 0;
 	while (i <= game->map_height)
 	{
@@ -57,7 +57,7 @@ static void	handle_line(t_game *game, char *line, int *ctx)
 		else
 		{
 			if (ctx[2])
-				print_map_error("empty line in map content");
+				print_map_error(game, "empty line in map content");
 			ctx[1] = 1;
 			process_map_line(game, line, &ctx[0]);
 		}
@@ -75,7 +75,7 @@ static void	read_map_lines(char *filename, t_game *game)
 
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
-		print_map_error("could not open file");
+		print_map_error(game, "could not open file");
 	ctx[0] = 0;
 	ctx[1] = 0;
 	ctx[2] = 0;
@@ -93,10 +93,10 @@ static void	read_map_lines(char *filename, t_game *game)
 // main parsing entry point
 void	parse_map(char *filename, t_game *game)
 {
-	validate_extension(filename);
+	validate_extension(game, filename);
 	game->map_height = count_lines(filename);
 	if (game->map_height == 0)
-		print_map_error("empty file");
+		print_map_error(game, "empty file");
 	init_map_memory(game);
 	read_map_lines(filename, game);
 	find_player(game);

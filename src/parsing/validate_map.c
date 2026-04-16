@@ -11,36 +11,45 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-// prints error message and exits with status 1
-void	print_map_error(char *message)
+// prints error message, frees all game resources, exits with status 1
+void	print_map_error(t_game *game, char *message)
 {
 	ft_printf("Error\n%s\n", message);
+	if (game)
+	{
+		free_game(game);
+		if (game->mlx)
+		{
+			mlx_destroy_display(game->mlx);
+			free(game->mlx);
+		}
+	}
 	exit(1);
 }
 
 // checks if file extension is valid (.cub)
-void	validate_extension(char *filename)
+void	validate_extension(t_game *game, char *filename)
 {
 	int	len;
 
 	len = ft_strlen(filename);
 	if (len < 5)
-		print_map_error("invalid file name");
+		print_map_error(game, "invalid file name");
 	if (ft_strncmp(filename + len - 4, ".cub", 4) != 0)
-		print_map_error("hey!! file must have .cub extension!");
+		print_map_error(game, "hey!! file must have .cub extension!");
 }
 
 // checks that all config values were set
 void	validate_config(t_game *game)
 {
 	if (!game->texture_no)
-		print_map_error("missing north texture (NO)");
+		print_map_error(game, "missing north texture (NO)");
 	if (!game->texture_so)
-		print_map_error("missing south texture (SO)");
+		print_map_error(game, "missing south texture (SO)");
 	if (!game->texture_we)
-		print_map_error("missing west texture (WE)");
+		print_map_error(game, "missing west texture (WE)");
 	if (!game->texture_ea)
-		print_map_error("missing east texture (EA)");
+		print_map_error(game, "missing east texture (EA)");
 }
 
 // counts player positions and validates characters
@@ -60,7 +69,7 @@ static void	count_elements(t_game *game, int *counts)
 			if (c == 'N' || c == 'S' || c == 'E' || c == 'W')
 				counts[0]++;
 			else if (c != '0' && c != '1' && c != ' ')
-				print_map_error("invalid character in map D:");
+				print_map_error(game, "invalid character in map D:");
 		}
 	}
 }
@@ -73,7 +82,7 @@ void	validate_elements(t_game *game)
 	counts[0] = 0;
 	count_elements(game, counts);
 	if (counts[0] == 0)
-		print_map_error("no player position found! need N, S, E or W");
+		print_map_error(game, "no player position found! need N, S, E or W");
 	if (counts[0] > 1)
-		print_map_error("too many player positions! only 1 allowed");
+		print_map_error(game, "too many player positions! only 1 allowed");
 }

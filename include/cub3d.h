@@ -181,11 +181,11 @@ void	cast_ray_minimap(t_game *game, t_ray *ray);
 // parsing
 char	*get_next_line(int fd);
 void	parse_map(char *filename, t_game *game);
-void	validate_extension(char *filename);
+void	validate_extension(t_game *game, char *filename);
 void	validate_config(t_game *game);
 void	validate_walls(t_game *game);
 void	validate_elements(t_game *game);
-void	print_map_error(char *message);
+void	print_map_error(t_game *game, char *message);
 void	free_game_map(t_game *game);
 void	free_textures(t_game *game);
 void	free_game(t_game *game);
@@ -197,7 +197,7 @@ void	process_map_line(t_game *game, char *line, int *map_index);
 
 // utils
 void	find_player(t_game *game);
-int		parse_color(char *str);
-char	*parse_texture_path(char *line);
+int		parse_color(t_game *game, char *str);
+char	*parse_texture_path(t_game *game, char *line);
 
 #endif

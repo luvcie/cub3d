@@ -34,13 +34,13 @@ static bool	is_floor(char c)
 static void	check_tile_enclosed(t_game *game, int x, int y)
 {
 	if (get_char_at(game, x - 1, y) == ' ')
-		print_map_error("the map must be surrounded by walls you know !!");
+		print_map_error(game, "map must be enclosed by walls");
 	if (get_char_at(game, x + 1, y) == ' ')
-		print_map_error("the map must be surrounded by walls you know !!");
+		print_map_error(game, "map must be enclosed by walls");
 	if (get_char_at(game, x, y - 1) == ' ')
-		print_map_error("the map must be surrounded by walls you know !!");
+		print_map_error(game, "map must be enclosed by walls");
 	if (get_char_at(game, x, y + 1) == ' ')
-		print_map_error("the map must be surrounded by walls you know !!");
+		print_map_error(game, "map must be enclosed by walls");
 }
 
 // validates walls surround the playable area
