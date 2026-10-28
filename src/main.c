@@ -31,5 +31,6 @@ int	main(int argc, char **argv)
 	game.show_minimap = true;
 	game.show_help = true;
 	create_window(&game);
+	mlx_loop(game.mlx);
 	return (0);
 }
