@@ -26,13 +26,13 @@ ASSETS = $(wildcard ../maps/*.cub) $(wildcard ../textures/XPMs/*.xpm)
 # mlx_sdl comes first so that "mlx.h" resolves to the shim
 INC = -I mlx_sdl -I ../include -I ../libft
 
-CFLAGS = -Wall -Wextra -Werror -Wno-cast-function-type -g \
+CFLAGS = -Wall -Wextra -Werror -Wno-cast-function-type -std=c99 -g \
 	$(shell pkg-config --cflags sdl2)
 DEPFLAGS = -MMD -MP
 LDLIBS = $(shell pkg-config --libs sdl2) -lm
 
 EMCC = emcc
-EMCC_CFLAGS = -Wall -Wextra -Werror -Wno-cast-function-type -O2 -sUSE_SDL=2
+EMCC_CFLAGS = -Wall -Wextra -Werror -Wno-cast-function-type -std=c99 -O2 -sUSE_SDL=2
 EMCC_LDFLAGS = -O2 -sUSE_SDL=2 -sALLOW_MEMORY_GROWTH=1 \
 	--preload-file ../maps@/maps \
 	--preload-file ../textures/XPMs@/textures/XPMs \
