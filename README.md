@@ -2,7 +2,7 @@
 
 # cub3D
 
-A raycaster inspired by Wolfenstein 3D, built with the miniLibX library.
+A raycaster inspired by Wolfenstein 3D, built on SDL2 through a MiniLibX-style API.
 
 ![42 Project](https://img.shields.io/badge/42-Project-blue)
 
@@ -21,18 +21,23 @@ graphics programming in C.
 
 ### Requirements
 
-Linux (tested on Ubuntu, Fedora, and NixOS), a C compiler, GNU make, and the
-X11 development libraries (`libX11`, `libXext`) along with the math library.
-miniLibX is cloned and built automatically by the Makefile.
+Linux (tested on Ubuntu, Fedora, and NixOS), a C compiler, GNU make, the SDL2
+development files, and pkg-config. The code is compiled as C2y (`-std=c2y`), so
+use a recent GCC or Clang.
 
-On Fedora, the required development packages can be installed with:
+On Debian or Ubuntu:
 
 ```bash
-sudo dnf install libX11-devel libXext-devel mesa-libGL-devel
+sudo apt install libsdl2-dev pkg-config
 ```
 
-On NixOS, the Makefile runs `.patch_minilibx.sh` to fix up the miniLibX
-include paths so they point at the Nix store. It only runs on Nix systems.
+On Fedora:
+
+```bash
+sudo dnf install SDL2-devel pkgconf-pkg-config
+```
+
+On NixOS, the dependencies are in `shell.nix`.
 
 ### Build
 
@@ -41,6 +46,12 @@ make         # build cub3D
 make clean   # remove object files
 make fclean  # remove object files and the executable
 make re      # fclean followed by make
+```
+
+On NixOS, run the build inside the shell:
+
+```bash
+nix-shell --run make
 ```
 
 ### Run
@@ -92,7 +103,7 @@ C 225,30,0
 
 ## Browser build
 
-The game also builds to WebAssembly with Emscripten, through an SDL2 version of the miniLibX API in `web/mlx_sdl/`. The only change to the game sources is that `mlx_loop` is called from `main()` instead of `create_window()`, since the browser can only register one main loop.
+The game also builds to WebAssembly with Emscripten. Both builds use the same game sources and the same SDL2 backend in `mlx_sdl/`.
 
 On NixOS:
 
@@ -107,13 +118,11 @@ Pick a map with `?map=<name>`, e.g. `http://localhost:8000/?map=maze`. The defau
 
 The output is four files in `web/dist/`: `index.html`, `index.js`, `index.wasm` and `index.data`. Serve them from any static host, or embed `index.html` in an `<iframe>`.
 
-Differences from the native build:
+In the browser:
 
 - ESC does nothing in the browser. The native ESC handler calls `exit()`, which would stop the page.
 - `mlx_get_screen_size` reports 1280x720, so key `6` picks that size.
 - Mouse look only works while the cursor is over the canvas.
-
-To test the shim without a browser, build the native SDL binary with `nix-shell -p SDL2 pkg-config --run 'make -C web'`. It produces `web/cub3D_sdl`.
 
 ## Features
 
