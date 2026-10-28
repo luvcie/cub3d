@@ -54,10 +54,15 @@ MLX_PATH = ./minilibx-linux
 MLX = $(MLX_PATH)/libmlx.a
 
 # cache nix paths to avoid slow find on every make
+# auto-regenerates when missing or stale (nix-collect-garbage wipes store paths)
 NIX_CACHE := .nix_paths
-$(shell if [ ! -f $(NIX_CACHE) ] && [ -d /nix/store ]; then \
-	echo "X11_LIB=$$(find /nix/store -name 'libX11.so.6.4.0' 2>/dev/null | xargs -I{} sh -c 'file {} | grep -q 64-bit && dirname {}' 2>/dev/null | head -1)" > $(NIX_CACHE); \
-	echo "XEXT_LIB=$$(find /nix/store -name 'libXext.so.6*' 2>/dev/null | xargs -I{} sh -c 'file {} | grep -q 64-bit && dirname {}' 2>/dev/null | head -1)" >> $(NIX_CACHE); \
+$(shell if [ -d /nix/store ]; then \
+	X11_DIR=$$(sed -n 's/^X11_LIB=//p' $(NIX_CACHE) 2>/dev/null); \
+	XEXT_DIR=$$(sed -n 's/^XEXT_LIB=//p' $(NIX_CACHE) 2>/dev/null); \
+	if [ ! -f $(NIX_CACHE) ] || [ ! -d "$$X11_DIR" ] || [ ! -d "$$XEXT_DIR" ]; then \
+		echo "X11_LIB=$$(find /nix/store -name 'libX11.so.6.4.0' 2>/dev/null | xargs -I{} sh -c 'file {} | grep -q 64-bit && dirname {}' 2>/dev/null | head -1)" > $(NIX_CACHE); \
+		echo "XEXT_LIB=$$(find /nix/store -name 'libXext.so.6*' 2>/dev/null | xargs -I{} sh -c 'file {} | grep -q 64-bit && dirname {}' 2>/dev/null | head -1)" >> $(NIX_CACHE); \
+	fi; \
 fi)
 -include $(NIX_CACHE)
 

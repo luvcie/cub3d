@@ -11,10 +11,14 @@ if [ -d "/nix/store" ] && [ -f minilibx-linux/configure ]; then
 
     CACHE=".nix_inc_paths"
 
-    # use cached paths if available
+    # use cached paths if available (and still valid: nix-collect-garbage
+    # can wipe the store paths they point to, making the cache stale)
     if [ -f "$CACHE" ]; then
         source "$CACHE"
-    else
+    fi
+
+    # re-scan if the cache is missing or its paths no longer exist
+    if [ ! -d "$X11_INC" ] || [ ! -d "$XPROTO_INC" ] || [ ! -d "$XEXT_INC" ]; then
         X11_INC=$(find /nix/store -path "*/include/X11/Xlib.h" 2>/dev/null | head -1 | sed 's|/X11/Xlib.h||')
         XPROTO_INC=$(find /nix/store -path "*/include/X11/X.h" 2>/dev/null | head -1 | sed 's|/X11/X.h||')
         XEXT_INC=$(find /nix/store -path "*/include/X11/extensions/XShm.h" 2>/dev/null | head -1 | sed 's|/X11/extensions/XShm.h||')
