@@ -34,7 +34,7 @@ int	main(int argc, char **argv)
 	init_view(&game);
 	game.show_minimap = true;
 	game.show_help = true;
-	gfx_run(game.gfx, &(t_gfx_hooks){render, key_press, key_release,
-		mouse_move, close_window, &game});
+	gfx_run(game.gfx, &(t_gfx_hooks){render, draw_overlay, key_press,
+		key_release, mouse_move, close_window, &game});
 	return (0);
 }

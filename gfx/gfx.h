@@ -19,6 +19,8 @@ typedef struct s_gfx	t_gfx;
 typedef struct s_gfx_hooks
 {
 	void	(*frame)(void *param);
+	// runs after the frame is drawn on screen, the only place gfx_draw_text works
+	void	(*overlay)(void *param);
 	void	(*key_press)(int key, void *param);
 	void	(*key_release)(int key, void *param);
 	void	(*mouse_move)(int x, int y, void *param);
@@ -36,7 +38,7 @@ void	gfx_run(t_gfx *gfx, const t_gfx_hooks *hooks);
 t_image	*gfx_new_image(int w, int h);
 t_image	*gfx_load_xpm(const char *path);
 void	gfx_free_image(t_image *img);
-void	gfx_draw_text(t_image *dst, int x, int y, uint32_t color,
+void	gfx_draw_text(t_gfx *gfx, int x, int y, uint32_t color,
 			const char *s);
 
 #endif

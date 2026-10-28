@@ -79,6 +79,15 @@ void	render(void *param)
 	render_3d(game);
 	if (game->show_minimap)
 		draw_minimap(game);
+}
+
+// draws text over the frame, runs after it is on screen (see gfx_hooks)
+// takes: void *param (cast to t_game)
+void	draw_overlay(void *param)
+{
+	t_game	*game;
+
+	game = (t_game *)param;
 	if (game->show_help)
 		draw_help_menu(game);
 }

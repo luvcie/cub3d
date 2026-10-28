@@ -153,6 +153,7 @@ void	draw_minimap(t_game *game);
 t_point	world_to_minimap(t_game *game, double wx, double wy);
 void	draw_help_menu(t_game *game);
 void	render(void *param);
+void	draw_overlay(void *param);
 void	put_pixel(t_game *game, int x, int y, int color);
 void	draw_rect(t_game *game, t_point pos, int size, int color);
 void	draw_circle_aa(t_game *game, t_point center, int r, int color);

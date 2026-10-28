@@ -8,12 +8,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "font8x8_basic.h"
 #ifdef __EMSCRIPTEN__
 # include <emscripten.h>
 #endif
 
-#define GLYPH_SIZE 8
 #define XPM_MAX_CPP 2
 
 struct s_gfx
@@ -89,14 +87,17 @@ static void	poll_events(t_gfx *gfx)
 }
 
 // takes: gfx
-// mutates: uploads the current frame and shows it
+// mutates: uploads the current frame, draws it, then the overlay, and shows it
 // a frame hook may resize: read the frame and texture here, not cached
 static void	present(t_gfx *gfx)
 {
 	SDL_UpdateTexture(gfx->texture, NULL, gfx->frame->pixels,
 		gfx->frame->w * (int)sizeof(uint32_t));
+	SDL_SetRenderDrawColor(gfx->renderer, 0, 0, 0, 255);
 	SDL_RenderClear(gfx->renderer);
 	SDL_RenderTexture(gfx->renderer, gfx->texture, NULL, NULL);
+	if (gfx->hooks.overlay)
+		gfx->hooks.overlay(gfx->hooks.param);
 	SDL_RenderPresent(gfx->renderer);
 }
 
@@ -459,49 +460,14 @@ void	gfx_free_image(t_image *img)
 	free(img);
 }
 
-// takes: destination image, top-left of glyph cell, color, character
-// mutates: sets the pixels of set glyph bits (transparent background)
-static void	draw_glyph(t_image *dst, int x, int y, uint32_t color,
-		unsigned char c)
-{
-	int	row;
-	int	col;
-	int	px;
-	int	py;
-
-	if (c >= 128)
-		return ;
-	row = -1;
-	while (++row < GLYPH_SIZE)
-	{
-		py = y + row;
-		if (py < 0 || py >= dst->h)
-			continue ;
-		col = -1;
-		while (++col < GLYPH_SIZE)
-		{
-			px = x + col;
-			if (px < 0 || px >= dst->w)
-				continue ;
-			if (((unsigned char)font8x8_basic[c][row] >> col) & 1)
-				dst->pixels[py * dst->w + px] = color & 0xFFFFFF;
-		}
-	}
-}
-
-// takes: destination image, top-left of the first glyph, color, string
-// mutates: draws 8x8 glyphs into dst, clipped to its bounds
-void	gfx_draw_text(t_image *dst, int x, int y, uint32_t color,
+// takes: gfx, top-left of the text (8x8 glyphs), color 0x00RRGGBB, string
+// mutates: draws the text with the renderer, only valid in the overlay hook
+void	gfx_draw_text(t_gfx *gfx, int x, int y, uint32_t color,
 		const char *s)
 {
-	int	i;
-
-	if (!dst || !s)
+	if (!gfx || !s)
 		return ;
-	i = 0;
-	while (s[i])
-	{
-		draw_glyph(dst, x + i * GLYPH_SIZE, y, color, (unsigned char)s[i]);
-		i++;
-	}
+	SDL_SetRenderDrawColor(gfx->renderer, (color >> 16) & 0xFF,
+		(color >> 8) & 0xFF, color & 0xFF, 255);
+	SDL_RenderDebugText(gfx->renderer, (float)x, (float)y, s);
 }
