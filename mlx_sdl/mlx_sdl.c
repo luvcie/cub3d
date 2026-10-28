@@ -1,4 +1,4 @@
-// MiniLibX-compatible shim on top of SDL2.
+// MiniLibX-style API on top of SDL2.
 // Each window owns a 0x00RRGGBB framebuffer. Drawing calls write into it,
 // and the framebuffer is uploaded and presented once per loop iteration.
 
@@ -14,11 +14,6 @@
 # include <emscripten.h>
 #endif
 
-#define X11_KEYPRESS 2
-#define X11_KEYRELEASE 3
-#define X11_MOTIONNOTIFY 6
-#define X11_DESTROYNOTIFY 17
-
 #define X11_KEY_ESCAPE 65307
 #define X11_KEY_LEFT 65361
 #define X11_KEY_UP 65362
@@ -27,12 +22,6 @@
 
 #define GLYPH_SIZE 8
 #define XPM_MAX_CPP 2
-
-typedef struct s_hook
-{
-	int		(*fn)();
-	void	*param;
-}	t_hook;
 
 typedef struct s_img
 {
@@ -49,16 +38,21 @@ typedef struct s_win
 	int				w;
 	int				h;
 	uint32_t		*fb;
-	t_hook			on_key_press;
-	t_hook			on_key_release;
-	t_hook			on_motion;
-	t_hook			on_destroy;
+	int				(*on_key_press)(int, void *);
+	void			*key_press_param;
+	int				(*on_key_release)(int, void *);
+	void			*key_release_param;
+	int				(*on_motion)(int, int, void *);
+	void			*motion_param;
+	int				(*on_close)(void *);
+	void			*close_param;
 }	t_win;
 
 typedef struct s_mlx
 {
 	t_win	*win;
-	t_hook	on_loop;
+	int		(*on_loop)(void *);
+	void	*loop_param;
 }	t_mlx;
 
 typedef struct s_xpm_color
@@ -66,12 +60,6 @@ typedef struct s_xpm_color
 	char		key[XPM_MAX_CPP];
 	uint32_t	color;
 }	t_xpm_color;
-
-static void	set_hook(t_hook *hook, int (*fn)(), void *param)
-{
-	hook->fn = fn;
-	hook->param = param;
-}
 
 // takes: window
 // mutates: destroys SDL objects and frees the window (safe on partial init)
@@ -104,26 +92,6 @@ static int	map_keycode(SDL_Keycode key)
 	return ((int)key);
 }
 
-// hooks are stored as plain int (*)(); each call casts to the real signature,
-// because WebAssembly traps when a call's signature does not match the callee
-static void	call_key(t_hook *hook, int keycode)
-{
-	if (hook->fn)
-		((int (*)(int, void *))hook->fn)(keycode, hook->param);
-}
-
-static void	call_motion(t_hook *hook, int x, int y)
-{
-	if (hook->fn)
-		((int (*)(int, int, void *))hook->fn)(x, y, hook->param);
-}
-
-static void	call_param(t_hook *hook)
-{
-	if (hook->fn)
-		((int (*)(void *))hook->fn)(hook->param);
-}
-
 // takes: mlx
 // mutates: drains the SDL event queue and dispatches to the hooks
 static void	poll_events(t_mlx *mlx)
@@ -143,15 +111,18 @@ static void	poll_events(t_mlx *mlx)
 		win = mlx->win;
 		if (!win)
 			continue ;
-		if (e.type == SDL_KEYDOWN && !e.key.repeat)
-			call_key(&win->on_key_press, map_keycode(e.key.keysym.sym));
-		else if (e.type == SDL_KEYUP)
-			call_key(&win->on_key_release, map_keycode(e.key.keysym.sym));
-		else if (e.type == SDL_MOUSEMOTION)
-			call_motion(&win->on_motion, e.motion.x, e.motion.y);
-		else if (e.type == SDL_QUIT
-			|| (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_CLOSE))
-			call_param(&win->on_destroy);
+		if (e.type == SDL_KEYDOWN && !e.key.repeat && win->on_key_press)
+			win->on_key_press(map_keycode(e.key.keysym.sym),
+				win->key_press_param);
+		else if (e.type == SDL_KEYUP && win->on_key_release)
+			win->on_key_release(map_keycode(e.key.keysym.sym),
+				win->key_release_param);
+		else if (e.type == SDL_MOUSEMOTION && win->on_motion)
+			win->on_motion(e.motion.x, e.motion.y, win->motion_param);
+		else if (win->on_close && (e.type == SDL_QUIT
+				|| (e.type == SDL_WINDOWEVENT
+					&& e.window.event == SDL_WINDOWEVENT_CLOSE)))
+			win->on_close(win->close_param);
 	}
 }
 
@@ -179,7 +150,8 @@ static void	step(void *mlx_ptr)
 
 	mlx = mlx_ptr;
 	poll_events(mlx);
-	call_param(&mlx->on_loop);
+	if (mlx->on_loop)
+		mlx->on_loop(mlx->loop_param);
 	present(mlx);
 }
 
@@ -197,8 +169,8 @@ void	*mlx_init(void)
 		return (NULL);
 	}
 	mlx->win = NULL;
-	mlx->on_loop.fn = NULL;
-	mlx->on_loop.param = NULL;
+	mlx->on_loop = NULL;
+	mlx->loop_param = NULL;
 	return (mlx);
 }
 
@@ -431,34 +403,73 @@ int	mlx_destroy_display(void *mlx_ptr)
 	return (0);
 }
 
-// takes: window, x event type, x mask (ignored), callback, parameter
-// mutates: stores the hook for keypress, keyrelease, motion or destroy
-int	mlx_hook(void *win_ptr, int x_event, int x_mask, int (*funct)(),
-		void *param)
-{
-	t_win	*win;
-
-	(void)x_mask;
-	win = win_ptr;
-	if (!win)
-		return (-1);
-	if (x_event == X11_KEYPRESS)
-		set_hook(&win->on_key_press, funct, param);
-	else if (x_event == X11_KEYRELEASE)
-		set_hook(&win->on_key_release, funct, param);
-	else if (x_event == X11_MOTIONNOTIFY)
-		set_hook(&win->on_motion, funct, param);
-	else if (x_event == X11_DESTROYNOTIFY)
-		set_hook(&win->on_destroy, funct, param);
-	return (0);
-}
-
-int	mlx_loop_hook(void *mlx_ptr, int (*funct)(), void *param)
+// takes: mlx, callback, parameter
+// mutates: stores the callback, it runs once per loop iteration
+int	mlx_loop_hook(void *mlx_ptr, int (*f)(void *), void *param)
 {
 	t_mlx	*mlx;
 
 	mlx = mlx_ptr;
-	set_hook(&mlx->on_loop, funct, param);
+	if (!mlx)
+		return (-1);
+	mlx->on_loop = f;
+	mlx->loop_param = param;
+	return (0);
+}
+
+// takes: window, callback, parameter
+// mutates: stores the callback, it runs on every key press (not auto-repeat)
+int	mlx_key_press_hook(void *win_ptr, int (*f)(int, void *), void *param)
+{
+	t_win	*win;
+
+	win = win_ptr;
+	if (!win)
+		return (-1);
+	win->on_key_press = f;
+	win->key_press_param = param;
+	return (0);
+}
+
+// takes: window, callback, parameter
+// mutates: stores the callback, it runs on every key release
+int	mlx_key_release_hook(void *win_ptr, int (*f)(int, void *), void *param)
+{
+	t_win	*win;
+
+	win = win_ptr;
+	if (!win)
+		return (-1);
+	win->on_key_release = f;
+	win->key_release_param = param;
+	return (0);
+}
+
+// takes: window, callback, parameter
+// mutates: stores the callback, it runs on every mouse move
+int	mlx_motion_hook(void *win_ptr, int (*f)(int, int, void *), void *param)
+{
+	t_win	*win;
+
+	win = win_ptr;
+	if (!win)
+		return (-1);
+	win->on_motion = f;
+	win->motion_param = param;
+	return (0);
+}
+
+// takes: window, callback, parameter
+// mutates: stores the callback, it runs when the window is asked to close
+int	mlx_close_hook(void *win_ptr, int (*f)(void *), void *param)
+{
+	t_win	*win;
+
+	win = win_ptr;
+	if (!win)
+		return (-1);
+	win->on_close = f;
+	win->close_param = param;
 	return (0);
 }
 

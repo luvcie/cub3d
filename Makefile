@@ -12,7 +12,8 @@
 
 NAME = cub3D
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -Wno-cast-function-type -std=c2y
+WFLAGS = -Wall -Wextra -Werror -std=c2y
+CFLAGS = $(WFLAGS) $(shell pkg-config --cflags sdl2)
 
 SRC_DIR = src
 INC_DIR = include
@@ -41,38 +42,21 @@ SRCS = $(SRC_DIR)/main.c \
        $(SRC_DIR)/parsing/validate_textures.c \
        $(SRC_DIR)/parsing/validate_walls.c \
        $(SRC_DIR)/parsing/free_game.c \
-       $(SRC_DIR)/parsing/utils.c
+       $(SRC_DIR)/parsing/utils.c \
+       mlx_sdl/mlx_sdl.c
 
 OBJS = $(SRCS:.c=.o)
-HDRS = $(INC_DIR)/cub3d.h
+HDRS = $(INC_DIR)/cub3d.h mlx_sdl/mlx.h
 
 # progress counter
 TOTAL_FILES := $(words $(SRCS))
 COUNTER_FILE := .compile_counter
 
-MLX_PATH = ./minilibx-linux
-MLX = $(MLX_PATH)/libmlx.a
-
-# cache nix paths to avoid slow find on every make
-# auto-regenerates when missing or stale (nix-collect-garbage wipes store paths)
-NIX_CACHE := .nix_paths
-$(shell if [ -d /nix/store ]; then \
-	X11_DIR=$$(sed -n 's/^X11_LIB=//p' $(NIX_CACHE) 2>/dev/null); \
-	XEXT_DIR=$$(sed -n 's/^XEXT_LIB=//p' $(NIX_CACHE) 2>/dev/null); \
-	if [ ! -f $(NIX_CACHE) ] || [ ! -d "$$X11_DIR" ] || [ ! -d "$$XEXT_DIR" ]; then \
-		echo "X11_LIB=$$(find /nix/store -name 'libX11.so.6.4.0' 2>/dev/null | xargs -I{} sh -c 'file {} | grep -q 64-bit && dirname {}' 2>/dev/null | head -1)" > $(NIX_CACHE); \
-		echo "XEXT_LIB=$$(find /nix/store -name 'libXext.so.6*' 2>/dev/null | xargs -I{} sh -c 'file {} | grep -q 64-bit && dirname {}' 2>/dev/null | head -1)" >> $(NIX_CACHE); \
-	fi; \
-fi)
--include $(NIX_CACHE)
-
-MLX_FLAGS = -L$(MLX_PATH) -lmlx -L$(X11_LIB) -L$(XEXT_LIB) -L/usr/lib64 -lXext -lX11 -lm
-
 LIBFT_PATH = ./libft
 LIBFT = $(LIBFT_PATH)/libft.a
 LIBFT_INC = -I$(LIBFT_PATH)
 
-INC = -I$(MLX_PATH) $(LIBFT_INC) -I$(INC_DIR)
+INC = -Imlx_sdl $(LIBFT_INC) -I$(INC_DIR)
 
 all: $(NAME)
 
@@ -80,22 +64,10 @@ $(LIBFT):
 	@printf "\033[1;36m[ Compiling libft ]\033[0m\n"
 	@make -C $(LIBFT_PATH) --no-print-directory
 
-$(MLX_PATH):
-	@if [ ! -f $(MLX_PATH)/Makefile ]; then \
-		printf "\033[1;36m[ Cloning minilibx ]\033[0m\n"; \
-		rm -rf $(MLX_PATH); \
-		git clone https://github.com/42Paris/minilibx-linux $(MLX_PATH); \
-		./.patch_minilibx.sh; \
-	fi
-
-$(MLX): $(MLX_PATH)
-	@printf "\033[1;36m[ Building minilibx ]\033[0m\n"
-	@cd $(MLX_PATH) && make all
-
-$(NAME): $(LIBFT) $(MLX) $(OBJS)
+$(NAME): $(LIBFT) $(OBJS)
 	@rm -f $(COUNTER_FILE)
 	@printf "\033[1;36m[ Linking $(NAME) ]\033[0m\n"
-	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_PATH) -lft $(MLX_FLAGS) -o $(NAME)
+	$(CC) $(OBJS) -L$(LIBFT_PATH) -lft $(shell pkg-config --libs sdl2) -lm -o $(NAME)
 	@printf "\033[1;32m✓ Build complete\033[0m\n"
 	@echo "+-----------------------------------------------------------------------------+"
 	@echo "| |       |\\                                           -~ /     \\  /          |"
@@ -119,7 +91,7 @@ $(NAME): $(LIBFT) $(MLX) $(OBJS)
 	@echo "|   AMMO   |  HEALTH  |  5  6  7  |  \\===/  |    ARMOR    |#| ....  ......... |"
 	@echo "+-----------------------------------------------------------------------------+"
 	@echo "                            WELCOME TO OUR CUB3D :)       "
-	@echo "Compilation flags: $(CFLAGS)"
+	@echo "Compilation flags: $(WFLAGS)"
 
 %.o: %.c $(HDRS)
 	@COUNT=$$(cat $(COUNTER_FILE) 2>/dev/null || echo 0); \
@@ -130,15 +102,11 @@ $(NAME): $(LIBFT) $(MLX) $(OBJS)
 
 clean:
 	rm -f $(OBJS) $(COUNTER_FILE)
-	@if [ -d $(MLX_PATH) ] && [ -f $(MLX_PATH)/Makefile.gen ]; then \
-		make -C $(MLX_PATH) clean; \
-	fi
 	make -C $(LIBFT_PATH) clean
 	@printf "\033[38;5;117m✓ All cleaned now!\033[0m\n"
 
 fclean: clean
 	rm -f $(NAME)
-	rm -rf $(MLX_PATH)
 	make -C $(LIBFT_PATH) fclean
 	@printf "\033[94m✓ And all fcleaned now as well! :D\033[0m\n"
 

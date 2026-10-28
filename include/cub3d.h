@@ -13,7 +13,6 @@
 # define CUB3D_H
 
 # include "mlx.h"
-# include "mlx_events.h"
 # include "libft.h"
 # include <unistd.h>
 # include <stdlib.h>
@@ -77,10 +76,6 @@ typedef struct s_keys
 	bool	left;
 	bool	right;
 }	t_keys;
-
-// minilibx declares hooks as int (*)(), which since C23 means no arguments,
-// so hooks are cast to this type when registered
-typedef int	(*t_mlx_hook)(void);
 
 typedef struct s_point
 {
