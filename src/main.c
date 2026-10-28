@@ -21,16 +21,20 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	ft_memset(&game, 0, sizeof(t_game));
-	game.mlx = mlx_init();
-	if (!game.mlx)
-		return (1);
 	parse_map(argv[1], &game);
 	find_player(&game);
-	mlx_get_screen_size(game.mlx, &game.win_width, &game.win_height);
 	load_textures(&game);
+	game.gfx = gfx_init("cub3D", 0, 0);
+	if (!game.gfx)
+	{
+		printf("Error\nFailed to create window\n");
+		free_game(&game);
+		return (1);
+	}
+	init_view(&game);
 	game.show_minimap = true;
 	game.show_help = true;
-	create_window(&game);
-	mlx_loop(game.mlx);
+	gfx_run(game.gfx, &(t_gfx_hooks){render, key_press, key_release,
+		mouse_move, close_window, &game});
 	return (0);
 }

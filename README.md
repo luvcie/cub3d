@@ -2,7 +2,7 @@
 
 # cub3D
 
-A raycaster inspired by Wolfenstein 3D, built on SDL3 through a MiniLibX-style API.
+A raycaster inspired by Wolfenstein 3D, built on SDL3 through `gfx/`, a small window and drawing library.
 
 ![42 Project](https://img.shields.io/badge/42-Project-blue)
 
@@ -103,7 +103,7 @@ C 225,30,0
 
 ## Browser build
 
-The game also builds to WebAssembly with Emscripten. Both builds use the same game sources and the same SDL3 backend in `mlx_sdl/`.
+The game also builds to WebAssembly with Emscripten. Both builds use the same game sources and the same SDL3 backend in `gfx/`.
 
 On NixOS:
 
@@ -121,7 +121,7 @@ The output is four files in `web/dist/`: `index.html`, `index.js`, `index.wasm` 
 In the browser:
 
 - ESC does nothing in the browser. The native ESC handler calls `exit()`, which would stop the page.
-- `mlx_get_screen_size` reports 1280x720, so key `6` picks that size.
+- `gfx_screen_size` reports 1280x720, so key `6` picks that size.
 - Mouse look only works while the cursor is over the canvas.
 
 ## Features

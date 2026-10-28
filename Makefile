@@ -43,10 +43,10 @@ SRCS = $(SRC_DIR)/main.c \
        $(SRC_DIR)/parsing/validate_walls.c \
        $(SRC_DIR)/parsing/free_game.c \
        $(SRC_DIR)/parsing/utils.c \
-       mlx_sdl/mlx_sdl.c
+       gfx/gfx.c
 
 OBJS = $(SRCS:.c=.o)
-HDRS = $(INC_DIR)/cub3d.h mlx_sdl/mlx.h
+HDRS = $(INC_DIR)/cub3d.h gfx/gfx.h
 
 # progress counter
 TOTAL_FILES := $(words $(SRCS))
@@ -56,7 +56,7 @@ LIBFT_PATH = ./libft
 LIBFT = $(LIBFT_PATH)/libft.a
 LIBFT_INC = -I$(LIBFT_PATH)
 
-INC = -Imlx_sdl $(LIBFT_INC) -I$(INC_DIR)
+INC = -Igfx $(LIBFT_INC) -I$(INC_DIR)
 
 all: $(NAME)
 

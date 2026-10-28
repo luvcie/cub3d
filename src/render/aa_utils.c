@@ -11,17 +11,14 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-// reads a pixel color from the image buffer
+// reads a pixel color from the frame buffer
 // takes: game struct, x, y coords
 // returns: color at that position, or 0 if out of bounds
 int	get_pixel_color(t_game *game, int x, int y)
 {
-	char	*src;
-
 	if (x < 0 || x >= game->win_width || y < 0 || y >= game->win_height)
 		return (0);
-	src = game->img_data + (y * game->line_len + x * (game->bpp / 8));
-	return (*(unsigned int *)src);
+	return ((int)game->frame->pixels[y * game->frame->w + x]);
 }
 
 // blends a single color channel

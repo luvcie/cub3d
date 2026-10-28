@@ -25,9 +25,9 @@ void	free_game_map(t_game *game)
 	}
 }
 
-// frees loaded texture images from mlx
+// frees loaded texture images
 // takes: game
-// mutates: destroys all texture images in game->tex array
+// mutates: frees all texture images in game->tex array and clears them
 void	free_textures(t_game *game)
 {
 	int	i;
@@ -35,8 +35,8 @@ void	free_textures(t_game *game)
 	i = 0;
 	while (i < 4)
 	{
-		if (game->tex[i].img)
-			mlx_destroy_image(game->mlx, game->tex[i].img);
+		gfx_free_image(game->tex[i]);
+		game->tex[i] = NULL;
 		i++;
 	}
 }
@@ -55,6 +55,7 @@ void	free_game(t_game *game)
 		free(game->texture_we);
 	if (game->texture_ea)
 		free(game->texture_ea);
-	if (game->mlx)
-		free_textures(game);
+	free_textures(game);
+	gfx_quit(game->gfx);
+	game->gfx = NULL;
 }
