@@ -1,4 +1,4 @@
-# Build cub3D for the browser against the SDL2 MiniLibX shim.
+# Build cub3D for the browser against the SDL3 MiniLibX shim.
 # Run from the repo root:  make -C web wasm   (needs emcc on PATH)
 #                          make -C web serve  (after wasm)
 
@@ -22,8 +22,8 @@ INC = -I ../mlx_sdl -I ../include -I ../libft
 DEPFLAGS = -MMD -MP
 
 EMCC = emcc
-EMCC_CFLAGS = -Wall -Wextra -Werror -std=c2y -O2 -sUSE_SDL=2
-EMCC_LDFLAGS = -O2 -sUSE_SDL=2 -sALLOW_MEMORY_GROWTH=1 \
+EMCC_CFLAGS = -Wall -Wextra -Werror -std=c2y -O2 -sUSE_SDL=3 -Wno-experimental
+EMCC_LDFLAGS = -O2 -sUSE_SDL=3 -Wno-experimental -sALLOW_MEMORY_GROWTH=1 \
 	--preload-file ../maps@/maps \
 	--preload-file ../textures/XPMs@/textures/XPMs \
 	--shell-file shell.html -lm

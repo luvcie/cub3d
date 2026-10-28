@@ -13,7 +13,7 @@
 NAME = cub3D
 CC = cc
 WFLAGS = -Wall -Wextra -Werror -std=c2y
-CFLAGS = $(WFLAGS) $(shell pkg-config --cflags sdl2)
+CFLAGS = $(WFLAGS) $(shell pkg-config --cflags sdl3)
 
 SRC_DIR = src
 INC_DIR = include
@@ -67,7 +67,7 @@ $(LIBFT):
 $(NAME): $(LIBFT) $(OBJS)
 	@rm -f $(COUNTER_FILE)
 	@printf "\033[1;36m[ Linking $(NAME) ]\033[0m\n"
-	$(CC) $(OBJS) -L$(LIBFT_PATH) -lft $(shell pkg-config --libs sdl2) -lm -o $(NAME)
+	$(CC) $(OBJS) -L$(LIBFT_PATH) -lft $(shell pkg-config --libs sdl3) -lm -o $(NAME)
 	@printf "\033[1;32m✓ Build complete\033[0m\n"
 	@echo "+-----------------------------------------------------------------------------+"
 	@echo "| |       |\\                                           -~ /     \\  /          |"

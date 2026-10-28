@@ -1,9 +1,9 @@
-// MiniLibX-style API on top of SDL2.
+// MiniLibX-style API on top of SDL3.
 // Each window owns a 0x00RRGGBB framebuffer. Drawing calls write into it,
 // and the framebuffer is uploaded and presented once per loop iteration.
 
 #include "mlx.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <ctype.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -103,25 +103,25 @@ static void	poll_events(t_mlx *mlx)
 	{
 #ifdef __EMSCRIPTEN__
 		// browsers use ESC to leave fullscreen/pointer lock, not the game
-		if ((e.type == SDL_KEYDOWN || e.type == SDL_KEYUP)
-			&& e.key.keysym.sym == SDLK_ESCAPE)
+		if ((e.type == SDL_EVENT_KEY_DOWN || e.type == SDL_EVENT_KEY_UP)
+			&& e.key.key == SDLK_ESCAPE)
 			continue ;
 #endif
 		// a hook may destroy or recreate the window, so re-read it per event
 		win = mlx->win;
 		if (!win)
 			continue ;
-		if (e.type == SDL_KEYDOWN && !e.key.repeat && win->on_key_press)
-			win->on_key_press(map_keycode(e.key.keysym.sym),
-				win->key_press_param);
-		else if (e.type == SDL_KEYUP && win->on_key_release)
-			win->on_key_release(map_keycode(e.key.keysym.sym),
+		if (e.type == SDL_EVENT_KEY_DOWN && !e.key.repeat
+			&& win->on_key_press)
+			win->on_key_press(map_keycode(e.key.key), win->key_press_param);
+		else if (e.type == SDL_EVENT_KEY_UP && win->on_key_release)
+			win->on_key_release(map_keycode(e.key.key),
 				win->key_release_param);
-		else if (e.type == SDL_MOUSEMOTION && win->on_motion)
-			win->on_motion(e.motion.x, e.motion.y, win->motion_param);
-		else if (win->on_close && (e.type == SDL_QUIT
-				|| (e.type == SDL_WINDOWEVENT
-					&& e.window.event == SDL_WINDOWEVENT_CLOSE)))
+		else if (e.type == SDL_EVENT_MOUSE_MOTION && win->on_motion)
+			win->on_motion((int)e.motion.x, (int)e.motion.y,
+				win->motion_param);
+		else if (win->on_close && (e.type == SDL_EVENT_QUIT
+				|| e.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED))
 			win->on_close(win->close_param);
 	}
 }
@@ -138,7 +138,7 @@ static void	present(t_mlx *mlx)
 	SDL_UpdateTexture(win->texture, NULL, win->fb,
 		win->w * (int)sizeof(uint32_t));
 	SDL_RenderClear(win->renderer);
-	SDL_RenderCopy(win->renderer, win->texture, NULL, NULL);
+	SDL_RenderTexture(win->renderer, win->texture, NULL, NULL);
 	SDL_RenderPresent(win->renderer);
 }
 
@@ -162,7 +162,7 @@ void	*mlx_init(void)
 	mlx = malloc(sizeof(t_mlx));
 	if (!mlx)
 		return (NULL);
-	if (SDL_Init(SDL_INIT_VIDEO) != 0)
+	if (!SDL_Init(SDL_INIT_VIDEO))
 	{
 		fprintf(stderr, "SDL_Init failed: %s\n", SDL_GetError());
 		free(mlx);
@@ -182,12 +182,13 @@ int	mlx_get_screen_size(void *mlx, int *w, int *h)
 	*h = 720;
 	return (0);
 #else
-	SDL_DisplayMode	mode;
+	const SDL_DisplayMode	*mode;
 
-	if (SDL_GetDesktopDisplayMode(0, &mode) != 0)
+	mode = SDL_GetDesktopDisplayMode(SDL_GetPrimaryDisplay());
+	if (!mode)
 		return (-1);
-	*w = mode.w;
-	*h = mode.h;
+	*w = mode->w;
+	*h = mode->h;
 	return (0);
 #endif
 }
@@ -211,14 +212,15 @@ void	*mlx_new_window(void *mlx_ptr, int w, int h, char *title)
 	win->w = w;
 	win->h = h;
 	win->fb = calloc((size_t)w * h, sizeof(uint32_t));
-	win->sdl_win = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED,
-			SDL_WINDOWPOS_CENTERED, w, h, 0);
+	win->sdl_win = SDL_CreateWindow(title, w, h, 0);
 	if (!win->fb || !win->sdl_win)
 		return (free_win(win), NULL);
-	win->renderer = SDL_CreateRenderer(win->sdl_win, -1,
-			SDL_RENDERER_PRESENTVSYNC);
+	SDL_SetWindowPosition(win->sdl_win, SDL_WINDOWPOS_CENTERED,
+		SDL_WINDOWPOS_CENTERED);
+	win->renderer = SDL_CreateRenderer(win->sdl_win, NULL);
 	if (!win->renderer)
 		return (free_win(win), NULL);
+	SDL_SetRenderVSync(win->renderer, 1);
 	win->texture = SDL_CreateTexture(win->renderer, SDL_PIXELFORMAT_ARGB8888,
 			SDL_TEXTUREACCESS_STREAMING, w, h);
 	if (!win->texture)
