@@ -50,9 +50,9 @@ void	change_resolution(t_game *game, int width, int height)
 	create_window(game);
 }
 
-// creates window, image, hooks and starts event loop
+// creates window, image and hooks, does not start the event loop
 // takes: game struct with mlx initialized and dimensions set
-// mutates: creates window, image, registers hooks, starts loop
+// mutates: creates window, image, registers hooks
 void	create_window(t_game *game)
 {
 	game->win = mlx_new_window(game->mlx, game->win_width, game->win_height,
@@ -68,5 +68,4 @@ void	create_window(t_game *game)
 	mlx_hook(game->win, MLX_MOTIONNOTIFY, MLX_POINTERMOTIONMASK,
 		mouse_move, game);
 	mlx_hook(game->win, MLX_DESTROYNOTIFY, MLX_NOEVENTMASK, close_window, game);
-	mlx_loop(game->mlx);
 }
