@@ -61,20 +61,11 @@
     var Module = {
       canvas: canvas,
       arguments: ['maps/' + mapName + '.cub'],
-      print: function (text) {
-        console.log(text);
-      },
-      printErr: function (text) {
-        console.error(text);
-      },
       setStatus: function (text) {
         if (!text)
           statusEl.style.display = 'none';
         else
           statusEl.textContent = text;
-      },
-      onRuntimeInitialized: function () {
-        statusEl.style.display = 'none';
       }
     };
   </script>

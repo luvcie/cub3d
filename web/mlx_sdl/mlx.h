@@ -2,7 +2,6 @@
 # define MLX_H
 
 // drop-in replacement for minilibx-linux, implemented on SDL2
-// see mlx_sdl.c for behaviour notes
 
 void	*mlx_init(void);
 int		mlx_get_screen_size(void *mlx, int *w, int *h);

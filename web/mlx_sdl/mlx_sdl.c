@@ -26,9 +26,7 @@
 #define X11_KEY_DOWN 65364
 
 #define GLYPH_SIZE 8
-#define GLYPH_ADVANCE 8
 #define XPM_MAX_CPP 2
-#define XPM_COLOR_NONE 0
 
 typedef struct s_hook
 {
@@ -69,8 +67,6 @@ typedef struct s_xpm_color
 	uint32_t	color;
 }	t_xpm_color;
 
-// takes: hook slot, callback, parameter
-// mutates: stores both in the slot
 static void	set_hook(t_hook *hook, int (*fn)(), void *param)
 {
 	hook->fn = fn;
@@ -108,61 +104,24 @@ static int	map_keycode(SDL_Keycode key)
 	return ((int)key);
 }
 
-// takes: mlx, keycode, released flag
-// mutates: may run the key hook, which can destroy or recreate the window
-static void	call_key(t_mlx *mlx, int keycode, int released)
+// hooks are stored as plain int (*)(); each call casts to the real signature,
+// because WebAssembly traps when a call's signature does not match the callee
+static void	call_key(t_hook *hook, int keycode)
 {
-	t_win	*win;
-	int		(*fn)();
-	void	*param;
-
-	win = mlx->win;
-	if (!win)
-		return ;
-	if (released)
-	{
-		fn = win->on_key_release.fn;
-		param = win->on_key_release.param;
-	}
-	else
-	{
-		fn = win->on_key_press.fn;
-		param = win->on_key_press.param;
-	}
-	if (fn)
-		((int (*)(int, void *))fn)(keycode, param);
+	if (hook->fn)
+		((int (*)(int, void *))hook->fn)(keycode, hook->param);
 }
 
-// takes: mlx, pointer position
-// mutates: may run the motion hook
-static void	call_motion(t_mlx *mlx, int x, int y)
+static void	call_motion(t_hook *hook, int x, int y)
 {
-	t_win	*win;
-	int		(*fn)();
-	void	*param;
-
-	win = mlx->win;
-	if (!win || !win->on_motion.fn)
-		return ;
-	fn = win->on_motion.fn;
-	param = win->on_motion.param;
-	((int (*)(int, int, void *))fn)(x, y, param);
+	if (hook->fn)
+		((int (*)(int, int, void *))hook->fn)(x, y, hook->param);
 }
 
-// takes: mlx
-// mutates: may run the destroy hook (window close)
-static void	call_destroy(t_mlx *mlx)
+static void	call_param(t_hook *hook)
 {
-	t_win	*win;
-	int		(*fn)();
-	void	*param;
-
-	win = mlx->win;
-	if (!win || !win->on_destroy.fn)
-		return ;
-	fn = win->on_destroy.fn;
-	param = win->on_destroy.param;
-	((int (*)(void *))fn)(param);
+	if (hook->fn)
+		((int (*)(void *))hook->fn)(hook->param);
 }
 
 // takes: mlx
@@ -170,6 +129,7 @@ static void	call_destroy(t_mlx *mlx)
 static void	poll_events(t_mlx *mlx)
 {
 	SDL_Event	e;
+	t_win		*win;
 
 	while (SDL_PollEvent(&e))
 	{
@@ -179,15 +139,19 @@ static void	poll_events(t_mlx *mlx)
 			&& e.key.keysym.sym == SDLK_ESCAPE)
 			continue ;
 #endif
+		// a hook may destroy or recreate the window, so re-read it per event
+		win = mlx->win;
+		if (!win)
+			continue ;
 		if (e.type == SDL_KEYDOWN && !e.key.repeat)
-			call_key(mlx, map_keycode(e.key.keysym.sym), 0);
+			call_key(&win->on_key_press, map_keycode(e.key.keysym.sym));
 		else if (e.type == SDL_KEYUP)
-			call_key(mlx, map_keycode(e.key.keysym.sym), 1);
+			call_key(&win->on_key_release, map_keycode(e.key.keysym.sym));
 		else if (e.type == SDL_MOUSEMOTION)
-			call_motion(mlx, e.motion.x, e.motion.y);
+			call_motion(&win->on_motion, e.motion.x, e.motion.y);
 		else if (e.type == SDL_QUIT
 			|| (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_CLOSE))
-			call_destroy(mlx);
+			call_param(&win->on_destroy);
 	}
 }
 
@@ -215,8 +179,7 @@ static void	step(void *mlx_ptr)
 
 	mlx = mlx_ptr;
 	poll_events(mlx);
-	if (mlx->on_loop.fn)
-		((int (*)(void *))mlx->on_loop.fn)(mlx->on_loop.param);
+	call_param(&mlx->on_loop);
 	present(mlx);
 }
 
@@ -418,14 +381,14 @@ int	mlx_string_put(void *mlx, void *win_ptr, int x, int y, int color,
 	i = 0;
 	while (str[i])
 	{
-		draw_glyph(win_ptr, x + i * GLYPH_ADVANCE, y - GLYPH_SIZE,
+		draw_glyph(win_ptr, x + i * GLYPH_SIZE, y - GLYPH_SIZE,
 			(uint32_t)color, (unsigned char)str[i]);
 		i++;
 	}
 	return (0);
 }
 
-// takes: image, output bpp/line_len/endian
+// takes: image
 // mutates: frees img pixels and img
 int	mlx_destroy_image(void *mlx, void *img_ptr)
 {
@@ -462,8 +425,6 @@ int	mlx_destroy_display(void *mlx_ptr)
 	t_mlx	*mlx;
 
 	mlx = mlx_ptr;
-	if (!mlx)
-		return (-1);
 	if (mlx->win)
 		mlx_destroy_window(mlx, mlx->win);
 	SDL_Quit();
@@ -497,8 +458,6 @@ int	mlx_loop_hook(void *mlx_ptr, int (*funct)(), void *param)
 	t_mlx	*mlx;
 
 	mlx = mlx_ptr;
-	if (!mlx)
-		return (-1);
 	set_hook(&mlx->on_loop, funct, param);
 	return (0);
 }
@@ -619,7 +578,7 @@ static int	parse_color_line(char *s, int cpp, t_xpm_color *ent)
 		p++;
 	if (strncmp(p, "None", 4) == 0 && (p[4] == '\0' || isspace((unsigned char)p[4])))
 	{
-		ent->color = XPM_COLOR_NONE;
+		ent->color = 0;
 		return (1);
 	}
 	if (*p != '#')
@@ -730,9 +689,7 @@ void	*mlx_xpm_file_to_image(void *mlx, char *file, int *w, int *h)
 	free(buf);
 	if (!ok)
 		return (mlx_destroy_image(mlx, img), NULL);
-	if (w)
-		*w = cols;
-	if (h)
-		*h = rows;
+	*w = cols;
+	*h = rows;
 	return (img);
 }
