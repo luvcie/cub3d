@@ -50,9 +50,9 @@
     var statusEl = document.getElementById('status');
     var canvas = document.getElementById('canvas');
 
-    var mapName = new URLSearchParams(location.search).get('map') || 'maze';
+    var mapName = new URLSearchParams(location.search).get('map') || 'pillars';
     if (!/^[a-z_]+$/.test(mapName))
-      mapName = 'maze';
+      mapName = 'pillars';
 
     canvas.addEventListener('click', function () {
       canvas.focus();

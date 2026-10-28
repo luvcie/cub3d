@@ -173,6 +173,12 @@ static void	poll_events(t_mlx *mlx)
 
 	while (SDL_PollEvent(&e))
 	{
+#ifdef __EMSCRIPTEN__
+		// browsers use ESC to leave fullscreen/pointer lock, not the game
+		if ((e.type == SDL_KEYDOWN || e.type == SDL_KEYUP)
+			&& e.key.keysym.sym == SDLK_ESCAPE)
+			continue ;
+#endif
 		if (e.type == SDL_KEYDOWN && !e.key.repeat)
 			call_key(mlx, map_keycode(e.key.keysym.sym), 0);
 		else if (e.type == SDL_KEYUP)
