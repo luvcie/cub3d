@@ -62,10 +62,13 @@ void	create_window(t_game *game)
 			&game->line_len, &game->endian);
 	game->mouse_x = game->win_width / 2;
 	game->last_time = 0;
-	mlx_loop_hook(game->mlx, render, game);
-	mlx_hook(game->win, MLX_KEYPRESS, MLX_KEYPRESSMASK, key_press, game);
-	mlx_hook(game->win, MLX_KEYRELEASE, MLX_KEYRELEASEMASK, key_release, game);
+	mlx_loop_hook(game->mlx, (t_mlx_hook)render, game);
+	mlx_hook(game->win, MLX_KEYPRESS, MLX_KEYPRESSMASK,
+		(t_mlx_hook)key_press, game);
+	mlx_hook(game->win, MLX_KEYRELEASE, MLX_KEYRELEASEMASK,
+		(t_mlx_hook)key_release, game);
 	mlx_hook(game->win, MLX_MOTIONNOTIFY, MLX_POINTERMOTIONMASK,
-		mouse_move, game);
-	mlx_hook(game->win, MLX_DESTROYNOTIFY, MLX_NOEVENTMASK, close_window, game);
+		(t_mlx_hook)mouse_move, game);
+	mlx_hook(game->win, MLX_DESTROYNOTIFY, MLX_NOEVENTMASK,
+		(t_mlx_hook)close_window, game);
 }

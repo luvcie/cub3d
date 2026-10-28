@@ -12,7 +12,7 @@
 
 NAME = cub3D
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -std=c99
+CFLAGS = -Wall -Wextra -Werror -Wno-cast-function-type -std=c2y
 
 SRC_DIR = src
 INC_DIR = include

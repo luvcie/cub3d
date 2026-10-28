@@ -78,6 +78,10 @@ typedef struct s_keys
 	bool	right;
 }	t_keys;
 
+// minilibx declares hooks as int (*)(), which since C23 means no arguments,
+// so hooks are cast to this type when registered
+typedef int	(*t_mlx_hook)(void);
+
 typedef struct s_point
 {
 	int	x;
