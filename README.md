@@ -90,6 +90,31 @@ C 225,30,0
 111111
 ```
 
+## Browser build
+
+The game also builds to WebAssembly with Emscripten, through an SDL2 version of the miniLibX API in `web/mlx_sdl/`. The only change to the game sources is that `mlx_loop` is called from `main()` instead of `create_window()`, since the browser can only register one main loop.
+
+On NixOS:
+
+```bash
+nix-shell -p emscripten python3 gnumake --run 'export EM_CACHE=$HOME/.cache/emscripten; make -C web wasm'
+nix-shell -p python3 --run 'make -C web serve'
+```
+
+Then open http://localhost:8000. The first build takes a few minutes because emcc builds its libraries into `EM_CACHE`.
+
+Pick a map with `?map=<name>`, e.g. `http://localhost:8000/?map=maze`. The default is `pillars`. Available maps are `corridor`, `maze`, `pillars`, `test` and `test_big`. Only lowercase letters and `_` are accepted; anything else falls back to `pillars`. To add a map, drop a `.cub` file in `maps/` and rebuild, since the folder is preloaded into the wasm bundle.
+
+The output is four files in `web/dist/`: `index.html`, `index.js`, `index.wasm` and `index.data`. Serve them from any static host, or embed `index.html` in an `<iframe>`.
+
+Differences from the native build:
+
+- ESC does nothing in the browser. The native ESC handler calls `exit()`, which would stop the page.
+- `mlx_get_screen_size` reports 1280x720, so key `6` picks that size.
+- Mouse look only works while the cursor is over the canvas.
+
+To test the shim without a browser, build the native SDL binary with `nix-shell -p SDL2 pkg-config --run 'make -C web'`. It produces `web/cub3D_sdl`.
+
 ## Features
 
 - Textured walls (XPM format)
@@ -120,7 +145,7 @@ C 225,30,0
 | `R` | Toggle ray debug |
 | `H` | Help menu |
 | `1` to `6` | Resolution presets |
-| `ESC` | Quit |
+| `ESC` | Quit (native only) |
 
 ## Resources
 
