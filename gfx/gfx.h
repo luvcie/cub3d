@@ -36,7 +36,7 @@ t_image	*gfx_frame(t_gfx *gfx);
 void	gfx_run(t_gfx *gfx, const t_gfx_hooks *hooks);
 
 t_image	*gfx_new_image(int w, int h);
-t_image	*gfx_load_xpm(const char *path);
+t_image	*gfx_load_bmp(const char *path);
 void	gfx_free_image(t_image *img);
 void	gfx_draw_text(t_gfx *gfx, int x, int y, uint32_t color,
 			const char *s);

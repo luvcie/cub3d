@@ -14,7 +14,7 @@ GFX_SRCS = ../gfx/gfx.c
 
 WASM_OBJS = $(patsubst ../%.c,$(WASM_OBJ_DIR)/%.o,$(GAME_SRCS) $(LIBFT_SRCS) $(GFX_SRCS))
 
-ASSETS = $(wildcard ../maps/*.cub) $(wildcard ../textures/XPMs/*.xpm)
+ASSETS = $(wildcard ../maps/*.cub) $(wildcard ../textures/*.bmp)
 
 INC = -I ../gfx -I ../include -I ../libft
 
@@ -24,7 +24,7 @@ EMCC = emcc
 EMCC_CFLAGS = -Wall -Wextra -Werror -std=c2y -O2 -sUSE_SDL=3 -Wno-experimental
 EMCC_LDFLAGS = -O2 -sUSE_SDL=3 -Wno-experimental -sALLOW_MEMORY_GROWTH=1 \
 	--preload-file ../maps@/maps \
-	--preload-file ../textures/XPMs@/textures/XPMs \
+	--preload-file ../textures@/textures \
 	--shell-file shell.html -lm
 
 wasm: $(WASM_OUT)

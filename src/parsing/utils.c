@@ -48,7 +48,7 @@ void	find_player(t_game *game)
 	}
 }
 
-// extracts path from config line like "NO ./path/to/texture.xpm"
+// extracts path from config line like "NO ./path/to/texture.bmp"
 char	*parse_texture_path(t_game *game, char *line)
 {
 	char	*path;

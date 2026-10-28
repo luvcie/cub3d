@@ -1,9 +1,8 @@
-// Window, input, drawing and XPM loading on top of SDL3.
+// Window, input, drawing and BMP loading on top of SDL3.
 // The frame is a 0x00RRGGBB buffer, shown once per loop iteration.
 
 #include "gfx.h"
 #include <SDL3/SDL.h>
-#include <ctype.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,8 +10,6 @@
 #ifdef __EMSCRIPTEN__
 # include <emscripten.h>
 #endif
-
-#define XPM_MAX_CPP 2
 
 struct s_gfx
 {
@@ -22,12 +19,6 @@ struct s_gfx
 	t_image			*frame;
 	t_gfx_hooks		hooks;
 };
-
-typedef struct s_xpm_color
-{
-	char		key[XPM_MAX_CPP];
-	uint32_t	color;
-}	t_xpm_color;
 
 // takes: gfx after a failed step of gfx_init
 // returns: NULL, after printing the SDL error and freeing gfx
@@ -233,222 +224,41 @@ t_image	*gfx_new_image(int w, int h)
 	return (img);
 }
 
-// takes: path
-// returns: malloc'd file contents (NUL terminated), size in *len, or NULL
-static char	*read_file(const char *path, long *len)
+// takes: converted surface, image of the same size
+// mutates: copies the rows into img->pixels, skipping the row padding
+static void	copy_rows(SDL_Surface *conv, t_image *img)
 {
-	FILE	*f;
-	char	*buf;
+	const uint8_t	*src;
+	int				y;
 
-	f = fopen(path, "rb");
-	if (!f)
-		return (NULL);
-	if (fseek(f, 0, SEEK_END) != 0 || (*len = ftell(f)) < 0
-		|| fseek(f, 0, SEEK_SET) != 0)
-		return (fclose(f), NULL);
-	buf = malloc(*len + 1);
-	if (!buf)
-		return (fclose(f), NULL);
-	if (fread(buf, 1, (size_t)*len, f) != (size_t)*len)
+	y = -1;
+	while (++y < img->h)
 	{
-		free(buf);
-		fclose(f);
-		return (NULL);
+		src = (const uint8_t *)conv->pixels + (size_t)y * conv->pitch;
+		memcpy(img->pixels + (size_t)y * img->w, src,
+			(size_t)img->w * sizeof(uint32_t));
 	}
-	buf[*len] = '\0';
-	fclose(f);
-	return (buf);
 }
 
-// takes: file buffer, its length, read cursor
-// returns: malloc'd copy of the next "..." literal, skipping comments and
-//          other text; NULL at end of input
-static char	*next_literal(char *buf, long len, long *pos)
+// takes: path to a BMP file
+// returns: new image (0x00RRGGBB pixels), or NULL on any read error
+t_image	*gfx_load_bmp(const char *path)
 {
-	long	start;
-	long	end;
-	char	*lit;
-
-	while (*pos < len)
-	{
-		if (buf[*pos] == '/' && *pos + 1 < len && buf[*pos + 1] == '*')
-		{
-			*pos += 2;
-			while (*pos + 1 < len && !(buf[*pos] == '*' && buf[*pos + 1] == '/'))
-				(*pos)++;
-			*pos += 2;
-		}
-		else if (buf[*pos] == '"')
-		{
-			(*pos)++;
-			start = *pos;
-			while (*pos < len && buf[*pos] != '"')
-				(*pos)++;
-			if (*pos >= len)
-				return (NULL);
-			end = *pos;
-			(*pos)++;
-			lit = malloc(end - start + 1);
-			if (!lit)
-				return (NULL);
-			memcpy(lit, buf + start, end - start);
-			lit[end - start] = '\0';
-			return (lit);
-		}
-		else
-			(*pos)++;
-	}
-	return (NULL);
-}
-
-// takes: header string "cols rows ncolors cpp"
-// mutates: sets the four values, returns 1 if valid and supported
-static int	parse_header(char *s, int *cols, int *rows, int *ncolors, int *cpp)
-{
-	if (sscanf(s, "%d %d %d %d", cols, rows, ncolors, cpp) != 4)
-		return (0);
-	return (*cols > 0 && *rows > 0 && *ncolors > 0
-		&& *cpp >= 1 && *cpp <= XPM_MAX_CPP);
-}
-
-// takes: color line such as "X c #5B5B50" or "  c None", cpp, entry
-// mutates: fills entry key and color, returns 1 on success
-static int	parse_color_line(char *s, int cpp, t_xpm_color *ent)
-{
-	char	*p;
-	char	*end;
-	int		i;
-
-	i = -1;
-	while (++i < cpp)
-	{
-		if (s[i] == '\0')
-			return (0);
-		ent->key[i] = s[i];
-	}
-	p = s + cpp;
-	if (!isspace((unsigned char)*p))
-		return (0);
-	while (isspace((unsigned char)*p))
-		p++;
-	if (p[0] != 'c' || !isspace((unsigned char)p[1]))
-		return (0);
-	p += 2;
-	while (isspace((unsigned char)*p))
-		p++;
-	if (strncmp(p, "None", 4) == 0 && (p[4] == '\0' || isspace((unsigned char)p[4])))
-	{
-		ent->color = 0;
-		return (1);
-	}
-	if (*p != '#')
-		return (0);
-	ent->color = (uint32_t)strtoul(p + 1, &end, 16);
-	return (end - (p + 1) == 6);
-}
-
-// takes: file buffer, length, cursor, cpp, number of colors
-// returns: malloc'd palette, or NULL on error
-static t_xpm_color	*read_palette(char *buf, long len, long *pos, int cpp,
-		int ncolors)
-{
-	t_xpm_color	*tab;
-	char		*lit;
-	int			i;
-
-	tab = malloc(sizeof(t_xpm_color) * ncolors);
-	if (!tab)
-		return (NULL);
-	i = -1;
-	while (++i < ncolors)
-	{
-		lit = next_literal(buf, len, pos);
-		if (!lit || !parse_color_line(lit, cpp, &tab[i]))
-		{
-			free(lit);
-			free(tab);
-			return (NULL);
-		}
-		free(lit);
-	}
-	return (tab);
-}
-
-// takes: palette, cpp, key pointer
-// returns: color for the key, or NULL if not in the palette
-static uint32_t	*find_color(t_xpm_color *tab, int ncolors, int cpp, char *key)
-{
-	int	i;
-
-	i = -1;
-	while (++i < ncolors)
-	{
-		if (memcmp(tab[i].key, key, cpp) == 0)
-			return (&tab[i].color);
-	}
-	return (NULL);
-}
-
-// takes: file buffer, length, cursor, image, cpp, palette, ncolors
-// mutates: fills img->pixels, returns 1 on success
-static int	read_pixels(char *buf, long len, long *pos, t_image *img, int cpp,
-		t_xpm_color *tab, int ncolors)
-{
-	char		*lit;
-	uint32_t	*color;
-	int			row;
-	int			col;
-
-	row = -1;
-	while (++row < img->h)
-	{
-		lit = next_literal(buf, len, pos);
-		if (!lit || (long)strlen(lit) < (long)img->w * cpp)
-			return (free(lit), 0);
-		col = -1;
-		while (++col < img->w)
-		{
-			color = find_color(tab, ncolors, cpp, lit + col * cpp);
-			if (!color)
-				return (free(lit), 0);
-			img->pixels[row * img->w + col] = *color;
-		}
-		free(lit);
-	}
-	return (1);
-}
-
-// takes: path
-// returns: new image (0x00RRGGBB pixels), or NULL on any read or parse error
-t_image	*gfx_load_xpm(const char *path)
-{
-	char		*buf;
-	char		*head;
-	long		len;
-	long		pos;
-	int			cols;
-	int			rows;
-	int			ncolors;
-	int			cpp;
-	t_xpm_color	*tab;
+	SDL_Surface	*surf;
+	SDL_Surface	*conv;
 	t_image		*img;
-	int			ok;
 
-	buf = read_file(path, &len);
-	if (!buf)
+	surf = SDL_LoadBMP(path);
+	if (!surf)
 		return (NULL);
-	pos = 0;
-	head = next_literal(buf, len, &pos);
-	if (!head || !parse_header(head, &cols, &rows, &ncolors, &cpp))
-		return (free(head), free(buf), NULL);
-	free(head);
-	img = gfx_new_image(cols, rows);
-	tab = read_palette(buf, len, &pos, cpp, ncolors);
-	ok = img && tab && read_pixels(buf, len, &pos, img, cpp, tab, ncolors);
-	free(tab);
-	free(buf);
-	if (!ok)
-		return (gfx_free_image(img), NULL);
+	conv = SDL_ConvertSurface(surf, SDL_PIXELFORMAT_XRGB8888);
+	SDL_DestroySurface(surf);
+	if (!conv)
+		return (NULL);
+	img = gfx_new_image(conv->w, conv->h);
+	if (img)
+		copy_rows(conv, img);
+	SDL_DestroySurface(conv);
 	return (img);
 }
 

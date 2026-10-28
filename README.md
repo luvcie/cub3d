@@ -72,10 +72,10 @@ order:
 
 | Identifier | Meaning |
 |------------|---------|
-| `NO <path>` | North wall texture (`.xpm`) |
-| `SO <path>` | South wall texture (`.xpm`) |
-| `WE <path>` | West wall texture (`.xpm`) |
-| `EA <path>` | East wall texture (`.xpm`) |
+| `NO <path>` | North wall texture (`.bmp`) |
+| `SO <path>` | South wall texture (`.bmp`) |
+| `WE <path>` | West wall texture (`.bmp`) |
+| `EA <path>` | East wall texture (`.bmp`) |
 | `F R,G,B`   | Floor color (each channel in `0` to `255`) |
 | `C R,G,B`   | Ceiling color (each channel in `0` to `255`) |
 
@@ -86,10 +86,10 @@ map must be fully closed by walls.
 Example:
 
 ```
-NO ./textures/XPMs/north.xpm
-SO ./textures/XPMs/south.xpm
-WE ./textures/XPMs/west.xpm
-EA ./textures/XPMs/east.xpm
+NO ./textures/north.bmp
+SO ./textures/south.bmp
+WE ./textures/west.bmp
+EA ./textures/east.bmp
 
 F 220,100,0
 C 225,30,0
@@ -126,7 +126,7 @@ In the browser:
 
 ## Features
 
-- Textured walls (XPM format)
+- Textured walls (BMP format)
 - Floor and ceiling colors from map config
 - Smooth movement with delta time
 - Mouse look
