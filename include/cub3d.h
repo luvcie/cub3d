@@ -13,7 +13,6 @@
 # define CUB3D_H
 
 # include "mlx.h"
-# include "mlx_events.h"
 # include "libft.h"
 # include <unistd.h>
 # include <stdlib.h>
