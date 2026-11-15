@@ -269,9 +269,9 @@ static void test_full_map(t_game *game)
 static void test_level_maps(void)
 {
 	const char *maps[] = {"maps/test.cub", "maps/test_big.cub", "maps/maze.cub",
-		"maps/pillars.cub", "maps/corridor.cub"};
+		"maps/pillars.cub", "maps/corridor.cub", "maps/ivory.cub", "maps/iris.cub"};
 
-	for (int i = 0; i < 5; i++)
+	for (size_t i = 0; i < sizeof(maps) / sizeof(*maps); i++)
 	{
 		t_game game = {0};
 		parse_map((char *)maps[i], &game);

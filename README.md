@@ -63,7 +63,7 @@ The program expects exactly one argument, a path to a `.cub` scene file:
 ```
 
 Example maps are available in `maps/` (`test.cub`, `corridor.cub`, `maze.cub`,
-`pillars.cub`, `test_big.cub`).
+`pillars.cub`, `test_big.cub`, `ivory.cub`, `iris.cub`).
 
 ### Scene file format
 
@@ -114,7 +114,7 @@ nix-shell -p python3 --run 'make -C web serve'
 
 Then open http://localhost:8000. The first build takes a few minutes because emcc builds its libraries into `EM_CACHE`.
 
-Pick a map with `?map=<name>`, e.g. `http://localhost:8000/?map=maze`. The default is `pillars`. Available maps are `corridor`, `maze`, `pillars`, `test` and `test_big`. Only lowercase letters and `_` are accepted; anything else falls back to `pillars`. To add a map, drop a `.cub` file in `maps/` and rebuild, since the folder is preloaded into the wasm bundle.
+Pick a map with `?map=<name>`, e.g. `http://localhost:8000/?map=maze`. The default is `pillars`. Available maps are `corridor`, `iris`, `ivory`, `maze`, `pillars`, `test` and `test_big`. Only lowercase letters and `_` are accepted; anything else falls back to `pillars`. To add a map, drop a `.cub` file in `maps/` and rebuild, since the folder is preloaded into the wasm bundle.
 
 For an automatic, unobstructed view, add `screensaver=1`, for example `?map=maze&screensaver=1`. This mode walks through the map automatically and ignores movement controls, making it suitable for an iframe in a portfolio. It also works natively with `./cub3D --screensaver maps/maze.cub`.
 
