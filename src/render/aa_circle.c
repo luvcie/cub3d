@@ -27,19 +27,19 @@ static void	draw_edge_pixel(t_game *game, t_point p, int color, int intensity)
 }
 
 // Edge coverage falls from 256 to 0 across squared radii r*r-r to r*r+r.
-static int	calc_intensity(unsigned int rmax, unsigned int sqd, int r)
+static int	calc_intensity(unsigned int rmax, double sqd, int r)
 {
 	return ((rmax - sqd) * 256 / (2 * r));
 }
 
-static void	draw_circle_row(t_game *game, t_point c, int *params, int y)
+static void	draw_circle_row(t_game *game, t_point_f c, int *params, int y)
 {
 	int				x;
-	unsigned int	sqd;
+	double			sqd;
 	t_point			p;
 
-	x = c.x - params[0];
-	while (x <= c.x + params[0])
+	x = floor(c.x - params[0]);
+	while (x <= ceil(c.x + params[0]))
 	{
 		sqd = (x - c.x) * (x - c.x) + (y - c.y) * (y - c.y);
 		p = (t_point){x, y};
@@ -52,7 +52,7 @@ static void	draw_circle_row(t_game *game, t_point c, int *params, int y)
 	}
 }
 
-void	draw_circle_aa(t_game *game, t_point center, int r, int color)
+void	draw_circle_aa(t_game *game, t_point_f center, int r, int color)
 {
 	int	y;
 	int	params[4];
@@ -61,8 +61,8 @@ void	draw_circle_aa(t_game *game, t_point center, int r, int color)
 	params[1] = r * r - r;
 	params[2] = r * r + r;
 	params[3] = color;
-	y = center.y - r;
-	while (y <= center.y + r)
+	y = floor(center.y - r);
+	while (y <= ceil(center.y + r))
 	{
 		draw_circle_row(game, center, params, y);
 		y++;

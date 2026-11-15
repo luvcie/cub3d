@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-static void	draw_minimap_rect(t_game *game, t_point pos, t_point end,
+static void	draw_minimap_rect(t_game *game, t_point_f pos, t_point_f end,
 		int color, int opacity)
 {
 	int	x;
@@ -21,6 +21,8 @@ static void	draw_minimap_rect(t_game *game, t_point pos, t_point end,
 	pos.y = fmax(pos.y, game->minimap.pos.y);
 	end.x = fmin(end.x, game->minimap.pos.x + game->minimap.size);
 	end.y = fmin(end.y, game->minimap.pos.y + game->minimap.size);
+	end.x = floor(end.x);
+	end.y = floor(end.y);
 	y = pos.y;
 	while (y < end.y)
 	{
@@ -44,8 +46,8 @@ static void	draw_map_tiles(t_game *game)
 	int		y;
 	int		color;
 	int		opacity;
-	t_point	pos;
-	t_point	end;
+	t_point_f	pos;
+	t_point_f	end;
 
 	opacity = 255;
 	if (game->map_mode == MAP_FULL)
@@ -63,7 +65,7 @@ static void	draw_map_tiles(t_game *game)
 			pos = world_to_minimap(game, (double)x, (double)y);
 			end = world_to_minimap(game, x + 1.0, y + 1.0);
 			if (game->minimap.scale >= 4)
-				end = (t_point){end.x - 1, end.y - 1};
+				end = (t_point_f){end.x - 1, end.y - 1};
 			draw_minimap_rect(game, pos, end, color, opacity);
 			x++;
 		}
@@ -86,8 +88,8 @@ static void	draw_player(t_game *game)
 	{
 		init_ray(game, &ray, edge * (game->win_width - 1));
 		length = hypot(ray.dir_x, ray.dir_y);
-		line.p1.x = line.p0.x + (int)(14 * ray.dir_x / length);
-		line.p1.y = line.p0.y + (int)(14 * ray.dir_y / length);
+		line.p1.x = line.p0.x + 14 * ray.dir_x / length;
+		line.p1.y = line.p0.y + 14 * ray.dir_y / length;
 		draw_line_aa(game, line);
 		edge++;
 	}
@@ -114,13 +116,15 @@ static void	draw_minimap_border(t_game *game)
 
 void	draw_minimap(t_game *game)
 {
-	t_point	end;
+	t_point_f	pos;
+	t_point_f	end;
 
 	if (game->map_mode == MAP_FULL)
 	{
+		pos = (t_point_f){game->minimap.pos.x, game->minimap.pos.y};
 		end.x = game->minimap.pos.x + game->minimap.size;
 		end.y = game->minimap.pos.y + game->minimap.size;
-		draw_minimap_rect(game, game->minimap.pos, end, 0x111111, 96);
+		draw_minimap_rect(game, pos, end, 0x111111, 96);
 	}
 	draw_map_tiles(game);
 	if (game->show_rays)

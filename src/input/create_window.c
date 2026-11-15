@@ -45,7 +45,7 @@ void	init_view(t_game *game)
 	game->win_width = game->frame->w;
 	game->win_height = game->frame->h;
 	free(game->ray_hits);
-	game->ray_hits = malloc(sizeof(t_point) * game->win_width);
+	game->ray_hits = malloc(sizeof(*game->ray_hits) * game->win_width);
 	if (!game->ray_hits)
 	{
 		printf("Error\nFailed to allocate ray endpoints\n");

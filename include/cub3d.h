@@ -82,10 +82,16 @@ typedef struct s_point
 	int	y;
 }	t_point;
 
+typedef struct s_point_f
+{
+	double	x;
+	double	y;
+}	t_point_f;
+
 typedef struct s_line
 {
-	t_point	p0;
-	t_point	p1;
+	t_point_f	p0;
+	t_point_f	p1;
 	int		color;
 }	t_line;
 
@@ -158,7 +164,7 @@ typedef struct s_game
 	t_map_mode	map_mode;
 	t_minimap_view	minimap;
 	bool	show_help;
-	t_point	*ray_hits;
+	t_point_f	*ray_hits;
 	t_image	*tex[4];
 }	t_game;
 
@@ -173,12 +179,12 @@ void	process_movement(t_game *game);
 void	screensaver_step(t_game *game);
 void	draw_minimap(t_game *game);
 void	update_minimap_view(t_game *game);
-t_point	world_to_minimap(t_game *game, double wx, double wy);
+t_point_f	world_to_minimap(t_game *game, double wx, double wy);
 void	draw_help_menu(t_game *game);
 void	render(void *param);
 void	draw_overlay(void *param);
 void	put_pixel(t_game *game, int x, int y, int color);
-void	draw_circle_aa(t_game *game, t_point center, int r, int color);
+void	draw_circle_aa(t_game *game, t_point_f center, int r, int color);
 void	draw_line_aa(t_game *game, t_line line);
 int		blend_color(int fg, int bg, int intensity);
 int		get_pixel_color(t_game *game, int x, int y);
@@ -186,7 +192,7 @@ int		get_pixel_color(t_game *game, int x, int y);
 // raycasting
 void	render_3d(t_game *game);
 void	draw_rays_minimap(t_game *game);
-t_point	minimap_ray_hit(t_game *game, const t_ray *ray);
+t_point_f	minimap_ray_hit(t_game *game, const t_ray *ray);
 void	load_textures(t_game *game);
 int		get_tex_pixel(t_image *tex, int x, int y);
 void	init_ray(t_game *game, t_ray *ray, int x);

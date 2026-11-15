@@ -11,9 +11,9 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-static void	swap_int(int *a, int *b)
+static void	swap_double(double *a, double *b)
 {
-	int	tmp;
+	double	tmp;
 
 	tmp = *a;
 	*a = *b;
@@ -35,36 +35,39 @@ static void	plot_aa(t_game *game, t_point p, int color, int intensity)
 	put_pixel(game, p.x, p.y, blend_color(color, bg, intensity));
 }
 
-static void	draw_aa_pixels(t_game *game, int color, int *coords, int steep)
+static void	draw_aa_pixels(t_game *game, int color, t_point_f at,
+		int steep, double coverage)
 {
 	t_point	p;
+	double	fraction;
 
+	fraction = at.y - floor(at.y);
 	if (steep)
-		p = (t_point){coords[1] / 256, coords[0]};
+		p = (t_point){floor(at.y), at.x};
 	else
-		p = (t_point){coords[0], coords[1] / 256};
-	plot_aa(game, p, color, 255 - (coords[1] % 256));
+		p = (t_point){at.x, floor(at.y)};
+	plot_aa(game, p, color, lround(255 * (1 - fraction) * coverage));
 	if (steep)
-		p = (t_point){coords[1] / 256 + 1, coords[0]};
+		p.x++;
 	else
-		p = (t_point){coords[0], coords[1] / 256 + 1};
-	plot_aa(game, p, color, coords[1] % 256);
+		p.y++;
+	plot_aa(game, p, color, lround(255 * fraction * coverage));
 }
 
 static int	prepare_line(t_line *ln)
 {
 	int	steep;
 
-	steep = abs(ln->p1.y - ln->p0.y) > abs(ln->p1.x - ln->p0.x);
+	steep = fabs(ln->p1.y - ln->p0.y) > fabs(ln->p1.x - ln->p0.x);
 	if (steep)
 	{
-		swap_int(&ln->p0.x, &ln->p0.y);
-		swap_int(&ln->p1.x, &ln->p1.y);
+		swap_double(&ln->p0.x, &ln->p0.y);
+		swap_double(&ln->p1.x, &ln->p1.y);
 	}
 	if (ln->p0.x > ln->p1.x)
 	{
-		swap_int(&ln->p0.x, &ln->p1.x);
-		swap_int(&ln->p0.y, &ln->p1.y);
+		swap_double(&ln->p0.x, &ln->p1.x);
+		swap_double(&ln->p0.y, &ln->p1.y);
 	}
 	return (steep);
 }
@@ -72,23 +75,24 @@ static int	prepare_line(t_line *ln)
 // draws an antialiased line using xiaolin wu's algorithm
 void	draw_line_aa(t_game *game, t_line line)
 {
-	int	steep;
-	int	dx;
-	int	gradient;
-	int	coords[2];
+	int		steep;
+	double	dx;
+	double	gradient;
+	double	coverage;
+	t_point_f	at;
 
 	steep = prepare_line(&line);
 	dx = line.p1.x - line.p0.x;
 	if (dx == 0)
-		gradient = 256;
-	else
-		gradient = ((line.p1.y - line.p0.y) * 256) / dx;
-	coords[1] = line.p0.y * 256 + 128;
-	coords[0] = line.p0.x;
-	while (coords[0] <= line.p1.x)
+		return ;
+	gradient = (line.p1.y - line.p0.y) / dx;
+	at.x = floor(line.p0.x + 0.5);
+	while (at.x <= floor(line.p1.x + 0.5))
 	{
-		draw_aa_pixels(game, line.color, coords, steep);
-		coords[1] += gradient;
-		coords[0]++;
+		at.y = line.p0.y + (at.x - line.p0.x) * gradient;
+		coverage = fmin(at.x + 0.5, line.p1.x)
+			- fmax(at.x - 0.5, line.p0.x);
+		draw_aa_pixels(game, line.color, at, steep, coverage);
+		at.x++;
 	}
 }

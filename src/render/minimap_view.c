@@ -22,15 +22,15 @@ void	update_minimap_view(t_game *game)
 	}
 }
 
-t_point	world_to_minimap(t_game *game, double wx, double wy)
+t_point_f	world_to_minimap(t_game *game, double wx, double wy)
 {
 	t_minimap_view	*view;
-	t_point			result;
+	t_point_f		result;
 
 	view = &game->minimap;
 	result.x = view->pos.x + view->size / 2
-		+ (int)((wx - view->world_x) * view->scale);
+		+ (wx - view->world_x) * view->scale;
 	result.y = view->pos.y + view->size / 2
-		+ (int)((wy - view->world_y) * view->scale);
+		+ (wy - view->world_y) * view->scale;
 	return (result);
 }

@@ -20,7 +20,7 @@ static double	axis_limit(double origin, double dir, double center, double half)
 	return (INFINITY);
 }
 
-t_point	minimap_ray_hit(t_game *game, const t_ray *ray)
+t_point_f	minimap_ray_hit(t_game *game, const t_ray *ray)
 {
 	double	hit_x;
 	double	hit_y;
