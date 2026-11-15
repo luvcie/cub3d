@@ -12,8 +12,9 @@
 #ifndef CUB3D_H
 # define CUB3D_H
 
-# include "mlx.h"
 # include "libft.h"
+# include "gfx.h"
+# include <SDL3/SDL_keycode.h>
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdio.h>
@@ -27,22 +28,22 @@
 #  define M_PI 3.14159265358979323846
 # endif
 
-# define KEY_ESC 65307
-# define KEY_W 119
-# define KEY_A 97
-# define KEY_S 115
-# define KEY_D 100
-# define KEY_R 114
-# define KEY_M 109
-# define KEY_H 104
-# define KEY_LEFT 65361
-# define KEY_RIGHT 65363
-# define KEY_1 49
-# define KEY_2 50
-# define KEY_3 51
-# define KEY_4 52
-# define KEY_5 53
-# define KEY_6 54
+# define KEY_ESC SDLK_ESCAPE
+# define KEY_W SDLK_W
+# define KEY_A SDLK_A
+# define KEY_S SDLK_S
+# define KEY_D SDLK_D
+# define KEY_R SDLK_R
+# define KEY_M SDLK_M
+# define KEY_H SDLK_H
+# define KEY_LEFT SDLK_LEFT
+# define KEY_RIGHT SDLK_RIGHT
+# define KEY_1 SDLK_1
+# define KEY_2 SDLK_2
+# define KEY_3 SDLK_3
+# define KEY_4 SDLK_4
+# define KEY_5 SDLK_5
+# define KEY_6 SDLK_6
 
 # define WIN_WIDTH 800
 # define WIN_HEIGHT 600
@@ -90,17 +91,6 @@ typedef struct s_line
 	int		color;
 }	t_line;
 
-typedef struct s_tex
-{
-	void	*img;
-	char	*data;
-	int		width;
-	int		height;
-	int		bpp;
-	int		line_len;
-	int		endian;
-}	t_tex;
-
 typedef struct s_ray
 {
 	double	dir_x;
@@ -122,15 +112,10 @@ typedef struct s_ray
 
 typedef struct s_game
 {
-	void	*mlx;
-	void	*win;
-	void	*img;
-	char	*img_data;
+	t_gfx	*gfx;
+	t_image	*frame;
 	int		win_width;
 	int		win_height;
-	int		bpp;
-	int		line_len;
-	int		endian;
 	double	player_x;
 	double	player_y;
 	double	player_angle;
@@ -153,21 +138,22 @@ typedef struct s_game
 	bool	show_rays;
 	bool	show_minimap;
 	bool	show_help;
-	t_tex	tex[4];
+	t_image	*tex[4];
 }	t_game;
 
-void	create_window(t_game *game);
-int		key_press(int keycode, void *param);
-int		key_release(int keycode, void *param);
-int		mouse_move(int x, int y, void *param);
-int		close_window(void *param);
+void	init_view(t_game *game);
+void	key_press(int keycode, void *param);
+void	key_release(int keycode, void *param);
+void	mouse_move(int x, int y, void *param);
+void	close_window(void *param);
 void	change_resolution(t_game *game, int width, int height);
 void	handle_resolution_keys(int keycode, t_game *game);
 void	process_movement(t_game *game);
 void	draw_minimap(t_game *game);
 t_point	world_to_minimap(t_game *game, double wx, double wy);
 void	draw_help_menu(t_game *game);
-int		render(void *param);
+void	render(void *param);
+void	draw_overlay(void *param);
 void	put_pixel(t_game *game, int x, int y, int color);
 void	draw_rect(t_game *game, t_point pos, int size, int color);
 void	draw_circle_aa(t_game *game, t_point center, int r, int color);
@@ -179,7 +165,7 @@ int		get_pixel_color(t_game *game, int x, int y);
 void	render_3d(t_game *game);
 void	draw_rays_minimap(t_game *game);
 void	load_textures(t_game *game);
-int		get_tex_pixel(t_tex *tex, int x, int y);
+int		get_tex_pixel(t_image *tex, int x, int y);
 void	init_ray(t_game *game, t_ray *ray, int x);
 void	cast_ray(t_game *game, t_ray *ray);
 void	calc_wall(t_game *game, t_ray *ray);

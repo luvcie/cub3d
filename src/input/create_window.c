@@ -31,40 +31,29 @@ void	handle_resolution_keys(int keycode, t_game *game)
 		change_resolution(game, 1920, 1080);
 	else if (keycode == KEY_6)
 	{
-		mlx_get_screen_size(game->mlx, &w, &h);
+		gfx_screen_size(game->gfx, &w, &h);
 		change_resolution(game, w, h);
 	}
 }
 
-// recreates window at new resolution
+// resizes the window and resets the view state
 // takes: game, width, height
-// mutates: destroys old window/image, sets new dimensions, calls create_window
+// mutates: window size, frame, win_width/height, mouse_x, last_time
 void	change_resolution(t_game *game, int width, int height)
 {
-	if (game->img)
-		mlx_destroy_image(game->mlx, game->img);
-	if (game->win)
-		mlx_destroy_window(game->mlx, game->win);
-	game->win_width = width;
-	game->win_height = height;
-	create_window(game);
+	if (gfx_resize(game->gfx, width, height))
+		init_view(game);
 }
 
-// creates window, image and hooks, does not start the event loop
-// takes: game struct with mlx initialized and dimensions set
-// mutates: creates window, image, registers hooks
-void	create_window(t_game *game)
+// takes the frame and size from gfx and resets the view state
+// does not start the event loop, gfx_run does that
+// takes: game struct with gfx initialized
+// mutates: frame, win_width/height, mouse_x, last_time
+void	init_view(t_game *game)
 {
-	game->win = mlx_new_window(game->mlx, game->win_width, game->win_height,
-			"cub3D");
-	game->img = mlx_new_image(game->mlx, game->win_width, game->win_height);
-	game->img_data = mlx_get_data_addr(game->img, &game->bpp,
-			&game->line_len, &game->endian);
+	game->frame = gfx_frame(game->gfx);
+	game->win_width = game->frame->w;
+	game->win_height = game->frame->h;
 	game->mouse_x = game->win_width / 2;
 	game->last_time = 0;
-	mlx_loop_hook(game->mlx, render, game);
-	mlx_key_press_hook(game->win, key_press, game);
-	mlx_key_release_hook(game->win, key_release, game);
-	mlx_motion_hook(game->win, mouse_move, game);
-	mlx_close_hook(game->win, close_window, game);
 }

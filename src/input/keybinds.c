@@ -12,20 +12,11 @@
 #include "cub3d.h"
 
 // takes: void *param (cast to t_game)
-// mutates: destroys window, frees mlx, exits program
-int	close_window(void *param)
+// mutates: frees all game resources and the window, exits program
+void	close_window(void *param)
 {
-	t_game	*game;
-
-	game = (t_game *)param;
-	free_game(game);
-	if (game->img)
-		mlx_destroy_image(game->mlx, game->img);
-	mlx_destroy_window(game->mlx, game->win);
-	mlx_destroy_display(game->mlx);
-	free(game->mlx);
+	free_game((t_game *)param);
 	exit(0);
-	return (0);
 }
 
 // sets/clears movement key flag based on keycode
@@ -49,7 +40,7 @@ static void	set_key(t_game *game, int keycode, bool val)
 
 // takes: keycode, void *param (cast to t_game)
 // mutates: sets key flags, toggles views, or changes resolution
-int	key_press(int keycode, void *param)
+void	key_press(int keycode, void *param)
 {
 	t_game	*game;
 
@@ -62,24 +53,22 @@ int	key_press(int keycode, void *param)
 		game->show_minimap = !game->show_minimap;
 	else if (keycode == KEY_H)
 		game->show_help = !game->show_help;
-	else if (keycode >= KEY_1 && keycode <= KEY_6)
+	else if (keycode >= (int)KEY_1 && keycode <= (int)KEY_6)
 		handle_resolution_keys(keycode, game);
 	else
 		set_key(game, keycode, true);
-	return (0);
 }
 
 // takes: keycode, void *param (cast to t_game)
 // mutates: clears key flags in game->keys
-int	key_release(int keycode, void *param)
+void	key_release(int keycode, void *param)
 {
 	set_key((t_game *)param, keycode, false);
-	return (0);
 }
 
 // takes: x pos, y pos (unused), void *param (cast to t_game)
 // mutates: player_angle based on horizontal mouse delta
-int	mouse_move(int x, int y, void *param)
+void	mouse_move(int x, int y, void *param)
 {
 	t_game	*game;
 	int		delta;
@@ -89,5 +78,4 @@ int	mouse_move(int x, int y, void *param)
 	delta = x - game->mouse_x;
 	game->mouse_x = x;
 	game->player_angle += delta * 0.003;
-	return (0);
 }

@@ -2,7 +2,7 @@
 
 # cub3D
 
-A raycaster inspired by Wolfenstein 3D, built on SDL2 through a MiniLibX-style API.
+A raycaster inspired by Wolfenstein 3D, built on SDL3 through `gfx/`, a small window and drawing library.
 
 ![42 Project](https://img.shields.io/badge/42-Project-blue)
 
@@ -21,20 +21,20 @@ graphics programming in C.
 
 ### Requirements
 
-Linux (tested on Ubuntu, Fedora, and NixOS), a C compiler, GNU make, the SDL2
+Linux (tested on Ubuntu, Fedora, and NixOS), a C compiler, GNU make, the SDL3
 development files, and pkg-config. The code is compiled as C2y (`-std=c2y`), so
 use a recent GCC or Clang.
 
 On Debian or Ubuntu:
 
 ```bash
-sudo apt install libsdl2-dev pkg-config
+sudo apt install libsdl3-dev pkg-config
 ```
 
 On Fedora:
 
 ```bash
-sudo dnf install SDL2-devel pkgconf-pkg-config
+sudo dnf install SDL3-devel pkgconf-pkg-config
 ```
 
 On NixOS, the dependencies are in `shell.nix`.
@@ -72,10 +72,10 @@ order:
 
 | Identifier | Meaning |
 |------------|---------|
-| `NO <path>` | North wall texture (`.xpm`) |
-| `SO <path>` | South wall texture (`.xpm`) |
-| `WE <path>` | West wall texture (`.xpm`) |
-| `EA <path>` | East wall texture (`.xpm`) |
+| `NO <path>` | North wall texture (`.bmp`) |
+| `SO <path>` | South wall texture (`.bmp`) |
+| `WE <path>` | West wall texture (`.bmp`) |
+| `EA <path>` | East wall texture (`.bmp`) |
 | `F R,G,B`   | Floor color (each channel in `0` to `255`) |
 | `C R,G,B`   | Ceiling color (each channel in `0` to `255`) |
 
@@ -86,10 +86,10 @@ map must be fully closed by walls.
 Example:
 
 ```
-NO ./textures/XPMs/north.xpm
-SO ./textures/XPMs/south.xpm
-WE ./textures/XPMs/west.xpm
-EA ./textures/XPMs/east.xpm
+NO ./textures/north.bmp
+SO ./textures/south.bmp
+WE ./textures/west.bmp
+EA ./textures/east.bmp
 
 F 220,100,0
 C 225,30,0
@@ -103,7 +103,7 @@ C 225,30,0
 
 ## Browser build
 
-The game also builds to WebAssembly with Emscripten. Both builds use the same game sources and the same SDL2 backend in `mlx_sdl/`.
+The game also builds to WebAssembly with Emscripten. Both builds use the same game sources and the same SDL3 backend in `gfx/`.
 
 On NixOS:
 
@@ -121,12 +121,12 @@ The output is four files in `web/dist/`: `index.html`, `index.js`, `index.wasm` 
 In the browser:
 
 - ESC does nothing in the browser. The native ESC handler calls `exit()`, which would stop the page.
-- `mlx_get_screen_size` reports 1280x720, so key `6` picks that size.
+- `gfx_screen_size` reports 1280x720, so key `6` picks that size.
 - Mouse look only works while the cursor is over the canvas.
 
 ## Features
 
-- Textured walls (XPM format)
+- Textured walls (BMP format)
 - Floor and ceiling colors from map config
 - Smooth movement with delta time
 - Mouse look

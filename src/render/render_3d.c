@@ -36,19 +36,19 @@ void	init_ray(t_game *game, t_ray *ray, int x)
 // draws the textured wall strip with edge blending
 // takes: game, ray, screen column x, tex
 // mutates: writes wall pixels to image buffer
-static void	draw_wall_strip(t_game *game, t_ray *ray, int x, t_tex *tex)
+static void	draw_wall_strip(t_game *game, t_ray *ray, int x, t_image *tex)
 {
 	int		y;
 	int		tex_x;
 	int		tex_y;
 	int		color;
 
-	tex_x = (int)(ray->wall_x * tex->width);
+	tex_x = (int)(ray->wall_x * tex->w);
 	y = ray->draw_start;
 	while (y <= ray->draw_end)
 	{
 		tex_y = ((y - game->win_height / 2 + ray->line_height / 2)
-				* tex->height) / ray->line_height;
+				* tex->h) / ray->line_height;
 		color = get_tex_pixel(tex, tex_x, tex_y);
 		if (y == ray->draw_start && ray->draw_start_f >= 0)
 			color = blend_color(color, game->ceiling_color,
@@ -67,9 +67,9 @@ static void	draw_wall_strip(t_game *game, t_ray *ray, int x, t_tex *tex)
 static void	draw_column(t_game *game, t_ray *ray, int x)
 {
 	int		y;
-	t_tex	*tex;
+	t_image	*tex;
 
-	tex = &game->tex[ray->wall_dir & 3];
+	tex = game->tex[ray->wall_dir & 3];
 	y = 0;
 	while (y < ray->draw_start)
 		put_pixel(game, x, y++, game->ceiling_color);

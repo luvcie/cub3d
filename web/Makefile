@@ -1,4 +1,4 @@
-# Build cub3D for the browser against the SDL2 MiniLibX shim.
+# Build cub3D for the browser on top of the gfx layer (SDL3).
 # Run from the repo root:  make -C web wasm   (needs emcc on PATH)
 #                          make -C web serve  (after wasm)
 
@@ -10,22 +10,21 @@ WASM_OUT = dist/index.html
 
 GAME_SRCS = $(foreach d,../src ../src/input ../src/render ../src/parsing,$(wildcard $(d)/*.c))
 LIBFT_SRCS = $(wildcard ../libft/*.c)
-SHIM_SRCS = ../mlx_sdl/mlx_sdl.c
+GFX_SRCS = ../gfx/gfx.c
 
-WASM_OBJS = $(patsubst ../%.c,$(WASM_OBJ_DIR)/%.o,$(GAME_SRCS) $(LIBFT_SRCS) $(SHIM_SRCS))
+WASM_OBJS = $(patsubst ../%.c,$(WASM_OBJ_DIR)/%.o,$(GAME_SRCS) $(LIBFT_SRCS) $(GFX_SRCS))
 
-ASSETS = $(wildcard ../maps/*.cub) $(wildcard ../textures/XPMs/*.xpm)
+ASSETS = $(wildcard ../maps/*.cub) $(wildcard ../textures/*.bmp)
 
-# mlx_sdl comes first so that "mlx.h" resolves to the shim
-INC = -I ../mlx_sdl -I ../include -I ../libft
+INC = -I ../gfx -I ../include -I ../libft
 
 DEPFLAGS = -MMD -MP
 
 EMCC = emcc
-EMCC_CFLAGS = -Wall -Wextra -Werror -std=c2y -O2 -sUSE_SDL=2
-EMCC_LDFLAGS = -O2 -sUSE_SDL=2 -sALLOW_MEMORY_GROWTH=1 \
+EMCC_CFLAGS = -Wall -Wextra -Werror -std=c2y -O2 -sUSE_SDL=3 -Wno-experimental
+EMCC_LDFLAGS = -O2 -sUSE_SDL=3 -Wno-experimental -sALLOW_MEMORY_GROWTH=1 \
 	--preload-file ../maps@/maps \
-	--preload-file ../textures/XPMs@/textures/XPMs \
+	--preload-file ../textures@/textures \
 	--shell-file shell.html -lm
 
 wasm: $(WASM_OUT)

@@ -16,14 +16,7 @@ void	print_map_error(t_game *game, char *message)
 {
 	ft_printf("Error\n%s\n", message);
 	if (game)
-	{
 		free_game(game);
-		if (game->mlx)
-		{
-			mlx_destroy_display(game->mlx);
-			free(game->mlx);
-		}
-	}
 	exit(1);
 }
 
