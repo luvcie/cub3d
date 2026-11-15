@@ -60,22 +60,24 @@ static void	draw_map_tiles(t_game *game)
 
 static void	draw_player(t_game *game)
 {
-	t_point	center;
 	t_line	line;
-	double	angle;
+	t_ray	ray;
+	double	length;
+	int		edge;
 
-	center.x = MINIMAP_MARGIN + MINIMAP_SIZE / 2;
-	center.y = MINIMAP_MARGIN + MINIMAP_SIZE / 2;
-	draw_circle_aa(game, center, 5, 0xFF0000);
-	angle = game->player_angle;
-	line.p0 = center;
-	line.p1.x = center.x + (int)(cos(angle - 0.4) * 14);
-	line.p1.y = center.y + (int)(sin(angle - 0.4) * 14);
+	line.p0 = world_to_minimap(game, game->player_x, game->player_y);
+	draw_circle_aa(game, line.p0, 5, 0xFF0000);
 	line.color = 0xFF0000;
-	draw_line_aa(game, line);
-	line.p1.x = center.x + (int)(cos(angle + 0.4) * 14);
-	line.p1.y = center.y + (int)(sin(angle + 0.4) * 14);
-	draw_line_aa(game, line);
+	edge = 0;
+	while (edge < 2)
+	{
+		init_ray(game, &ray, edge * (game->win_width - 1));
+		length = hypot(ray.dir_x, ray.dir_y);
+		line.p1.x = line.p0.x + (int)(14 * ray.dir_x / length);
+		line.p1.y = line.p0.y + (int)(14 * ray.dir_y / length);
+		draw_line_aa(game, line);
+		edge++;
+	}
 }
 
 static void	draw_minimap_border(t_game *game)

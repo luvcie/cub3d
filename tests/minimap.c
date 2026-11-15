@@ -114,6 +114,29 @@ static void test_clipping(t_game *game)
 	}
 }
 
+static void test_player_marker(t_game *game)
+{
+	int center = MINIMAP_MARGIN + MINIMAP_SIZE / 2;
+
+	for (int visible = 0; visible < 2; visible++)
+	{
+		render(game);
+		for (int edge = 0; edge < 2; edge++)
+		{
+			t_ray ray;
+			init_ray(game, &ray, edge * (game->win_width - 1));
+			double length = hypot(ray.dir_x, ray.dir_y);
+			int x = center + (int)(14 * ray.dir_x / length);
+			int y = center + (int)(14 * ray.dir_y / length);
+			int color = get_pixel_color(game, x, y);
+			int red = (color >> 16) & 255;
+			assert(red > ((color >> 8) & 255) + 64);
+			assert(red > (color & 255) + 64);
+		}
+		key_press(KEY_R, game);
+	}
+}
+
 int main(void)
 {
 	t_game game = {0};
@@ -131,6 +154,11 @@ int main(void)
 		game.player_y = 20.75 - size * 0.25;
 		for (int direction = 0; direction < 4; direction++)
 			test_fov(&game, direction);
+		for (int direction = 0; direction < 8; direction++)
+		{
+			game.player_angle = direction * M_PI / 4;
+			test_player_marker(&game);
+		}
 	}
 	key_press(KEY_M, &game);
 	render(&game);
