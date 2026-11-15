@@ -50,7 +50,11 @@
     var statusEl = document.getElementById('status');
     var canvas = document.getElementById('canvas');
 
-    var mapName = new URLSearchParams(location.search).get('map') || 'pillars';
+    var params = new URLSearchParams(location.search);
+    var mapName = params.get('map') || 'pillars';
+    var screensaver = params.get('screensaver') === '1';
+    if (screensaver)
+      document.getElementById('hint').style.display = 'none';
     if (!/^[a-z_]+$/.test(mapName))
       mapName = 'pillars';
 
@@ -60,7 +64,7 @@
 
     var Module = {
       canvas: canvas,
-      arguments: ['maps/' + mapName + '.cub'],
+      arguments: (screensaver ? ['--screensaver'] : []).concat('maps/' + mapName + '.cub'),
       setStatus: function (text) {
         if (!text)
           statusEl.style.display = 'none';

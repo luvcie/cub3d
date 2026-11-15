@@ -62,6 +62,11 @@ void	process_movement(t_game *game)
 	double	move;
 	double	rot;
 
+	if (game->screensaver)
+	{
+		screensaver_step(game);
+		return ;
+	}
 	move = MOVE_SPEED * game->delta_time;
 	rot = ROT_SPEED * game->delta_time;
 	if (game->keys.w)

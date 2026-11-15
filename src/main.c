@@ -15,13 +15,14 @@ int	main(int argc, char **argv)
 {
 	t_game	game;
 
-	if (argc != 2)
+	if (argc != 2 && !(argc == 3 && !strcmp(argv[1], "--screensaver")))
 	{
-		printf("Usage: %s <map.cub>\n", argv[0]);
+		printf("Usage: %s [--screensaver] <map.cub>\n", argv[0]);
 		return (1);
 	}
 	ft_memset(&game, 0, sizeof(t_game));
-	parse_map(argv[1], &game);
+	game.screensaver = (argc == 3);
+	parse_map(argv[argc - 1], &game);
 	load_textures(&game);
 	game.gfx = gfx_init("cub3D", 0, 0);
 	if (!game.gfx)
@@ -31,8 +32,8 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	init_view(&game);
-	game.show_minimap = true;
-	game.show_help = true;
+	game.show_minimap = !game.screensaver;
+	game.show_help = !game.screensaver;
 	gfx_run(game.gfx, &(t_gfx_hooks){render, draw_overlay, key_press,
 		key_release, mouse_move, close_window, &game});
 	return (0);

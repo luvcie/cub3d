@@ -116,6 +116,8 @@ Then open http://localhost:8000. The first build takes a few minutes because emc
 
 Pick a map with `?map=<name>`, e.g. `http://localhost:8000/?map=maze`. The default is `pillars`. Available maps are `corridor`, `maze`, `pillars`, `test` and `test_big`. Only lowercase letters and `_` are accepted; anything else falls back to `pillars`. To add a map, drop a `.cub` file in `maps/` and rebuild, since the folder is preloaded into the wasm bundle.
 
+For an automatic, unobstructed view, add `screensaver=1`, for example `?map=maze&screensaver=1`. This mode walks through the map automatically and ignores movement controls, making it suitable for an iframe in a portfolio. It also works natively with `./cub3D --screensaver maps/maze.cub`.
+
 The output is four files in `web/dist/`: `index.html`, `index.js`, `index.wasm` and `index.data`. Serve them from any static host, or embed `index.html` in an `<iframe>`.
 
 In the browser:

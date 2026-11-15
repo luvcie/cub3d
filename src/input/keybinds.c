@@ -40,6 +40,8 @@ void	key_press(int keycode, void *param)
 	game = (t_game *)param;
 	if (keycode == KEY_ESC)
 		close_window(param);
+	else if (game->screensaver)
+		return ;
 	else if (keycode == KEY_R)
 		game->show_rays = !game->show_rays;
 	else if (keycode == KEY_M)
@@ -64,6 +66,8 @@ void	mouse_move(int x, int y, void *param)
 
 	game = (t_game *)param;
 	(void)y;
+	if (game->screensaver)
+		return ;
 	delta = x - game->mouse_x;
 	game->mouse_x = x;
 	game->player_angle += delta * 0.003;

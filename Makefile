@@ -22,6 +22,7 @@ SRCS = $(SRC_DIR)/main.c \
        $(SRC_DIR)/input/create_window.c \
        $(SRC_DIR)/input/keybinds.c \
        $(SRC_DIR)/input/movement.c \
+       $(SRC_DIR)/input/screensaver.c \
        $(SRC_DIR)/render/drawing.c \
        $(SRC_DIR)/render/help_menu.c \
        $(SRC_DIR)/render/minimap.c \
@@ -110,6 +111,10 @@ fclean: clean
 
 re: fclean all
 
+test: $(LIBFT)
+	@binary=$$(mktemp); trap 'rm -f "$$binary"' EXIT; \
+	$(CC) $(CFLAGS) $(INC) tests/screensaver.c $(SRC_DIR)/input/screensaver.c -L$(LIBFT_PATH) -lft -lm -o "$$binary" && "$$binary"
+
 bonus: all
 
-.PHONY: all clean fclean re bonus
+.PHONY: all clean fclean re bonus test
