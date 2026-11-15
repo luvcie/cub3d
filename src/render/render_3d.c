@@ -81,6 +81,8 @@ void	render_3d(t_game *game)
 		init_ray(game, &ray, x);
 		cast_ray(game, &ray);
 		calc_wall(game, &ray);
+		if (game->show_minimap && game->show_rays)
+			game->ray_hits[x] = minimap_ray_hit(game, &ray);
 		draw_column(game, &ray, x);
 		x++;
 	}

@@ -111,9 +111,13 @@ fclean: clean
 
 re: fclean all
 
-test: $(LIBFT)
+test: $(LIBFT) $(filter-out $(SRC_DIR)/main.o,$(OBJS))
 	@binary=$$(mktemp); trap 'rm -f "$$binary"' EXIT; \
 	$(CC) $(CFLAGS) $(INC) tests/screensaver.c $(SRC_DIR)/input/screensaver.c -L$(LIBFT_PATH) -lft -lm -o "$$binary" && "$$binary"
+	@binary=$$(mktemp); trap 'rm -f "$$binary"' EXIT; \
+	$(CC) $(CFLAGS) $(INC) tests/minimap.c $(filter-out $(SRC_DIR)/main.o,$(OBJS)) \
+		-L$(LIBFT_PATH) -lft $(shell pkg-config --libs sdl3) -lm -o "$$binary" \
+		&& SDL_VIDEODRIVER=dummy "$$binary"
 
 bonus: all
 

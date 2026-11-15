@@ -140,6 +140,7 @@ typedef struct s_game
 	bool	show_rays;
 	bool	show_minimap;
 	bool	show_help;
+	t_point	*ray_hits;
 	t_image	*tex[4];
 }	t_game;
 
@@ -166,6 +167,7 @@ int		get_pixel_color(t_game *game, int x, int y);
 // raycasting
 void	render_3d(t_game *game);
 void	draw_rays_minimap(t_game *game);
+t_point	minimap_ray_hit(t_game *game, const t_ray *ray);
 void	load_textures(t_game *game);
 int		get_tex_pixel(t_image *tex, int x, int y);
 void	init_ray(t_game *game, t_ray *ray, int x);

@@ -23,65 +23,34 @@ t_point	world_to_minimap(t_game *game, double wx, double wy)
 	return (result);
 }
 
-static void	init_ray_angle(t_game *game, t_ray *ray, double angle)
+t_point	minimap_ray_hit(t_game *game, const t_ray *ray)
 {
-	ray->dir_x = cos(angle);
-	ray->dir_y = sin(angle);
-	ray->map_x = (int)game->player_x;
-	ray->map_y = (int)game->player_y;
-	ray->sign_x = 1 - 2 * (ray->dir_x < 0);
-	ray->sign_y = 1 - 2 * (ray->dir_y < 0);
-	ray->side = 0;
-}
-
-static void	calc_dist_branchless(t_game *game, t_ray *ray)
-{
-	double	t[2];
-	double	denom[2];
-
-	denom[0] = ray->dir_x + (ray->dir_x == 0) * 1e-30;
-	denom[1] = ray->dir_y + (ray->dir_y == 0) * 1e-30;
-	t[0] = (ray->map_x - game->player_x + (1 - ray->sign_x) * 0.5) / denom[0];
-	t[1] = (ray->map_y - game->player_y + (1 - ray->sign_y) * 0.5) / denom[1];
-	ray->perp_dist = t[ray->side];
-}
-
-static void	draw_single_ray(t_game *game, t_ray *ray)
-{
-	t_line	line;
 	double	hit_x;
 	double	hit_y;
 	double	max_dist;
+	double	dist;
 
-	max_dist = (MINIMAP_SIZE / 2.0) / MINIMAP_TILE;
-	if (ray->perp_dist > max_dist)
-		ray->perp_dist = max_dist;
-	line.p0 = world_to_minimap(game, game->player_x, game->player_y);
-	hit_x = game->player_x + ray->dir_x * ray->perp_dist;
-	hit_y = game->player_y + ray->dir_y * ray->perp_dist;
-	line.p1 = world_to_minimap(game, hit_x, hit_y);
-	line.color = 0xF0EAD6;
-	draw_line_aa(game, line);
+	// Keep the antialiased edge inside the square minimap border.
+	max_dist = (MINIMAP_SIZE / 2.0 - 1) / MINIMAP_TILE;
+	max_dist /= fmax(fabs(ray->dir_x), fabs(ray->dir_y));
+	dist = fmin(ray->perp_dist, max_dist);
+	hit_x = game->player_x + ray->dir_x * dist;
+	hit_y = game->player_y + ray->dir_y * dist;
+	return (world_to_minimap(game, hit_x, hit_y));
 }
 
 void	draw_rays_minimap(t_game *game)
 {
-	t_ray	ray;
-	double	angle;
-	double	start_angle;
-	double	angle_step;
+	t_line	line;
 	int		i;
 
-	start_angle = game->player_angle - FOV / 2;
-	angle_step = FOV / game->win_width;
+	line.p0 = world_to_minimap(game, game->player_x, game->player_y);
+	line.color = 0xF0EAD6;
 	i = 0;
 	while (i < game->win_width)
 	{
-		angle = start_angle + i * angle_step;
-		init_ray_angle(game, &ray, angle);
-		cast_ray(game, &ray);
-		calc_dist_branchless(game, &ray);
-		draw_single_ray(game, &ray);
+		line.p1 = game->ray_hits[i];
+		draw_line_aa(game, line);
 		i++;
 	}
 }

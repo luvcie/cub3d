@@ -39,6 +39,8 @@ void	free_textures(t_game *game)
 
 void	free_game(t_game *game)
 {
+	free(game->ray_hits);
+	game->ray_hits = NULL;
 	free_game_map(game);
 	if (game->current_line)
 		free(game->current_line);

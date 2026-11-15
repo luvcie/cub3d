@@ -44,6 +44,14 @@ void	init_view(t_game *game)
 	game->frame = gfx_frame(game->gfx);
 	game->win_width = game->frame->w;
 	game->win_height = game->frame->h;
+	free(game->ray_hits);
+	game->ray_hits = malloc(sizeof(t_point) * game->win_width);
+	if (!game->ray_hits)
+	{
+		printf("Error\nFailed to allocate ray endpoints\n");
+		free_game(game);
+		exit(1);
+	}
 	game->mouse_x = game->win_width / 2;
 	game->last_time = 0;
 }
