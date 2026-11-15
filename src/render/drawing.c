@@ -40,8 +40,10 @@ void	render(void *param)
 	game->delta_time = (now - game->last_time) / 1000000.0 * 60.0;
 	game->last_time = now;
 	process_movement(game);
+	if (game->map_mode != MAP_HIDDEN)
+		update_minimap_view(game);
 	render_3d(game);
-	if (game->show_minimap)
+	if (game->map_mode != MAP_HIDDEN)
 		draw_minimap(game);
 }
 

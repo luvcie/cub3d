@@ -32,7 +32,9 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	init_view(&game);
-	game.show_minimap = !game.screensaver;
+	game.map_mode = MAP_MINI;
+	if (game.screensaver)
+		game.map_mode = MAP_HIDDEN;
 	game.show_help = !game.screensaver;
 	gfx_run(game.gfx, &(t_gfx_hooks){render, draw_overlay, key_press,
 		key_release, mouse_move, close_window, &game});

@@ -11,22 +11,27 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-static void	draw_minimap_rect(t_game *game, t_point pos, int size, int color)
+static void	draw_minimap_rect(t_game *game, t_point pos, t_point end,
+		int color, int opacity)
 {
 	int	x;
 	int	y;
-	int	max_bound;
 
-	max_bound = MINIMAP_MARGIN + MINIMAP_SIZE;
+	pos.x = fmax(pos.x, game->minimap.pos.x);
+	pos.y = fmax(pos.y, game->minimap.pos.y);
+	end.x = fmin(end.x, game->minimap.pos.x + game->minimap.size);
+	end.y = fmin(end.y, game->minimap.pos.y + game->minimap.size);
 	y = pos.y;
-	while (y < pos.y + size)
+	while (y < end.y)
 	{
 		x = pos.x;
-		while (x < pos.x + size)
+		while (x < end.x)
 		{
-			if (x >= MINIMAP_MARGIN && x < max_bound
-				&& y >= MINIMAP_MARGIN && y < max_bound)
+			if (opacity == 255)
 				put_pixel(game, x, y, color);
+			else
+				put_pixel(game, x, y, blend_color(color,
+						get_pixel_color(game, x, y), opacity));
 			x++;
 		}
 		y++;
@@ -38,8 +43,13 @@ static void	draw_map_tiles(t_game *game)
 	int		x;
 	int		y;
 	int		color;
+	int		opacity;
 	t_point	pos;
+	t_point	end;
 
+	opacity = 255;
+	if (game->map_mode == MAP_FULL)
+		opacity = 160;
 	y = 0;
 	while (y < game->map_height)
 	{
@@ -51,7 +61,10 @@ static void	draw_map_tiles(t_game *game)
 			else
 				color = 0x333333;
 			pos = world_to_minimap(game, (double)x, (double)y);
-			draw_minimap_rect(game, pos, MINIMAP_TILE - 1, color);
+			end = world_to_minimap(game, x + 1.0, y + 1.0);
+			if (game->minimap.scale >= 4)
+				end = (t_point){end.x - 1, end.y - 1};
+			draw_minimap_rect(game, pos, end, color, opacity);
 			x++;
 		}
 		y++;
@@ -82,23 +95,33 @@ static void	draw_player(t_game *game)
 
 static void	draw_minimap_border(t_game *game)
 {
-	int	i;
-	int	max_bound;
+	int		i;
+	t_point	pos;
+	int		size;
 
-	max_bound = MINIMAP_MARGIN + MINIMAP_SIZE;
-	i = MINIMAP_MARGIN;
-	while (i <= max_bound)
+	pos = game->minimap.pos;
+	size = game->minimap.size;
+	i = 0;
+	while (i <= size)
 	{
-		put_pixel(game, i, MINIMAP_MARGIN, 0x888888);
-		put_pixel(game, i, max_bound, 0x888888);
-		put_pixel(game, MINIMAP_MARGIN, i, 0x888888);
-		put_pixel(game, max_bound, i, 0x888888);
+		put_pixel(game, pos.x + i, pos.y, 0x888888);
+		put_pixel(game, pos.x + i, pos.y + size, 0x888888);
+		put_pixel(game, pos.x, pos.y + i, 0x888888);
+		put_pixel(game, pos.x + size, pos.y + i, 0x888888);
 		i++;
 	}
 }
 
 void	draw_minimap(t_game *game)
 {
+	t_point	end;
+
+	if (game->map_mode == MAP_FULL)
+	{
+		end.x = game->minimap.pos.x + game->minimap.size;
+		end.y = game->minimap.pos.y + game->minimap.size;
+		draw_minimap_rect(game, game->minimap.pos, end, 0x111111, 96);
+	}
 	draw_map_tiles(game);
 	if (game->show_rays)
 		draw_rays_minimap(game);

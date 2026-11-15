@@ -132,7 +132,7 @@ In the browser:
 - Floor and ceiling colors from map config
 - Smooth movement with delta time
 - Mouse look
-- Minimap with ray visualization (toggle: `M`, `R`)
+- Minimap with ray visualization (`M`, `R`) and a centered full map (`Tab`)
 - Dynamic resolution switching (keys `1` to `6`)
 - Subpixel edge blending (wall antialiasing)
 - Collision detection with wall sliding
@@ -152,11 +152,15 @@ In the browser:
 |-----|--------|
 | `WASD` | Move |
 | `←` `→` / Mouse | Look |
-| `M` | Toggle minimap |
+| `M` | Show or hide the map |
+| `Tab` | Switch between the minimap and centered full map |
 | `R` | Toggle ray debug |
 | `H` | Help menu |
 | `1` to `6` | Resolution presets |
 | `ESC` | Quit (native only) |
+
+The full map shows the whole level over the game with a translucent background.
+Movement and turning remain active, and `R` toggles the live rays in either map view.
 
 ## Resources
 

@@ -36,6 +36,7 @@
 # define KEY_R SDLK_R
 # define KEY_M SDLK_M
 # define KEY_H SDLK_H
+# define KEY_TAB SDLK_TAB
 # define KEY_LEFT SDLK_LEFT
 # define KEY_RIGHT SDLK_RIGHT
 # define KEY_1 SDLK_1
@@ -88,6 +89,22 @@ typedef struct s_line
 	int		color;
 }	t_line;
 
+typedef enum e_map_mode
+{
+	MAP_HIDDEN,
+	MAP_MINI,
+	MAP_FULL
+}	t_map_mode;
+
+typedef struct s_minimap_view
+{
+	t_point	pos;
+	int		size;
+	double	scale;
+	double	world_x;
+	double	world_y;
+}	t_minimap_view;
+
 typedef struct s_ray
 {
 	double	dir_x;
@@ -138,7 +155,8 @@ typedef struct s_game
 	double	screensaver_x;
 	double	screensaver_y;
 	bool	show_rays;
-	bool	show_minimap;
+	t_map_mode	map_mode;
+	t_minimap_view	minimap;
 	bool	show_help;
 	t_point	*ray_hits;
 	t_image	*tex[4];
@@ -154,6 +172,7 @@ void	handle_resolution_keys(int keycode, t_game *game);
 void	process_movement(t_game *game);
 void	screensaver_step(t_game *game);
 void	draw_minimap(t_game *game);
+void	update_minimap_view(t_game *game);
 t_point	world_to_minimap(t_game *game, double wx, double wy);
 void	draw_help_menu(t_game *game);
 void	render(void *param);

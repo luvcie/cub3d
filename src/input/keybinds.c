@@ -45,7 +45,19 @@ void	key_press(int keycode, void *param)
 	else if (keycode == KEY_R)
 		game->show_rays = !game->show_rays;
 	else if (keycode == KEY_M)
-		game->show_minimap = !game->show_minimap;
+	{
+		if (game->map_mode == MAP_HIDDEN)
+			game->map_mode = MAP_MINI;
+		else
+			game->map_mode = MAP_HIDDEN;
+	}
+	else if (keycode == KEY_TAB)
+	{
+		if (game->map_mode == MAP_FULL)
+			game->map_mode = MAP_MINI;
+		else
+			game->map_mode = MAP_FULL;
+	}
 	else if (keycode == KEY_H)
 		game->show_help = !game->show_help;
 	else if (keycode >= (int)KEY_1 && keycode <= (int)KEY_6)

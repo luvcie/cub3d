@@ -43,8 +43,9 @@ void	draw_help_menu(t_game *game)
 	gfx_draw_text(game->gfx, x, y + 40, 0xCCCCCC, "arrows: look");
 	gfx_draw_text(game->gfx, x, y + 60, 0xCCCCCC, "mouse: look");
 	gfx_draw_text(game->gfx, x, y + 80, 0xCCCCCC, "M: minimap");
-	gfx_draw_text(game->gfx, x, y + 100, 0xCCCCCC, "R: ray debug");
-	gfx_draw_text(game->gfx, x, y + 120, 0xCCCCCC, "H: this menu");
+	gfx_draw_text(game->gfx, x, y + 100, 0xCCCCCC, "TAB: full map");
+	gfx_draw_text(game->gfx, x, y + 120, 0xCCCCCC, "R: ray debug");
+	gfx_draw_text(game->gfx, x, y + 140, 0xCCCCCC, "H: this menu");
 	gfx_draw_text(game->gfx, x, y + 160, 0xCCCCCC, "ESC: quit");
 	gfx_draw_text(game->gfx, x, y + 190, 0xFFFFFF, "-- RESOLUTION --");
 	gfx_draw_text(game->gfx, x, y + 210, 0xCCCCCC, "1: 800x600");

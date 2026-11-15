@@ -26,6 +26,7 @@ SRCS = $(SRC_DIR)/main.c \
        $(SRC_DIR)/render/drawing.c \
        $(SRC_DIR)/render/help_menu.c \
        $(SRC_DIR)/render/minimap.c \
+       $(SRC_DIR)/render/minimap_view.c \
        $(SRC_DIR)/render/ray_minimap.c \
        $(SRC_DIR)/render/raycasting.c \
        $(SRC_DIR)/render/render_3d.c \

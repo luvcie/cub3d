@@ -11,29 +11,28 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-// converts world coords to minimap screen coords, player is always centered
-t_point	world_to_minimap(t_game *game, double wx, double wy)
+static double	axis_limit(double origin, double dir, double center, double half)
 {
-	t_point	result;
-	int		center;
-
-	center = MINIMAP_MARGIN + MINIMAP_SIZE / 2;
-	result.x = center + (int)((wx - game->player_x) * MINIMAP_TILE);
-	result.y = center + (int)((wy - game->player_y) * MINIMAP_TILE);
-	return (result);
+	if (dir > 0)
+		return ((center + half - origin) / dir);
+	if (dir < 0)
+		return ((center - half - origin) / dir);
+	return (INFINITY);
 }
 
 t_point	minimap_ray_hit(t_game *game, const t_ray *ray)
 {
 	double	hit_x;
 	double	hit_y;
-	double	max_dist;
+	double	half;
 	double	dist;
 
 	// Keep the antialiased edge inside the square minimap border.
-	max_dist = (MINIMAP_SIZE / 2.0 - 1) / MINIMAP_TILE;
-	max_dist /= fmax(fabs(ray->dir_x), fabs(ray->dir_y));
-	dist = fmin(ray->perp_dist, max_dist);
+	half = (game->minimap.size / 2 - 1) / game->minimap.scale;
+	dist = fmin(ray->perp_dist, axis_limit(game->player_x,
+			ray->dir_x, game->minimap.world_x, half));
+	dist = fmin(dist, axis_limit(game->player_y,
+			ray->dir_y, game->minimap.world_y, half));
 	hit_x = game->player_x + ray->dir_x * dist;
 	hit_y = game->player_y + ray->dir_y * dist;
 	return (world_to_minimap(game, hit_x, hit_y));

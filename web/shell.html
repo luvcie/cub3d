@@ -45,7 +45,7 @@
 <body>
   <div id="status">Loading...</div>
   <canvas id="canvas" tabindex="-1" oncontextmenu="event.preventDefault()"></canvas>
-  <div id="hint">WASD move &middot; arrows look &middot; M minimap &middot; H help &middot; click to focus</div>
+  <div id="hint">WASD move &middot; arrows look &middot; M minimap &middot; Tab full map &middot; H help &middot; click to focus</div>
   <script>
     var statusEl = document.getElementById('status');
     var canvas = document.getElementById('canvas');
@@ -60,6 +60,11 @@
 
     canvas.addEventListener('click', function () {
       canvas.focus();
+    });
+
+    canvas.addEventListener('keydown', function (event) {
+      if (event.key === 'Tab')
+        event.preventDefault();
     });
 
     var Module = {
