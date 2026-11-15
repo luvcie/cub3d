@@ -17,8 +17,6 @@
 // would otherwise slip through wall corners
 #define CORNER_EPS 64
 
-// takes: game, cell coords
-// returns: true if wall or oob, false if passable
 static bool	is_wall(t_game *game, int x, int y)
 {
 	if (x < 0 || x >= game->map_width || y < 0 || y >= game->map_height)
@@ -30,9 +28,6 @@ static bool	is_wall(t_game *game, int x, int y)
 
 // supercover corner handler: when err is near zero the ray passes through
 // a grid corner, so we check both adjacent cells before stepping diagonal
-// takes: game, ray, err ptr, direction magnitudes
-// returns: true if hit wall, false if stepped diagonal safely
-// mutates: ray position/side, err value
 static bool	handle_corner(t_game *game, t_ray *ray, long *err, long d[2])
 {
 	if (is_wall(game, ray->map_x + ray->sign_x, ray->map_y))
@@ -55,8 +50,6 @@ static bool	handle_corner(t_game *game, t_ray *ray, long *err, long d[2])
 
 // computes initial bresenham error: dist_to_x * |dy| - dist_to_y * |dx|
 // negative = x boundary closer, positive = y boundary closer
-// takes: game, ray, d (scaled direction magnitudes)
-// returns: initial err value for the stepping loop
 static long	init_err(t_game *game, t_ray *ray, long d[2])
 {
 	double	dist[2];
@@ -73,8 +66,6 @@ static long	init_err(t_game *game, t_ray *ray, long d[2])
 }
 
 // branchless step: go_x selects x or y direction via arithmetic
-// takes: ray, err ptr, d (direction magnitudes)
-// mutates: ray position, side, err value
 static void	step_ray(t_ray *ray, long *err, long d[2])
 {
 	int	go_x;
@@ -86,10 +77,7 @@ static void	step_ray(t_ray *ray, long *err, long d[2])
 	*err += go_x * d[1] - (1 - go_x) * d[0];
 }
 
-// supercover bresenham grid traversal, walks cells til we hit a wall
-// corner case when |err| < EPS checks adjacent walls before diagonal step
-// takes: game, ray
-// mutates: ray->map_x/y ends on wall cell, ray->side set to hit axis
+// Supercover Bresenham grid traversal.
 void	cast_ray(t_game *game, t_ray *ray)
 {
 	long	d[2];

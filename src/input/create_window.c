@@ -11,9 +11,6 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-// handles resolution preset keys 1-6
-// takes: keycode, game
-// mutates: changes window/image resolution if key matches
 void	handle_resolution_keys(int keycode, t_game *game)
 {
 	int	w;
@@ -36,19 +33,12 @@ void	handle_resolution_keys(int keycode, t_game *game)
 	}
 }
 
-// resizes the window and resets the view state
-// takes: game, width, height
-// mutates: window size, frame, win_width/height, mouse_x, last_time
 void	change_resolution(t_game *game, int width, int height)
 {
 	if (gfx_resize(game->gfx, width, height))
 		init_view(game);
 }
 
-// takes the frame and size from gfx and resets the view state
-// does not start the event loop, gfx_run does that
-// takes: game struct with gfx initialized
-// mutates: frame, win_width/height, mouse_x, last_time
 void	init_view(t_game *game)
 {
 	game->frame = gfx_frame(game->gfx);

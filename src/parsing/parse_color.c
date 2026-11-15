@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-// frees the array returned by ft_split
 static void	free_split(char **parts)
 {
 	int	i;
@@ -22,7 +21,6 @@ static void	free_split(char **parts)
 	free(parts);
 }
 
-// checks that a string is only digits with optional surrounding whitespace
 static bool	is_valid_number(char *s)
 {
 	int		i;
@@ -42,7 +40,6 @@ static bool	is_valid_number(char *s)
 	return (has_digit && s[i] == '\0');
 }
 
-// validates all three color components are numeric strings
 static void	check_numbers(t_game *game, char **parts)
 {
 	int	i;
@@ -58,7 +55,6 @@ static void	check_numbers(t_game *game, char **parts)
 	}
 }
 
-// parses RGB color string like "220,100,0" into single int
 int	parse_color(t_game *game, char *str)
 {
 	char	**parts;

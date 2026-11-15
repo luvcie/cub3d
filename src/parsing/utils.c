@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-// returns player angle based on spawn direction
 static double	get_player_angle(char c)
 {
 	if (c == 'N')
@@ -23,7 +22,6 @@ static double	get_player_angle(char c)
 	return (M_PI);
 }
 
-// finds player start position and sets angle
 void	find_player(t_game *game)
 {
 	int		y;
@@ -48,7 +46,6 @@ void	find_player(t_game *game)
 	}
 }
 
-// extracts path from config line like "NO ./path/to/texture.bmp"
 char	*parse_texture_path(t_game *game, char *line)
 {
 	char	*path;

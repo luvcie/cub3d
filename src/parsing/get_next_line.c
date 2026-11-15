@@ -14,8 +14,6 @@
 # define BUFFER_SIZE 1000
 #endif
 
-// reads BUFFER_SIZE bytes from fd into buffer, resets pos to 0
-// returns number of bytes read or -1 for error/eof
 static int	refill_buffer(int fd, char *buffer, int *pos)
 {
 	int	bytes_read;
@@ -25,8 +23,6 @@ static int	refill_buffer(int fd, char *buffer, int *pos)
 	return (bytes_read);
 }
 
-// returns next character from buffer
-// keeps track of position between calls
 static int	read_char(int fd, char *buffer, int *pos, int *bytes_read)
 {
 	if (*pos >= *bytes_read)
@@ -38,7 +34,6 @@ static int	read_char(int fd, char *buffer, int *pos, int *bytes_read)
 	return (buffer[(*pos)++]);
 }
 
-// builds a line character by character until newline or eof
 // static vars maintain state between calls for same fd
 static int	build_line(int fd, char *line)
 {
@@ -65,7 +60,6 @@ static int	build_line(int fd, char *line)
 }
 
 // reads one line from fd including newline if present
-// returns NULL on error, eof, or invalid fd
 char	*get_next_line(int fd)
 {
 	char	line[BUFFER_SIZE];

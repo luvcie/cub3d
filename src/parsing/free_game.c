@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-// frees the game map array
 void	free_game_map(t_game *game)
 {
 	int	i;
@@ -25,9 +24,6 @@ void	free_game_map(t_game *game)
 	}
 }
 
-// frees loaded texture images
-// takes: game
-// mutates: frees all texture images in game->tex array and clears them
 void	free_textures(t_game *game)
 {
 	int	i;
@@ -41,7 +37,6 @@ void	free_textures(t_game *game)
 	}
 }
 
-// frees all allocated game resources
 void	free_game(t_game *game)
 {
 	free_game_map(game);

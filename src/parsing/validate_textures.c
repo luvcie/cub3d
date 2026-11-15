@@ -11,9 +11,7 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-// checks that a texture path points to a readable regular file
-// rejects missing files, directories (read fails with EISDIR), and
-// permission errors
+// Opening a directory can succeed; reading it fails with EISDIR.
 static void	check_texture_path(t_game *game, char *path, char *msg)
 {
 	int		fd;
@@ -29,7 +27,6 @@ static void	check_texture_path(t_game *game, char *path, char *msg)
 		print_map_error(game, msg);
 }
 
-// validates all 4 texture files are openable and readable
 void	validate_textures(t_game *game)
 {
 	check_texture_path(game, game->texture_no, "cannot read NO texture");

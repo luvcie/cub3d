@@ -12,8 +12,6 @@
 #include "cub3d.h"
 
 // converts world coords to minimap screen coords, player is always centered
-// takes: game struct, world x and y
-// returns: screen point for minimap
 t_point	world_to_minimap(t_game *game, double wx, double wy)
 {
 	t_point	result;
@@ -25,8 +23,6 @@ t_point	world_to_minimap(t_game *game, double wx, double wy)
 	return (result);
 }
 
-// takes: game, ray, angle in radians
-// mutates: ray direction and grid position
 static void	init_ray_angle(t_game *game, t_ray *ray, double angle)
 {
 	ray->dir_x = cos(angle);
@@ -38,9 +34,6 @@ static void	init_ray_angle(t_game *game, t_ray *ray, double angle)
 	ray->side = 0;
 }
 
-// perpendicular distance calc
-// takes: game, ray (after traversal)
-// mutates: ray->perp_dist
 static void	calc_dist_branchless(t_game *game, t_ray *ray)
 {
 	double	t[2];
@@ -53,8 +46,6 @@ static void	calc_dist_branchless(t_game *game, t_ray *ray)
 	ray->perp_dist = t[ray->side];
 }
 
-// takes: game, ray (with perp_dist computed)
-// mutates: draws off white aa line from player to wall hit point
 static void	draw_single_ray(t_game *game, t_ray *ray)
 {
 	t_line	line;
@@ -73,9 +64,6 @@ static void	draw_single_ray(t_game *game, t_ray *ray)
 	draw_line_aa(game, line);
 }
 
-// casts one ray per screen column across the FOV and draws em on minimap
-// takes: game
-// mutates: draws rays to image buffer
 void	draw_rays_minimap(t_game *game)
 {
 	t_ray	ray;
@@ -91,7 +79,7 @@ void	draw_rays_minimap(t_game *game)
 	{
 		angle = start_angle + i * angle_step;
 		init_ray_angle(game, &ray, angle);
-		cast_ray_minimap(game, &ray);
+		cast_ray(game, &ray);
 		calc_dist_branchless(game, &ray);
 		draw_single_ray(game, &ray);
 		i++;

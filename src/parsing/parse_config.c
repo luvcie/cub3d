@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-// stores a texture path and errors on duplicate identifier
 static void	set_texture(t_game *game, char **dst, char *line)
 {
 	if (*dst)
@@ -19,7 +18,6 @@ static void	set_texture(t_game *game, char **dst, char *line)
 	*dst = parse_texture_path(game, line);
 }
 
-// stores a color value and errors on duplicate identifier
 static void	set_color(t_game *game, int *dst, bool *set, char *line)
 {
 	if (*set)
@@ -28,8 +26,6 @@ static void	set_color(t_game *game, int *dst, bool *set, char *line)
 	*set = true;
 }
 
-// checks if line is a config line (NO/SO/WE/EA/F/C) and parses it
-// returns: true if config line was parsed, false if not
 bool	is_config_line(char *line, t_game *game)
 {
 	if (ft_strncmp(line, "NO ", 3) == 0)
@@ -49,7 +45,6 @@ bool	is_config_line(char *line, t_game *game)
 	return (true);
 }
 
-// checks if line is empty (only whitespace or newline)
 bool	is_empty_line(char *line)
 {
 	while (*line)
@@ -61,7 +56,6 @@ bool	is_empty_line(char *line)
 	return (true);
 }
 
-// processes a map line, trims newline and stores in map array
 void	process_map_line(t_game *game, char *line, int *map_index)
 {
 	int	len;

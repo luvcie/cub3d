@@ -11,9 +11,6 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-// checks if a specific map point is a wall or out of bounds
-// takes: game struct, x, y
-// returns: true if wall/invalid, false if safe/empty
 static bool	is_wall(t_game *game, double x, double y)
 {
 	int	map_x;
@@ -33,9 +30,6 @@ static bool	is_wall(t_game *game, double x, double y)
 	return (false);
 }
 
-// checks if player position is valid (collision with radius)
-// takes: game struct, x, y
-// returns: true if valid, false if invalid
 static bool	is_valid_pos(t_game *game, double x, double y)
 {
 	if (is_wall(game, x - PLAYER_RADIUS, y - PLAYER_RADIUS))
@@ -49,9 +43,7 @@ static bool	is_valid_pos(t_game *game, double x, double y)
 	return (true);
 }
 
-// attempts to move player by dx, dy with collision checks
-// takes: game struct, delta x, delta y
-// mutates: game->player_x/y if move is valid
+// Check each axis separately so the player can slide along walls.
 static void	try_move(t_game *game, double dx, double dy)
 {
 	double	new_x;
@@ -65,10 +57,6 @@ static void	try_move(t_game *game, double dx, double dy)
 		game->player_y = new_y;
 }
 
-// processes movement based on currently held keys
-// called every frame from render loop
-// takes: game struct pointer
-// mutates: player position and angle
 void	process_movement(t_game *game)
 {
 	double	move;

@@ -11,9 +11,6 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-// loads bmp textures for walls (N/S/E/W mapped to tex[0-3])
-// takes: game
-// mutates: game->tex array with image pixels and dimensions
 void	load_textures(t_game *game)
 {
 	game->tex[0] = gfx_load_bmp(game->texture_no);
@@ -29,9 +26,6 @@ void	load_textures(t_game *game)
 	}
 }
 
-// samples a pixel from texture data, with bounds checking
-// takes: texture image, x/y coords in texture space
-// returns: color at that position, or 0 if oob
 int	get_tex_pixel(t_image *tex, int x, int y)
 {
 	if (x < 0 || x >= tex->w || y < 0 || y >= tex->h)

@@ -26,7 +26,6 @@ SRCS = $(SRC_DIR)/main.c \
        $(SRC_DIR)/render/help_menu.c \
        $(SRC_DIR)/render/minimap.c \
        $(SRC_DIR)/render/ray_minimap.c \
-       $(SRC_DIR)/render/ray_minimap_cast.c \
        $(SRC_DIR)/render/raycasting.c \
        $(SRC_DIR)/render/render_3d.c \
        $(SRC_DIR)/render/textures.c \
@@ -48,7 +47,6 @@ SRCS = $(SRC_DIR)/main.c \
 OBJS = $(SRCS:.c=.o)
 HDRS = $(INC_DIR)/cub3d.h gfx/gfx.h
 
-# progress counter
 TOTAL_FILES := $(words $(SRCS))
 COUNTER_FILE := .compile_counter
 

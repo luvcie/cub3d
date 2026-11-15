@@ -31,7 +31,6 @@ static int	count_lines(char *filename)
 	return (lines);
 }
 
-// allocates memory for the map array based on map_height
 static void	init_map_memory(t_game *game)
 {
 	int	i;
@@ -47,7 +46,6 @@ static void	init_map_memory(t_game *game)
 	}
 }
 
-// processes a single line during map reading
 static void	handle_line(t_game *game, char *line, int *ctx)
 {
 	if (!is_empty_line(line))
@@ -66,7 +64,6 @@ static void	handle_line(t_game *game, char *line, int *ctx)
 		ctx[2] = 1;
 }
 
-// reads entire map file line by line using GNL
 static void	read_map_lines(char *filename, t_game *game)
 {
 	int		fd;
@@ -92,7 +89,6 @@ static void	read_map_lines(char *filename, t_game *game)
 	close(fd);
 }
 
-// main parsing entry point
 void	parse_map(char *filename, t_game *game)
 {
 	validate_extension(game, filename);

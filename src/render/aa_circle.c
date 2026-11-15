@@ -11,17 +11,11 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-// draws inner solid pixel of circle
-// takes: game struct, point p, color
-// mutates: modifies pixel at (p.x, p.y) in image buffer
 static void	draw_solid_pixel(t_game *game, t_point p, int color)
 {
 	put_pixel(game, p.x, p.y, color);
 }
 
-// draws antialiased edge pixel of circle
-// takes: game struct, point p, color, intensity (0-255)
-// mutates: blends and sets pixel at (p.x, p.y)
 static void	draw_edge_pixel(t_game *game, t_point p, int color, int intensity)
 {
 	int	bg;
@@ -32,17 +26,12 @@ static void	draw_edge_pixel(t_game *game, t_point p, int color, int intensity)
 	put_pixel(game, p.x, p.y, blend_color(color, bg, intensity));
 }
 
-// calculates intensity for edge pixel
-// takes: rmax (sq radius + radius), sqd (squared dist), r (radius)
-// returns: intensity value (0-255)
+// Edge coverage falls from 256 to 0 across squared radii r*r-r to r*r+r.
 static int	calc_intensity(unsigned int rmax, unsigned int sqd, int r)
 {
 	return ((rmax - sqd) * 256 / (2 * r));
 }
 
-// draws one row of the circle
-// takes: game struct, center point, params array, current y
-// mutates: draws pixels for the row
 static void	draw_circle_row(t_game *game, t_point c, int *params, int y)
 {
 	int				x;
@@ -63,9 +52,6 @@ static void	draw_circle_row(t_game *game, t_point c, int *params, int y)
 	}
 }
 
-// draws a filled circle with antialiased edges
-// takes: game struct, center point, radius, color
-// mutates: draws circle on the image buffer
 void	draw_circle_aa(t_game *game, t_point center, int r, int color)
 {
 	int	y;

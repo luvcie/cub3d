@@ -11,9 +11,6 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-// draws a rect clipped to minimap bounds
-// takes: game struct, position, size, color
-// mutates: draws pixels within minimap area
 static void	draw_minimap_rect(t_game *game, t_point pos, int size, int color)
 {
 	int	x;
@@ -36,9 +33,6 @@ static void	draw_minimap_rect(t_game *game, t_point pos, int size, int color)
 	}
 }
 
-// draws the map tiles visible in the minimap viewport
-// takes: game struct
-// mutates: draws map tiles on the image buffer
 static void	draw_map_tiles(t_game *game)
 {
 	int		x;
@@ -64,9 +58,6 @@ static void	draw_map_tiles(t_game *game)
 	}
 }
 
-// draws the player at the center of the minimap with direction cone
-// takes: game struct
-// mutates: draws player and direction cone on the image buffer
 static void	draw_player(t_game *game)
 {
 	t_point	center;
@@ -87,9 +78,6 @@ static void	draw_player(t_game *game)
 	draw_line_aa(game, line);
 }
 
-// draws a border around the minimap
-// takes: game struct
-// mutates: draws border pixels on the image buffer
 static void	draw_minimap_border(t_game *game)
 {
 	int	i;
@@ -107,9 +95,6 @@ static void	draw_minimap_border(t_game *game)
 	}
 }
 
-// draws the complete minimap with fixed viewport
-// takes: game struct
-// mutates: draws entire minimap scene
 void	draw_minimap(t_game *game)
 {
 	draw_map_tiles(game);

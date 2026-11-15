@@ -11,10 +11,7 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-// sets up ray direction using camera plane for proper FOV perspective
-// cam_x maps screen column to [-1, 1], then rotates by player angle
-// takes: game, ray, screen column x
-// mutates: ray direction, grid position, sign_x/y computed branchless
+// Map each screen column to [-1, 1] along the camera plane.
 void	init_ray(t_game *game, t_ray *ray, int x)
 {
 	double	cam_x;
@@ -33,9 +30,6 @@ void	init_ray(t_game *game, t_ray *ray, int x)
 	ray->side = 0;
 }
 
-// draws the textured wall strip with edge blending
-// takes: game, ray, screen column x, tex
-// mutates: writes wall pixels to image buffer
 static void	draw_wall_strip(t_game *game, t_ray *ray, int x, t_image *tex)
 {
 	int		y;
@@ -61,9 +55,6 @@ static void	draw_wall_strip(t_game *game, t_ray *ray, int x, t_image *tex)
 	}
 }
 
-// draws one vertical strip: ceiling, textured wall and floor
-// takes: game, ray (with wall data), screen column x
-// mutates: writes pixels to image buffer
 static void	draw_column(t_game *game, t_ray *ray, int x)
 {
 	int		y;
@@ -79,9 +70,6 @@ static void	draw_column(t_game *game, t_ray *ray, int x)
 		put_pixel(game, x, y++, game->floor_color);
 }
 
-// main 3D render loop: casts one ray per screen column
-// takes: game
-// mutates: fills entire image buffer with 3D view
 void	render_3d(t_game *game)
 {
 	t_ray	ray;

@@ -22,7 +22,6 @@ int	main(int argc, char **argv)
 	}
 	ft_memset(&game, 0, sizeof(t_game));
 	parse_map(argv[1], &game);
-	find_player(&game);
 	load_textures(&game);
 	game.gfx = gfx_init("cub3D", 0, 0);
 	if (!game.gfx)

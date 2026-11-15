@@ -45,9 +45,6 @@
 # define KEY_5 SDLK_5
 # define KEY_6 SDLK_6
 
-# define WIN_WIDTH 800
-# define WIN_HEIGHT 600
-# define TILE_SIZE 32
 # define MOVE_SPEED 0.06
 # define PLAYER_RADIUS 0.2
 # define ROT_SPEED 0.08
@@ -155,7 +152,6 @@ void	draw_help_menu(t_game *game);
 void	render(void *param);
 void	draw_overlay(void *param);
 void	put_pixel(t_game *game, int x, int y, int color);
-void	draw_rect(t_game *game, t_point pos, int size, int color);
 void	draw_circle_aa(t_game *game, t_point center, int r, int color);
 void	draw_line_aa(t_game *game, t_line line);
 int		blend_color(int fg, int bg, int intensity);
@@ -169,7 +165,6 @@ int		get_tex_pixel(t_image *tex, int x, int y);
 void	init_ray(t_game *game, t_ray *ray, int x);
 void	cast_ray(t_game *game, t_ray *ray);
 void	calc_wall(t_game *game, t_ray *ray);
-void	cast_ray_minimap(t_game *game, t_ray *ray);
 
 // parsing
 char	*get_next_line(int fd);

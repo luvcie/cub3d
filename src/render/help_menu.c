@@ -11,9 +11,6 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-// builds resolution string like "current: 1920x1080"
-// takes: width, height
-// returns: allocated string (caller must free)
 static char	*build_res_str(int w, int h)
 {
 	char	*ws;
@@ -33,9 +30,6 @@ static char	*build_res_str(int w, int h)
 	return (res);
 }
 
-// draws help overlay with controls and resolution info
-// takes: game struct
-// mutates: draws text on screen, only called from the overlay hook
 void	draw_help_menu(t_game *game)
 {
 	int		x;

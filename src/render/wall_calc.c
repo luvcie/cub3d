@@ -11,9 +11,6 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-// computes wall hit position and direction for texture mapping
-// takes: game, ray
-// mutates: ray->wall_x, ray->wall_dir
 static void	calc_wall_hit(t_game *game, t_ray *ray)
 {
 	if (ray->side == 0)
@@ -31,9 +28,6 @@ static void	calc_wall_hit(t_game *game, t_ray *ray)
 	ray->wall_x -= (int)ray->wall_x;
 }
 
-// perpendicular distance calc and draw bounds
-// takes: game, ray (after traversal)
-// mutates: ray perp_dist, wall_x, wall_dir, line_height, draw bounds
 void	calc_wall(t_game *game, t_ray *ray)
 {
 	double	t[2];

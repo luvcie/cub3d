@@ -1,4 +1,3 @@
-// Window, input, drawing and BMP loading on top of SDL3.
 // The frame is a 0x00RRGGBB buffer, shown once per loop iteration.
 
 #include "gfx.h"
@@ -20,8 +19,6 @@ struct s_gfx
 	t_gfx_hooks		hooks;
 };
 
-// takes: gfx after a failed step of gfx_init
-// returns: NULL, after printing the SDL error and freeing gfx
 static t_gfx	*init_failed(t_gfx *gfx)
 {
 	fprintf(stderr, "gfx_init failed: %s\n", SDL_GetError());
@@ -29,8 +26,6 @@ static t_gfx	*init_failed(t_gfx *gfx)
 	return (NULL);
 }
 
-// takes: gfx with a renderer, new size, output texture and frame
-// returns: 1 on success, 0 on failure (nothing is left allocated)
 static bool	make_buffers(t_gfx *gfx, int w, int h, SDL_Texture **tex,
 		t_image **img)
 {
@@ -48,8 +43,6 @@ static bool	make_buffers(t_gfx *gfx, int w, int h, SDL_Texture **tex,
 	return (true);
 }
 
-// takes: gfx
-// mutates: drains the SDL event queue and dispatches to the hooks
 static void	poll_events(t_gfx *gfx)
 {
 	SDL_Event	e;
@@ -77,8 +70,6 @@ static void	poll_events(t_gfx *gfx)
 	}
 }
 
-// takes: gfx
-// mutates: uploads the current frame, draws it, then the overlay, and shows it
 // a frame hook may resize: read the frame and texture here, not cached
 static void	present(t_gfx *gfx)
 {
@@ -92,8 +83,6 @@ static void	present(t_gfx *gfx)
 	SDL_RenderPresent(gfx->renderer);
 }
 
-// one loop iteration: events, frame hook, present
-// takes: gfx as void pointer (for emscripten_set_main_loop_arg)
 static void	step(void *param)
 {
 	t_gfx	*gfx;
@@ -145,9 +134,7 @@ void	gfx_quit(t_gfx *gfx)
 	free(gfx);
 }
 
-// takes: gfx, new size
-// returns: 1 on success; on failure the window and frame stay as they were
-// mutates: replaces the frame, so the old pointer from gfx_frame is invalid
+// A successful resize invalidates the old pointer from gfx_frame.
 bool	gfx_resize(t_gfx *gfx, int w, int h)
 {
 	SDL_Texture	*tex;
@@ -165,7 +152,6 @@ bool	gfx_resize(t_gfx *gfx, int w, int h)
 	return (true);
 }
 
-// gfx is unused: the size comes from the display, not the window
 void	gfx_screen_size(t_gfx *gfx, int *w, int *h)
 {
 	(void)gfx;
@@ -191,12 +177,12 @@ t_image	*gfx_frame(t_gfx *gfx)
 	return (gfx->frame);
 }
 
-// takes: gfx, hooks (copied, so the caller's struct may be a temporary)
-// mutates: runs the loop, on native it does not return
+// Hooks are copied, so the caller's struct may be temporary.
 void	gfx_run(t_gfx *gfx, const t_gfx_hooks *hooks)
 {
 	gfx->hooks = *hooks;
 #ifdef __EMSCRIPTEN__
+	// The browser schedules frames through its main loop.
 	emscripten_set_main_loop_arg(step, gfx, 0, 1);
 #else
 	while (1)
@@ -224,8 +210,7 @@ t_image	*gfx_new_image(int w, int h)
 	return (img);
 }
 
-// takes: converted surface, image of the same size
-// mutates: copies the rows into img->pixels, skipping the row padding
+// Surface pitch includes row padding that the image buffer does not store.
 static void	copy_rows(SDL_Surface *conv, t_image *img)
 {
 	const uint8_t	*src;
@@ -240,8 +225,6 @@ static void	copy_rows(SDL_Surface *conv, t_image *img)
 	}
 }
 
-// takes: path to a BMP file
-// returns: new image (0x00RRGGBB pixels), or NULL on any read error
 t_image	*gfx_load_bmp(const char *path)
 {
 	SDL_Surface	*surf;
@@ -270,8 +253,7 @@ void	gfx_free_image(t_image *img)
 	free(img);
 }
 
-// takes: gfx, top-left of the text (8x8 glyphs), color 0x00RRGGBB, string
-// mutates: draws the text with the renderer, only valid in the overlay hook
+// Renderer text must be drawn in the overlay hook, before present.
 void	gfx_draw_text(t_gfx *gfx, int x, int y, uint32_t color,
 		const char *s)
 {

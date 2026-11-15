@@ -11,9 +11,6 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-// reads a pixel color from the frame buffer
-// takes: game struct, x, y coords
-// returns: color at that position, or 0 if out of bounds
 int	get_pixel_color(t_game *game, int x, int y)
 {
 	if (x < 0 || x >= game->win_width || y < 0 || y >= game->win_height)
@@ -21,17 +18,12 @@ int	get_pixel_color(t_game *game, int x, int y)
 	return ((int)game->frame->pixels[y * game->frame->w + x]);
 }
 
-// blends a single color channel
-// takes: fg channel, bg channel, intensity
-// returns: blended channel value
 static int	blend_channel(int fg_ch, int bg_ch, int intensity)
 {
 	return ((fg_ch * intensity + bg_ch * (255 - intensity)) / 255);
 }
 
-// blends two colors based on intensity (0-255)
-// takes: foreground color, background color, intensity
-// returns: blended color
+// Intensity 0 selects the background; 255 selects the foreground.
 int	blend_color(int fg, int bg, int intensity)
 {
 	int	r;

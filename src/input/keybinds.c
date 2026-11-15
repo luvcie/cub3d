@@ -11,17 +11,12 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-// takes: void *param (cast to t_game)
-// mutates: frees all game resources and the window, exits program
 void	close_window(void *param)
 {
 	free_game((t_game *)param);
 	exit(0);
 }
 
-// sets/clears movement key flag based on keycode
-// takes: game, keycode, bool value
-// mutates: flips flag in game->keys
 static void	set_key(t_game *game, int keycode, bool val)
 {
 	if (keycode == KEY_W)
@@ -38,8 +33,6 @@ static void	set_key(t_game *game, int keycode, bool val)
 		game->keys.right = val;
 }
 
-// takes: keycode, void *param (cast to t_game)
-// mutates: sets key flags, toggles views, or changes resolution
 void	key_press(int keycode, void *param)
 {
 	t_game	*game;
@@ -59,15 +52,11 @@ void	key_press(int keycode, void *param)
 		set_key(game, keycode, true);
 }
 
-// takes: keycode, void *param (cast to t_game)
-// mutates: clears key flags in game->keys
 void	key_release(int keycode, void *param)
 {
 	set_key((t_game *)param, keycode, false);
 }
 
-// takes: x pos, y pos (unused), void *param (cast to t_game)
-// mutates: player_angle based on horizontal mouse delta
 void	mouse_move(int x, int y, void *param)
 {
 	t_game	*game;

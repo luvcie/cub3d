@@ -4,8 +4,6 @@
 # include <stdbool.h>
 # include <stdint.h>
 
-// window, input and drawing on top of SDL3, one window per program
-
 typedef struct s_image
 {
 	int			w;
@@ -19,7 +17,7 @@ typedef struct s_gfx	t_gfx;
 typedef struct s_gfx_hooks
 {
 	void	(*frame)(void *param);
-	// runs after the frame is drawn on screen, the only place gfx_draw_text works
+	// Runs after the texture draw, before present; gfx_draw_text is valid here.
 	void	(*overlay)(void *param);
 	void	(*key_press)(int key, void *param);
 	void	(*key_release)(int key, void *param);

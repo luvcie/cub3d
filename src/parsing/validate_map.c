@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-// prints error message, frees all game resources, exits with status 1
 void	print_map_error(t_game *game, char *message)
 {
 	ft_printf("Error\n%s\n", message);
@@ -20,7 +19,6 @@ void	print_map_error(t_game *game, char *message)
 	exit(1);
 }
 
-// checks if file extension is valid (.cub)
 void	validate_extension(t_game *game, char *filename)
 {
 	int	len;
@@ -32,7 +30,6 @@ void	validate_extension(t_game *game, char *filename)
 		print_map_error(game, "hey!! file must have .cub extension!");
 }
 
-// checks that all config values were set
 void	validate_config(t_game *game)
 {
 	if (!game->texture_no)
@@ -49,7 +46,6 @@ void	validate_config(t_game *game)
 		print_map_error(game, "missing ceiling color (C)");
 }
 
-// counts player positions and validates characters
 static void	count_elements(t_game *game, int *counts)
 {
 	int		y;
@@ -71,7 +67,6 @@ static void	count_elements(t_game *game, int *counts)
 	}
 }
 
-// validates element counts: exactly 1 player position
 void	validate_elements(t_game *game)
 {
 	int	counts[1];
